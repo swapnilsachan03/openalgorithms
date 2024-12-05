@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
+
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 200 300 400 500 600 700 800 900",
-});
+import Navbar from "./components/layout/navbar";
 
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 200 300 400 500 600 700 800 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "OpenAlgorithms",
-  description: "An open-source platform to learn and practice algorithms and data structures.",
+  description:
+    "An open-source platform to learn and practice algorithms and data structures.",
 };
 
 export default function RootLayout({
@@ -27,8 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} antialiased max-w-screen-2xl mx-auto transition ease-linear duration-200`}
       >
+        <Navbar />
         {children}
       </body>
     </html>
