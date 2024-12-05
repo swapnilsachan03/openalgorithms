@@ -1,6 +1,7 @@
-import Link from "next/link";
-import React from "react";
 import _ from "lodash";
+
+import Link from "next/link";
+
 import ColorModeSwitcher from "./color-mode-switcher";
 
 const navbarLinks = [

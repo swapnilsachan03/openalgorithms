@@ -63,7 +63,13 @@ export type DynamicCloudProps = {
 
 type IconData = Awaited<ReturnType<typeof fetchSimpleIcons>>;
 
-export function IconCloud({ iconSlugs }: DynamicCloudProps) {
+export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const [data, setData] = useState<IconData | null>(null);
   const { theme } = useTheme();
 
@@ -79,10 +85,10 @@ export function IconCloud({ iconSlugs }: DynamicCloudProps) {
     );
   }, [data, theme]);
 
-  return (
+  return isClient ? (
     // @ts-ignore
     <Cloud {...cloudProps}>
       <>{renderedIcons}</>
     </Cloud>
-  );
+  ) : null;
 }

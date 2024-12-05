@@ -1,8 +1,9 @@
-"use client";
-
-import { useState } from "react";
-import { IconCloud } from "./components/icon-cloud";
 import "./page.css";
+
+import { ArrowRight } from "lucide-react";
+
+import IconCloud from "@/components/ui/icon-cloud";
+import RainbowButton from "@/components/ui/rainbow-button";
 
 const icons = [
   "typescript",
@@ -40,7 +41,7 @@ const icons = [
 export default function Home() {
   return (
     <div className="w-full">
-      <div className="flex flex-col w-full h-[90vh] items-center justify-center gap-12">
+      <div className="flex flex-col w-full min-h-[90vh] items-center justify-center py-12 gap-10">
         <div className="relative flex max-w-lg items-center justify-center overflow-hidden rounded-lg bg-transparent">
           <IconCloud iconSlugs={icons} />
         </div>
@@ -57,6 +58,11 @@ export default function Home() {
             tailored for all, beginners to advanced!
           </span>
         </div>
+
+        <RainbowButton className="dark:bg-white dark:text-black">
+          See what's possible
+          <ArrowRight size={16} className="ml-2" />
+        </RainbowButton>
       </div>
     </div>
   );
