@@ -41,7 +41,7 @@ const icons = [
 export default function Home() {
   return (
     <div className="w-full">
-      <div className="flex flex-col w-full min-h-[90vh] items-center justify-center py-12 gap-10">
+      <div className="flex flex-col w-full min-h-[90vh] items-center justify-center pb-12 gap-10">
         <div className="relative flex max-w-lg items-center justify-center overflow-hidden rounded-lg bg-transparent">
           <IconCloud iconSlugs={icons} />
         </div>

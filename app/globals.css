@@ -50,23 +50,20 @@
 /* Custom Scrollbar */
 
 ::-webkit-scrollbar {
-  width: 11px;
+  width: 12px;
   height: auto;
 }
 
-::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 ::-webkit-scrollbar-thumb {
-  background-color: #8e9bac;
+  background-color: #747474;
   border-radius: 15px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #718096;
+  background-color: #4d4d4d;
+  transition: ease-in-out 2s;
 }
 
 br {

@@ -15,7 +15,7 @@ type Props = {};
 
 const Navbar = (props: Props) => {
   return (
-    <nav className="flex flex-row justify-between items-center py-3 border-b-[1px] border-neutral-200 dark:border-neutral-700 px-1">
+    <nav className="flex flex-row justify-between items-center py-3 border-b-[1px] border-neutral-200 dark:border-neutral-700 px-1 mx-4">
       <Link href="/" className="text-[22px] font-bold">
         OpenAlgorithms
       </Link>
