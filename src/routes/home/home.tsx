@@ -2,8 +2,8 @@ import "./home.scss";
 
 import { ArrowRight } from "lucide-react";
 
-import IconCloud from "../../components/ui/icon-cloud";
-import RainbowButton from "../../components/ui/rainbow-button";
+import IconCloud from "@/components/ui/icon-cloud";
+import RainbowButton from "@/components/ui/rainbow-button";
 
 const icons = [
   "typescript",

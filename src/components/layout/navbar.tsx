@@ -1,7 +1,9 @@
 import _ from "lodash";
+
 import { Button } from "generic-ds";
-import "./navbar.scss";
 import { Link } from "react-router-dom";
+
+import "./navbar.scss";
 
 const navbarLinks = [
   { href: "/learn", label: "Learn" },
