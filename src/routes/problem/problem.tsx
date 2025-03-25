@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 
 import "./problem.scss";
 
@@ -10,6 +11,12 @@ import {
   useOutputRatio,
   usePanelRatiosActions,
 } from "@/stores/panelDimensionsStore";
+
+import { getProblemBySlugQuery } from "@problem/modules/queries";
+
+import DetailsPane from "@problem/components/details_pane/details_pane";
+import EditorPane from "@problem/components/editor_pane/editor_pane";
+import OutputPane from "@problem/components/output_pane/output_pane";
 
 type Props = {};
 
@@ -83,10 +90,16 @@ const Problem = (props: Props) => {
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  const { loading, error, data } = useQuery(getProblemBySlugQuery, {
+    variables: {
+      slug,
+    },
+  });
+
   return (
     <div className="problem_container" ref={containerRef}>
       <div className="problem_details_pane" style={{ width: detailsWidth }}>
-        {slug}
+        <DetailsPane data={data} loading={loading} />
         <div
           className={`resize_handle ${isDragging === 1 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(1)}
@@ -94,13 +107,16 @@ const Problem = (props: Props) => {
       </div>
 
       <div className="editor_pane" style={{ minWidth: editorWidth }}>
+        <EditorPane data={data} loading={loading} />
         <div
           className={`resize_handle ${isDragging === 2 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(2)}
         />
       </div>
 
-      <div className="judging_pane" style={{ minWidth: outputWidth }}></div>
+      <div className="judging_pane" style={{ minWidth: outputWidth }}>
+        <OutputPane data={data} loading={loading} />
+      </div>
     </div>
   );
 };

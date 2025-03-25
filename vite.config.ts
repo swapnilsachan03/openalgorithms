@@ -5,4 +5,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
+  build: {
+    ssr: true,
+    rollupOptions: {
+      input: "./server/index.js",
+    },
+  },
 });

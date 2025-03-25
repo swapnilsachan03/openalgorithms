@@ -25,7 +25,8 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@problem/*": ["src/routes/problem/*"]
     }
   },
   "include": ["src"]
