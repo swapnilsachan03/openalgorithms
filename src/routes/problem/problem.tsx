@@ -3,21 +3,36 @@ import { useParams } from "react-router-dom";
 
 import "./problem.scss";
 
-import { getWindowDimensions } from "@/utils/common";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import {
+  useDetailsRatio,
+  useEditorRatio,
+  useOutputRatio,
+  usePanelRatiosActions,
+} from "@/stores/panelDimensionsStore";
 
 type Props = {};
 
 const Problem = (props: Props) => {
   const { slug } = useParams();
-  const { width } = getWindowDimensions();
-
-  const [detailsWidth, setDetailsWidth] = useState(width / 3);
-  const [editorWidth, setEditorWidth] = useState(width / 3);
-  const [outputWidth, setOutputWidth] = useState(width / 3);
-
-  const [isDragging, setIsDragging] = useState<number | null>(null);
+  const { width } = useWindowSize();
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const parentWidth = containerRef.current?.offsetWidth ?? width;
+
+  const detailsRatio = useDetailsRatio();
+  const editorRatio = useEditorRatio();
+  const outputRatio = useOutputRatio();
+
+  const { setDetailsRatio, setEditorRatio, setOutputRatio } =
+    usePanelRatiosActions();
+
+  const detailsWidth = detailsRatio * parentWidth;
+  const editorWidth = editorRatio * parentWidth;
+  const outputWidth = outputRatio * parentWidth;
+
+  const [isDragging, setIsDragging] = useState<number | null>(null);
 
   const handleMouseDown = useCallback((index: number) => {
     setIsDragging(index);
@@ -34,23 +49,23 @@ const Problem = (props: Props) => {
         const newDetailsWidth = Math.max(400, x);
         const newEditorWidth = Math.max(
           400,
-          width - newDetailsWidth - outputWidth
+          parentWidth - newDetailsWidth - outputWidth
         );
 
-        setDetailsWidth(newDetailsWidth);
-        setEditorWidth(newEditorWidth);
+        setDetailsRatio(newDetailsWidth / parentWidth);
+        setEditorRatio(newEditorWidth / parentWidth);
       } else if (isDragging === 2) {
         const newEditorWidth = Math.max(
           400,
-          Math.min(x - detailsWidth, width - detailsWidth - 400)
+          Math.min(x - detailsWidth, parentWidth - detailsWidth - 400)
         );
-        const newoutputWidth = width - detailsWidth - newEditorWidth;
+        const newoutputWidth = parentWidth - detailsWidth - newEditorWidth;
 
-        setEditorWidth(newEditorWidth);
-        setOutputWidth(newoutputWidth);
+        setEditorRatio(newEditorWidth / parentWidth);
+        setOutputRatio(newoutputWidth / parentWidth);
       }
     },
-    [isDragging, width, detailsWidth, outputWidth]
+    [isDragging, parentWidth, detailsWidth, outputWidth]
   );
 
   const handleMouseUp = useCallback(() => {
