@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 import {
@@ -9,14 +10,15 @@ import {
   ThumbsDown,
   Bookmark,
   Eye,
-  ChevronRight,
+  Tag,
+  Lightbulb,
 } from "lucide-react";
 
 import "./details_pane.scss";
-import "react-loading-skeleton/dist/skeleton.css";
 
-import { useState, useRef, useEffect } from "react";
 import PaneHeader from "../pane_header/pane_header";
+import Collapsible from "@/components/ui/collapsible";
+import Chip from "@/components/ui/chip";
 
 type Props = {
   data: any;
@@ -42,9 +44,6 @@ const tabs = [
 ];
 
 const DetailsPane = ({ data, loading }: Props) => {
-  const [hintsExpanded, setHintsExpanded] = useState(false);
-  const hintsContentRef = useRef<HTMLDivElement>(null);
-  const [hintsContentHeight, setHintsContentHeight] = useState(0);
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
@@ -60,101 +59,97 @@ const DetailsPane = ({ data, loading }: Props) => {
     // Add your dislike API call here
   };
 
-  useEffect(() => {
-    if (hintsContentRef.current) {
-      setHintsContentHeight(hintsContentRef.current.scrollHeight);
-    }
-  }, [data?.problem?.hints]);
-
   const problem = data?.problem;
 
   if (loading) {
     return (
-      <div className="details-pane">
+      <div className="details_pane">
         <PaneHeader tabs={tabs} />
         Loading...
       </div>
     );
   }
 
+  console.log(problem);
+
   return (
-    <div className="details-pane">
+    <div className="details_pane">
       <PaneHeader tabs={tabs} />
-      <div className="details-pane__content">
-        <h1 className="details-pane__title">{problem?.title}</h1>
 
-        <div className="details-pane__metadata">
-          <span
-            className={`details-pane__difficulty details-pane__difficulty--${problem?.difficulty}`}
-          >
+      <div className="details_pane_content">
+        <h1 className="problem_title">{problem?.title}</h1>
+
+        <div className="details_pane_metadata">
+          <Chip className={`tag_${problem?.difficulty}`}>
             {_.capitalize(problem?.difficulty)}
-          </span>
+          </Chip>
 
-          <div className="details-pane__stats">
-            <span className="stat-item">
-              <Eye size={14} /> {problem?.views}
-            </span>
-            <div className="separator" />
-            <span className="stat-item">
-              <Bookmark size={14} /> {problem?.bookmarks}
-            </span>
-          </div>
+          <Chip icon={<Tag size={13} />}>Topics</Chip>
+          <Chip icon={<Lightbulb size={13} />}>Hint</Chip>
+          <Chip icon={<Eye size={13} />}>{problem?.views}</Chip>
         </div>
 
-        <div className="details-pane__description">
+        <div className="details_pane_description">
           <ReactMarkdown>{problem?.description || ""}</ReactMarkdown>
         </div>
 
-        {problem?.examples?.length > 0 && (
-          <div className="details-pane__examples">
-            <h2 className="details-pane__examples-title">Examples</h2>
-            {problem.examples.map((example: any, index: number) => (
-              <div key={example.id} className="details-pane__examples-item">
-                <div className="details-pane__examples-item-label">Input:</div>
-                <pre className="details-pane__examples-item-content">
+        <div className="details_pane_examples">
+          {problem?.examples?.map((example: any, index: number) => (
+            <div>
+              <div className="example_heading">Example {index + 1}:</div>
+
+              <div key={example.id} className="example_fields_container">
+                <pre className="example_field">
+                  <strong>Input: </strong>
                   {example.input}
                 </pre>
-                <div className="details-pane__examples-item-label">Output:</div>
-                <pre className="details-pane__examples-item-content">
-                  {example.output}
+
+                <pre className="example_field">
+                  <strong>Output: </strong>
+                  {example.input}
+                </pre>
+
+                <pre className="example_field">
+                  <strong>Explanation: </strong>
+                  {example.explanation}
                 </pre>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
-        {problem?.hints?.length > 0 && (
-          <div className="details-pane__hints">
-            <div
-              className="details-pane__hints-header"
-              onClick={() => setHintsExpanded(!hintsExpanded)}
-            >
-              <ChevronRight
-                size={20}
-                className={`icon ${hintsExpanded ? "icon--expanded" : ""}`}
-              />
-              <h2 className="details-pane__hints-title">
-                Hints ({problem.hints.length})
-              </h2>
-            </div>
-            <div
-              ref={hintsContentRef}
-              className="details-pane__hints-content"
-              style={{ height: hintsExpanded ? hintsContentHeight : 0 }}
-            >
-              <div className="details-pane__hints-list">
-                {problem.hints.map((hint: any) => (
-                  <div key={hint.id} className="details-pane__hints-item">
-                    {hint.content}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="details_pane_topics">
+          {problem?.hints?.map((hint: any, index: number) => (
+            <Collapsible>
+              <Collapsible.Trigger className="hint_trigger">
+                <Tag size={15} />
+                Topics
+              </Collapsible.Trigger>
+
+              <Collapsible.Content className="hint_content">
+                {hint.content}
+              </Collapsible.Content>
+            </Collapsible>
+          ))}
+        </div>
+
+        <div className="details_pane_hints">
+          {problem?.hints?.map((hint: any, index: number) => (
+            <Collapsible>
+              <Collapsible.Trigger className="hint_trigger">
+                <Lightbulb size={16} />
+                Hint {index + 1}
+              </Collapsible.Trigger>
+
+              <Collapsible.Content className="hint_content">
+                {hint.content}
+              </Collapsible.Content>
+            </Collapsible>
+          ))}
+        </div>
       </div>
 
-      <div className="details-pane__stats--floating">
+      <div className="details_pane_stats--floating">
         <button
           className={`stat-button ${userLiked ? "stat-button--liked" : ""}`}
           onClick={handleLike}

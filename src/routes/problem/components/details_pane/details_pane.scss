@@ -1,45 +1,96 @@
-.details-pane {
+.details_pane {
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
-  &__content {
+  &_content {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
-  }
 
-  &__title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-
-    &--skeleton {
-      width: 33.333%;
+    .problem_title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
   }
 
-  &__metadata {
+  &_metadata {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 8px;
+    margin-bottom: 24px;
   }
 
-  &__difficulty {
-    &--EASY {
-      color: #22c55e;
+  &_description {
+    margin-bottom: 48px;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 600;
+      margin: 18px 0 12px;
     }
-    &--MEDIUM {
-      color: #eab308;
-    }
-    &--HARD {
-      color: #ef4444;
+
+    p {
+      margin-bottom: 12px;
     }
   }
 
-  &__stats {
+  &_examples {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 48px;
+
+    .example_heading {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .example_fields_container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-left: 16px;
+      border-left: 3px solid var(--border-primary);
+    }
+  }
+
+  &_topics {
+    .hint_trigger {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 10px;
+      border-top: 1px solid var(--border-primary);
+      cursor: pointer;
+    }
+
+    .hint_content {
+      margin-left: 27px;
+    }
+  }
+
+  &_hints {
+    .hint_trigger {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 10px;
+      border-top: 1px solid var(--border-primary);
+      cursor: pointer;
+    }
+
+    .hint_content {
+      margin-left: 27px;
+    }
+  }
+
+  &_stats {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -118,150 +169,4 @@
       }
     }
   }
-
-  &__description {
-    line-height: 1.6;
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-weight: 600;
-      margin: 1.5rem 0 1rem;
-    }
-
-    p {
-      margin-bottom: 1rem;
-    }
-
-    pre,
-    code {
-      background-color: var(--background-secondary);
-      padding: 0.2rem 0.4rem;
-      border-radius: 0.25rem;
-      font-family: monospace;
-    }
-  }
-
-  &__hints {
-    margin-top: 2rem;
-
-    &-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    &-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    &-item {
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      background-color: var(--background-secondary);
-    }
-
-    &-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-      padding: 0.5rem;
-      border-radius: 0.25rem;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background-color: var(--hover-color);
-      }
-
-      .icon {
-        transition: transform 0.2s;
-        &--expanded {
-          transform: rotate(90deg);
-        }
-      }
-    }
-
-    &-content {
-      margin-top: 1rem;
-      overflow: hidden;
-      transition: height 0.3s ease-in-out;
-    }
-
-    &-item {
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      background-color: var(--background-secondary);
-      margin-bottom: 0.5rem;
-    }
-  }
-
-  &__examples {
-    margin-top: 2rem;
-
-    &-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    &-item {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      background-color: var(--background-secondary);
-      margin-bottom: 1rem;
-
-      &-label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #9ca3af;
-        margin-bottom: 0.5rem;
-      }
-
-      &-content {
-        font-family: monospace;
-        background-color: var(--background-secondary);
-        padding: 0.5rem;
-        border-radius: 0.25rem;
-      }
-    }
-
-    &-item {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      margin-bottom: 1rem;
-
-      &-label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--text-secondary);
-        margin-bottom: 0.5rem;
-      }
-
-      &-content {
-        font-family: monospace;
-        padding: 0.5rem;
-        border-radius: 0.25rem;
-        background-color: var(--code-bg);
-      }
-    }
-  }
-}
-
-// Add these variables to your :root and [data-theme="dark"]
-:root {
-  // ...existing code...
-  --background-primary: #ffffff;
-  --background-hover: #f3f4f6;
-}
-
-[data-theme="dark"] {
-  // ...existing code...
-  --background-primary: #1e1e1e;
-  --background-hover: #2d2d2d;
 }

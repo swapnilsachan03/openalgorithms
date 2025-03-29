@@ -9,7 +9,7 @@
 
 .problem_details_pane {
   background-color: var(--background-secondary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   height: 100%;
   position: relative;
@@ -18,7 +18,7 @@
 .editor_pane {
   background-color: var(--background-secondary);
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-primary);
   height: 100%;
   position: relative;
 }
@@ -26,7 +26,7 @@
 .judging_pane {
   background-color: var(--background-secondary);
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-primary);
   height: 100%;
   position: relative;
 }
