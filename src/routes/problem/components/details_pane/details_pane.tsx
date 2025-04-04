@@ -8,7 +8,6 @@ import {
   NotepadText,
   ThumbsUp,
   ThumbsDown,
-  Bookmark,
   Eye,
   Tag,
   Lightbulb,
@@ -70,8 +69,6 @@ const DetailsPane = ({ data, loading }: Props) => {
     );
   }
 
-  console.log(problem);
-
   return (
     <div className="details_pane">
       <PaneHeader tabs={tabs} />
@@ -119,7 +116,7 @@ const DetailsPane = ({ data, loading }: Props) => {
         </div>
 
         <div className="details_pane_topics">
-          {problem?.hints?.map((hint: any, index: number) => (
+          {problem?.hints?.map((hint: any) => (
             <Collapsible>
               <Collapsible.Trigger className="hint_trigger">
                 <Tag size={15} />
@@ -157,6 +154,7 @@ const DetailsPane = ({ data, loading }: Props) => {
           <ThumbsUp size={16} className="icon" />
           <span className="count">{problem?.likes || 0}</span>
         </button>
+
         <button
           className={`stat-button ${
             userDisliked ? "stat-button--disliked" : ""

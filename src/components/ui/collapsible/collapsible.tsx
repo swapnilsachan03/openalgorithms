@@ -42,9 +42,12 @@ const Trigger: React.FC<TriggerProps> = ({ children, className }) => {
   if (!context) throw new Error("Trigger must be used within a Collapsible");
 
   return (
-    <div onClick={context.toggle} className={classNames("relative", className)}>
+    <div
+      onClick={context.toggle}
+      className={classNames("collapsible-trigger", className)}
+    >
       {children}
-      <div className="transition-all duration-300 ease-in-out icon-class">
+      <div className="collapsible-icon">
         {context.isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
       </div>
     </div>
@@ -63,14 +66,12 @@ const Content: React.FC<ContentProps> = ({ children, className }) => {
   return (
     <div
       className={classNames(
-        "overflow-hidden transition-all duration-300 ease-in-out",
-        context.isOpen
-          ? "max-h-[1000px] opacity-100 mb-3"
-          : "max-h-0 opacity-0",
+        "collapsible-content",
+        context.isOpen ? "is-open" : "is-closed",
         className
       )}
     >
-      {children}
+      <div className="collapsible-content-inner">{children}</div>
     </div>
   );
 };
