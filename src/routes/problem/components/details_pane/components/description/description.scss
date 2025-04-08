@@ -98,23 +98,47 @@
 
     .like_dislike_container {
       display: flex;
-      gap: 8px;
+      gap: 2px;
     }
 
     .stat_button {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
-      padding: 4px 6px;
-      border-radius: 4px;
-      background-color: var(--background-secondary);
+      padding: 6px 8px;
+      background-color: var(--background-tertiary);
       color: var(--text-primary);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
 
       &:hover {
-        background-color: var(--background-tertiary);
+        opacity: 0.8;
+      }
+
+      &:first-child {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+    }
+
+    .bookmark_button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 0.8;
       }
     }
   }

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useState } from "react";
-import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb, Star } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 import "./description.scss";
@@ -114,7 +114,7 @@ const Description = ({ data, loading }: Props) => {
             className={`stat_button ${userLiked ? "button_liked" : ""}`}
             onClick={handleLike}
           >
-            <ThumbsUp size={16} className="icon" />
+            <ThumbsUp size={14} className="icon" />
             <span className="count">{problem?.likes || 0}</span>
           </button>
 
@@ -122,14 +122,13 @@ const Description = ({ data, loading }: Props) => {
             className={`stat_button ${userDisliked ? "button_disliked" : ""}`}
             onClick={handleDislike}
           >
-            <ThumbsDown size={16} className="icon" />
+            <ThumbsDown size={14} className="icon" />
             <span className="count">{problem?.dislikes || 0}</span>
           </button>
         </div>
 
         <button className="bookmark_button">
-          <span className="bookmark_icon" />
-          Bookmark
+          <Star size={16} className="icon" />
         </button>
       </div>
     </div>
