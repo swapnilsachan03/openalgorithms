@@ -1,9 +1,8 @@
 .problem {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height: 100%;
   justify-content: space-between;
-  padding: 16px;
 
   &_details {
     overflow-y: auto;

@@ -62,7 +62,8 @@ const DetailsPane = ({ data, loading }: Props) => {
   return (
     <div className="details_pane">
       <PaneHeader tabs={tabs} />
-      {renderPaneContent()}
+
+      <div className="details_pane_content">{renderPaneContent()}</div>
     </div>
   );
 };

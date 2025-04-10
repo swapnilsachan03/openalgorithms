@@ -23,19 +23,16 @@ export const getProblemBySlugQuery = gql`
         output
         problemId
       }
-      solutions {
-        code
-        createdAt
-        id
-        language
-        problemId
-      }
       userSolutions {
-        authorId
-        content
-        dislikes
-        likes
         id
+        title
+        views
+        likes
+        dislikes
+        user {
+          id
+          name
+        }
       }
       hints {
         id
@@ -45,29 +42,32 @@ export const getProblemBySlugQuery = gql`
       topics
       editorial {
         id
+        # title
         content
-        problemId
         views
         likes
         dislikes
         createdAt
         updatedAt
       }
-      discussions {
-        id
-        content
-        parent {
-          id
-        }
-        user {
-          id
-          name
-        }
-      }
-      createdBy {
+    }
+  }
+`;
+
+export const getSolutionByIdQuery = gql`
+  query getSolutionById($id: ID!) {
+    solution(id: $id) {
+      id
+      title
+      content
+      language
+      createdAt
+      likes
+      dislikes
+      views
+      user {
         id
         name
-        email
       }
     }
   }

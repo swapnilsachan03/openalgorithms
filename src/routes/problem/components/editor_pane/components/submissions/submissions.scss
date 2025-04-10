@@ -1,0 +1,145 @@
+.submissions {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &_list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+.submission_card {
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #3b82f6;
+    background: var(--background-tertiary);
+  }
+
+  &_main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &_info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  &_meta {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+
+    .language {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.submission_detail {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-primary);
+  }
+}
+
+.submission_info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.submission_meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.submission_user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+
+  .username {
+    color: #3b82f6;
+  }
+}
+
+.submission_code {
+  flex: 1;
+  overflow: hidden;
+}
+
+.back_button {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border-primary);
+  background: var(--background-tertiary);
+  color: var(--foreground);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-secondary);
+  }
+}
+
+.remix_button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: 6px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.status {
+  font-weight: 500;
+
+  &_accepted {
+    color: #22c55e;
+  }
+
+  &_wrong_answer {
+    color: #ef4444;
+  }
+
+  &_time_limit_exceeded {
+    color: #f59e0b;
+  }
+
+  &_runtime_error {
+    color: #ef4444;
+  }
+}
