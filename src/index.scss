@@ -29,6 +29,16 @@ $radius-sm: calc($radius - 4px);
   --color-text-secondary: #{$text-secondary-light};
   --color-text-accent: #{$text-accent-light};
   --border-primary: #{$border-primary-light};
+
+  [data-theme="dark"] {
+    --background: #{$background-dark};
+    --foreground: #{$foreground-dark};
+    --background-secondary: #{$background-secondary-dark};
+    --background-tertiary: #{$background-tertiary-dark};
+    --color-text-secondary: #{$text-secondary-dark};
+    --color-text-accent: #{$text-accent-dark};
+    --border-primary: #{$border-primary-dark};
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,17 +51,6 @@ $radius-sm: calc($radius - 4px);
     --color-text-accent: #{$text-accent-dark};
     --border-primary: #{$border-primary-dark};
   }
-}
-
-/* Add class-based override for explicit dark mode */
-
-.dark {
-  --background: #{$background-dark};
-  --foreground: #{$foreground-dark};
-  --background-secondary: #{$background-secondary-dark};
-  --color-text-secondary: #{$text-secondary-dark};
-  --color-text-accent: #{$text-accent-dark};
-  --border-primary: #{$border-primary-dark};
 }
 
 /* Base styles */

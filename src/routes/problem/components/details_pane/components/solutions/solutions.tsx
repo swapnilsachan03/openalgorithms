@@ -9,10 +9,14 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  materialDark,
+  materialLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import dayjs from "dayjs";
 
 import "./solutions.scss";
+import { useTheme } from "next-themes";
 
 type Props = {
   data: any;
@@ -158,6 +162,7 @@ const Solutions = ({ data, loading }: Props) => {
   >(null);
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
+  const { theme } = useTheme();
 
   const handleSolutionClick = (solution: (typeof dummySolutions)[0]) => {
     setSelectedSolution(solution);
@@ -210,14 +215,33 @@ const Solutions = ({ data, loading }: Props) => {
           <div className="solution_content">
             <ReactMarkdown
               components={{
-                code({ node, inline, className, children, ...props }) {
+                code({
+                  node,
+                  inline,
+                  className,
+                  children,
+                  ...props
+                }: {
+                  node?: any;
+                  inline?: boolean;
+                  className?: string;
+                  children?: React.ReactNode;
+                }) {
                   const match = /language-(\w+)/.exec(className || "");
                   const language = match ? match[1] : "";
+
                   return !inline && language ? (
                     <div className="code-block">
                       <div className="code-header">{language}</div>
                       <SyntaxHighlighter
-                        style={vscDarkPlus}
+                        style={theme === "dark" ? materialDark : materialLight}
+                        customStyle={{ margin: 0 }}
+                        codeTagProps={{
+                          style: {
+                            fontFamily: "JetBrains Mono",
+                            fontSize: "13px",
+                          },
+                        }}
                         language={language}
                         PreTag="div"
                         {...props}

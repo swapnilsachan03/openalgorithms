@@ -16,7 +16,7 @@
 
   &_metadata {
     display: flex;
-    gap: 16px;
+    gap: 8px;
     margin-bottom: 24px;
 
     .metadata_item {
@@ -47,6 +47,7 @@
       margin: 16px 0;
       border-radius: 8px;
       overflow: hidden;
+      font-family: "Geist";
       background: var(--background-secondary);
 
       .code-header {

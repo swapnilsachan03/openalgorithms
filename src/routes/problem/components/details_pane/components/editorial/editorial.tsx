@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThumbsUp, ThumbsDown, Eye, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  coyWithoutShadows,
+  materialDark,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import dayjs from "dayjs";
 
 import "./editorial.scss";
 import Chip from "@/components/ui/chip";
+import { useTheme } from "next-themes";
 
 type Props = {
   data: any;
@@ -14,8 +18,14 @@ type Props = {
 };
 
 const Editorial = ({ data, loading }: Props) => {
+  const { theme, setTheme } = useTheme();
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
+
+  useEffect(() => {
+    // const storedTheme = localStorage.getItem("theme") || "system";
+    setTheme("dark");
+  }, [setTheme]);
 
   const handleLike = () => {
     if (userDisliked) setUserDisliked(false);
@@ -94,25 +104,47 @@ The hash table approach is more efficient because we only need to traverse the a
           <Chip icon={<Calendar size={13} />}>
             {dayjs(editorial.createdAt).format("MMM DD, YYYY")}
           </Chip>
+
           <Chip icon={<Eye size={13} />}>{editorial.views}</Chip>
         </div>
 
         <div className="editorial_content">
           <ReactMarkdown
             components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || '');
-                const language = match ? match[1] : '';
+              code({
+                node,
+                inline,
+                className,
+                children,
+                ...props
+              }: {
+                node?: any;
+                inline?: boolean;
+                className?: string;
+                children?: React.ReactNode;
+              }) {
+                const match = /language-(\w+)/.exec(className || "");
+                const language = match ? match[1] : "";
+
                 return !inline && language ? (
                   <div className="code-block">
                     <div className="code-header">{language}</div>
                     <SyntaxHighlighter
-                      style={vscDarkPlus}
+                      style={
+                        theme === "dark" ? materialDark : coyWithoutShadows
+                      }
+                      customStyle={{ margin: 0 }}
+                      codeTagProps={{
+                        style: {
+                          fontFamily: "JetBrains Mono",
+                          fontSize: "13px",
+                        },
+                      }}
                       language={language}
                       PreTag="div"
                       {...props}
                     >
-                      {String(children).replace(/\n$/, '')}
+                      {String(children).replace(/\n$/, "")}
                     </SyntaxHighlighter>
                   </div>
                 ) : (

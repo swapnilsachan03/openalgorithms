@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import { Play } from "lucide-react";
 
 import "./code.scss";
+import { useTheme } from "next-themes";
 
 type Props = {
   loading: boolean;
@@ -18,6 +19,7 @@ const initialCode = `def twoSum(nums: List[int], target: int) -> List[int]:
 const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
   const [language, setLanguage] = useState(defaultLanguage || "python");
   const [code, setCode] = useState(defaultCode || initialCode);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (defaultCode && defaultLanguage) {
@@ -47,10 +49,13 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
           language={language}
           value={code}
           onChange={handleCodeChange}
-          theme="vs-dark"
+          theme={theme == "dark" ? "vs-dark" : "vs-light"}
           options={{
+            fontFamily: "JetBrains Mono, monospace",
+            fontLigatures: true,
             minimap: { enabled: false },
-            fontSize: 14,
+            fontSize: 13.5,
+            lineHeight: 1.6,
             lineNumbers: "on",
             scrollBeyondLastLine: false,
             automaticLayout: true,
