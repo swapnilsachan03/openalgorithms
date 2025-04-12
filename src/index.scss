@@ -1,16 +1,18 @@
-$background-light: #ffffff;
+$background-light: #f8f8f8;
 $foreground-light: #171717;
-$background-secondary-light: #f8f8f8;
+$background-secondary-light: #ffffff;
+$background-tertiary-light: #f2f2f2;
 $text-secondary-light: #737373;
-$text-accent-light: #b02b7f;
-$border-color-light: #e5e5e5;
+$text-accent-light: #2ba0b0;
+$border-primary-light: #e5e5e5;
 
 $background-dark: #0d0d0d;
 $foreground-dark: #ededed;
 $background-secondary-dark: #202020;
-$text-secondary-dark: #c3c3c3;
-$text-accent-dark: #e6819c;
-$border-color-dark: #747474;
+$background-tertiary-dark: #3a3a3a;
+$text-secondary-dark: #b3b3b3;
+$text-accent-dark: #51c0ef;
+$border-primary-dark: #747474;
 
 $radius: 8px;
 $radius-lg: $radius;
@@ -23,9 +25,20 @@ $radius-sm: calc($radius - 4px);
   --background: #{$background-light};
   --foreground: #{$foreground-light};
   --background-secondary: #{$background-secondary-light};
-  --color-text-secondary: #{$text-secondary-light};
-  --color-text-accent: #{$text-accent-light};
-  --border-color: #{$border-color-light};
+  --background-tertiary: #{$background-tertiary-light};
+  --text-secondary: #{$text-secondary-light};
+  --text-accent: #{$text-accent-light};
+  --border-primary: #{$border-primary-light};
+
+  [data-theme="dark"] {
+    --background: #{$background-dark};
+    --foreground: #{$foreground-dark};
+    --background-secondary: #{$background-secondary-dark};
+    --background-tertiary: #{$background-tertiary-dark};
+    --text-secondary: #{$text-secondary-dark};
+    --text-accent: #{$text-accent-dark};
+    --border-primary: #{$border-primary-dark};
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,21 +46,11 @@ $radius-sm: calc($radius - 4px);
     --background: #{$background-dark};
     --foreground: #{$foreground-dark};
     --background-secondary: #{$background-secondary-dark};
-    --color-text-secondary: #{$text-secondary-dark};
-    --color-text-accent: #{$text-accent-dark};
-    --border-color: #{$border-color-dark};
+    --background-tertiary: #{$background-tertiary-dark};
+    --text-secondary: #{$text-secondary-dark};
+    --text-accent: #{$text-accent-dark};
+    --border-primary: #{$border-primary-dark};
   }
-}
-
-/* Add class-based override for explicit dark mode */
-
-.dark {
-  --background: #{$background-dark};
-  --foreground: #{$foreground-dark};
-  --background-secondary: #{$background-secondary-dark};
-  --color-text-secondary: #{$text-secondary-dark};
-  --color-text-accent: #{$text-accent-dark};
-  --border-color: #{$border-color-dark};
 }
 
 /* Base styles */
@@ -55,16 +58,23 @@ $radius-sm: calc($radius - 4px);
 body {
   margin: 0 12px;
   font-family: "Geist";
+  font-size: 15px;
   background-color: var(--background);
   color: var(--foreground);
 }
 
+pre,
+code {
+  font-size: 14px;
+  font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+}
+
 .text-secondary {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .text-accent {
-  color: var(--color-text-accent);
+  color: var(--text-accent);
 }
 
 /* Custom scrollbar styles */

@@ -83,4 +83,17 @@ $color-5: hsl(90, 100%, 63%);
       outline-color: rgb(255, 255, 255);
     }
   }
+
+  [data-theme="dark"] {
+    color: rgb(9 9 11);
+    background-image: linear-gradient(#fff, #fff),
+      linear-gradient(#fff 50%, rgba(255, 255, 255, 0.6) 80%, rgba(0, 0, 0, 0)),
+      linear-gradient(90deg, $color-1, $color-2, $color-3, $color-4, $color-5);
+
+    &:focus-visible {
+      outline: 1px solid rgb(255, 255, 255);
+      outline-offset: 1px;
+      outline-color: rgb(255, 255, 255);
+    }
+  }
 }

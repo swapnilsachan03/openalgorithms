@@ -10,15 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.5",
+    "@monaco-editor/react": "^4.7.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "classnames": "^2.5.1",
-    "generic-ds": "^0.0.8",
+    "dayjs": "^1.11.13",
+    "generic-ds": "^0.0.9",
+    "graphql": "^16.10.0",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.483.0",
+    "lucide-react": "^0.485.0",
     "next-themes": "^0.4.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-icon-cloud": "^4.1.7",
-    "react-router-dom": "^7.4.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.4.1",
+    "react-syntax-highlighter": "^15.6.1",
     "sass": "^1.86.0",
     "zustand": "^5.0.3"
   },
@@ -33,8 +40,8 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "typescript": "~5.8.2",
-    "typescript-eslint": "^8.27.0",
-    "vite": "^6.2.2",
+    "typescript-eslint": "^8.28.0",
+    "vite": "^6.2.3",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
