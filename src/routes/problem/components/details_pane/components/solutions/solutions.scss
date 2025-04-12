@@ -112,7 +112,6 @@
   .solution_content {
     flex: 1;
     overflow-y: auto;
-    margin-bottom: 48px;
 
     h1,
     h2,
@@ -155,8 +154,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-primary);
+    margin-top: 12px;
 
     .like_dislike_container {
       display: flex;
