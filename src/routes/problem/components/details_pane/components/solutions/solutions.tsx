@@ -2,10 +2,15 @@ import { useState } from "react";
 import {
   ThumbsUp,
   ThumbsDown,
-  Search,
   ArrowLeft,
   User,
   Clock,
+  ArrowUp,
+  ArrowDown,
+  ArrowBigUp,
+  ArrowBigDown,
+  Eye,
+  UserCheck,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -17,6 +22,8 @@ import dayjs from "dayjs";
 
 import "./solutions.scss";
 import { useTheme } from "next-themes";
+import { Button, Input } from "generic-ds";
+import Chip from "@/components/ui/chip";
 
 type Props = {
   data: any;
@@ -196,70 +203,87 @@ const Solutions = ({ data, loading }: Props) => {
     return (
       <div className="solution_detail">
         <div className="solution_detail_header">
-          <button className="back_button" onClick={handleBack}>
-            <ArrowLeft size={16} />
-          </button>
-          <h2>{selectedSolution.title}</h2>
+          <Button
+            color="neutral"
+            size="small"
+            variant="outline"
+            style={{ padding: "6px" }}
+            onClick={handleBack}
+          >
+            <ArrowLeft size={14} />
+          </Button>
+
+          <div className="solution_title_container">
+            <h2>{selectedSolution.title}</h2>
+
+            <div className="solution_meta">
+              <Chip icon={<Eye size={13} />} className="chip_small">
+                {selectedSolution.views}
+              </Chip>
+
+              <a
+                href={`/u/${selectedSolution.user.id}`}
+                className="solution_author"
+              >
+                <Chip icon={<UserCheck size={13} />} className="chip_small">
+                  {selectedSolution.user.name}
+                </Chip>
+              </a>
+
+              <Chip icon={<Clock size={13} />}>
+                {dayjs(selectedSolution.createdAt).format("MMM DD, YYYY")}
+              </Chip>
+            </div>
+          </div>
         </div>
 
-        <div className="solution_detail_main">
-          <div className="author_info">
-            <User size={14} />
-            <span className="author_name">@{selectedSolution.user.name}</span>
-            <Clock size={14} />
-            <span>
-              {dayjs(selectedSolution.createdAt).format("MMM DD, YYYY")}
-            </span>
-          </div>
+        <div className="solution_content">
+          <ReactMarkdown
+            components={{
+              code({
+                node,
+                inline,
+                className,
+                children,
+                ...props
+              }: {
+                node?: any;
+                inline?: boolean;
+                className?: string;
+                children?: React.ReactNode;
+              }) {
+                const match = /language-(\w+)/.exec(className || "");
+                const language = match ? match[1] : "";
 
-          <div className="solution_content">
-            <ReactMarkdown
-              components={{
-                code({
-                  node,
-                  inline,
-                  className,
-                  children,
-                  ...props
-                }: {
-                  node?: any;
-                  inline?: boolean;
-                  className?: string;
-                  children?: React.ReactNode;
-                }) {
-                  const match = /language-(\w+)/.exec(className || "");
-                  const language = match ? match[1] : "";
-
-                  return !inline && language ? (
-                    <div className="code-block">
-                      <div className="code-header">{language}</div>
-                      <SyntaxHighlighter
-                        style={theme === "dark" ? materialDark : materialLight}
-                        customStyle={{ margin: 0 }}
-                        codeTagProps={{
-                          style: {
-                            fontFamily: "JetBrains Mono",
-                            fontSize: "13px",
-                          },
-                        }}
-                        language={language}
-                        PreTag="div"
-                        {...props}
-                      >
-                        {String(children).replace(/\n$/, "")}
-                      </SyntaxHighlighter>
-                    </div>
-                  ) : (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            >
-              {selectedSolution.content}
-            </ReactMarkdown>
-          </div>
+                return !inline && language ? (
+                  <div className="code-block">
+                    <div className="code-header">{language}</div>
+                    <SyntaxHighlighter
+                      style={theme === "dark" ? materialDark : materialLight}
+                      customStyle={{ margin: 0 }}
+                      codeTagProps={{
+                        style: {
+                          fontFamily: "JetBrains Mono",
+                          fontSize: "13px",
+                        },
+                      }}
+                      language={language}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                  </div>
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
+            {selectedSolution.content}
+          </ReactMarkdown>
         </div>
 
         <div className="solution_footer">
@@ -271,6 +295,7 @@ const Solutions = ({ data, loading }: Props) => {
               <ThumbsUp size={14} />
               <span>{selectedSolution.likes + (userLiked ? 1 : 0)}</span>
             </button>
+
             <button
               className={`stat_button ${userDisliked ? "button_disliked" : ""}`}
               onClick={handleDislike}
@@ -287,50 +312,48 @@ const Solutions = ({ data, loading }: Props) => {
   return (
     <div className="solutions">
       <div className="solutions_header">
-        <div className="search_container">
-          <Search size={16} className="search_icon" />
-          <input
-            type="text"
-            placeholder="Search solutions..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="search_input"
-          />
-        </div>
+        <Input
+          type="text"
+          placeholder="Search for a solution"
+          color="cyan"
+          variant="outline"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
 
-        <button className="add_solution_button">Share your solution</button>
+        <Button color="cyan">Share your solution</Button>
       </div>
 
       <div className="solutions_list">
         {filteredSolutions.map(solution => (
-          <div
-            key={solution.id}
-            className="solution_card"
-            onClick={() => handleSolutionClick(solution)}
-          >
-            <div className="solution_main">
-              <h3 className="solution_title">{solution.title}</h3>
-              <div className="solution_meta">
-                <span className="solution_author">@{solution.user.name}</span>
-                <span>{solution.views} views</span>
-              </div>
+          <div key={solution.id} className="solution_card">
+            <a href={`/u/${solution.user.id}`} className="solution_author">
+              {solution.user.name}
+            </a>
+
+            <h3
+              className="solution_title"
+              onClick={() => handleSolutionClick(solution)}
+            >
+              {solution.title}
+            </h3>
+
+            <div className="solution_meta">
+              <Chip icon={<Eye size={13} />} className="chip_small">
+                {solution.views}
+              </Chip>
+
+              <Chip icon={<ArrowBigUp size={15} />} className="chip_small">
+                {solution.likes}
+              </Chip>
+
+              <Chip icon={<ArrowBigDown size={15} />} className="chip_small">
+                {solution.dislikes}
+              </Chip>
             </div>
 
-            <div className="solution_stats">
-              <button
-                className="stat_button"
-                onClick={e => e.stopPropagation()}
-              >
-                <ThumbsUp size={14} />
-                <span>{solution.likes}</span>
-              </button>
-              <button
-                className="stat_button"
-                onClick={e => e.stopPropagation()}
-              >
-                <ThumbsDown size={14} />
-                <span>{solution.dislikes}</span>
-              </button>
+            <div className="user_avatar">
+              <UserCheck size={16} />
             </div>
           </div>
         ))}
