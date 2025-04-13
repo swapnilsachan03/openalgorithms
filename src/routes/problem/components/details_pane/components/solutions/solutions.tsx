@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ThumbsUp,
   ThumbsDown,
   ArrowLeft,
-  User,
   Clock,
-  ArrowUp,
-  ArrowDown,
   ArrowBigUp,
   ArrowBigDown,
   Eye,
@@ -21,7 +18,6 @@ import {
 import dayjs from "dayjs";
 
 import "./solutions.scss";
-import { useTheme } from "next-themes";
 import { Button, Input } from "generic-ds";
 import Chip from "@/components/ui/chip";
 
@@ -169,7 +165,19 @@ const Solutions = ({ data, loading }: Props) => {
   >(null);
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
-  const { theme } = useTheme();
+
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const handleSolutionClick = (solution: (typeof dummySolutions)[0]) => {
     setSelectedSolution(solution);
@@ -259,7 +267,7 @@ const Solutions = ({ data, loading }: Props) => {
                   <div className="code-block">
                     <div className="code-header">{language}</div>
                     <SyntaxHighlighter
-                      style={theme === "dark" ? materialDark : materialLight}
+                      style={prefersDarkTheme ? materialDark : materialLight}
                       customStyle={{ margin: 0 }}
                       codeTagProps={{
                         style: {

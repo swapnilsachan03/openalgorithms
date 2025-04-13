@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTheme } from "next-themes";
 import {
   Cloud,
   fetchSimpleIcons,
@@ -69,7 +68,18 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
   }, []);
 
   const [data, setData] = useState<IconData | null>(null);
-  const { theme } = useTheme();
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     fetchSimpleIcons({ slugs: iconSlugs }).then(setData);
@@ -79,9 +89,9 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     if (!data) return null;
 
     return Object.values(data.simpleIcons).map(icon =>
-      renderCustomIcon(icon, theme || "light")
+      renderCustomIcon(icon, prefersDarkTheme ? "dark" : "light")
     );
-  }, [data, theme]);
+  }, [data, prefersDarkTheme]);
 
   return isClient ? (
     // @ts-ignore
