@@ -17,14 +17,14 @@ type Props = {};
 const Navbar = (props: Props) => {
   return (
     <nav className="navbar">
-      <Link to="/" className="navbar__logo">
+      <Link to="/" className="navbar_logo">
         OpenAlgorithms
       </Link>
 
-      <div className="navbar__container">
-        <div className="navbar__links">
+      <div className="navbar_container">
+        <div className="navbar_links">
           {_.map(navbarLinks, link => (
-            <Link key={link.href} to={link.href} className="navbar__link">
+            <Link key={link.href} to={link.href} className="navbar_link">
               {link.label}
             </Link>
           ))}

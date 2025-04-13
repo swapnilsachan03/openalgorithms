@@ -40,21 +40,3 @@
     background: var(--background-secondary);
   }
 }
-
-.submit_button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
-  font-size: 13px;
-  border-radius: 6px;
-  background: #22c55e;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}

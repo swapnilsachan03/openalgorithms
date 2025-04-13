@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import _ from "lodash";
+import React, { useEffect, useState } from "react";
+import classNames from "classnames";
 
 import "./pane_header.scss";
-import _ from "lodash";
 
 type Tab = {
   key: string;
@@ -11,18 +12,22 @@ type Tab = {
 
 type Props = {
   tabs: Tab[];
-  defaultActiveTab?: string;
+  selectedTab?: string;
 };
 
-const PaneHeader = ({ tabs, defaultActiveTab }: Props) => {
-  const [activeTab, setActiveTab] = useState(defaultActiveTab || tabs[0]?.key);
+const PaneHeader = ({ tabs, selectedTab }: Props) => {
+  const [activeTab, setActiveTab] = useState(selectedTab);
+
+  useEffect(() => {
+    setActiveTab(selectedTab);
+  }, [selectedTab]);
 
   return (
     <div className="pane-header">
       {tabs.map((tab, index) => (
         <React.Fragment key={tab.key}>
           <div
-            className={`tab ${activeTab === tab.key ? "active" : ""}`}
+            className={classNames("tab", { ["active"]: activeTab === tab.key })}
             onClick={() => {
               setActiveTab(tab.key);
               tab.onTabClick();

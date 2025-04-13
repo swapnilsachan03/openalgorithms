@@ -29,16 +29,6 @@ $radius-sm: calc($radius - 4px);
   --text-secondary: #{$text-secondary-light};
   --text-accent: #{$text-accent-light};
   --border-primary: #{$border-primary-light};
-
-  [data-theme="dark"] {
-    --background: #{$background-dark};
-    --foreground: #{$foreground-dark};
-    --background-secondary: #{$background-secondary-dark};
-    --background-tertiary: #{$background-tertiary-dark};
-    --text-secondary: #{$text-secondary-dark};
-    --text-accent: #{$text-accent-dark};
-    --border-primary: #{$border-primary-dark};
-  }
 }
 
 @media (prefers-color-scheme: dark) {

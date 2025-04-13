@@ -54,7 +54,7 @@ const Description = ({ data, loading }: Props) => {
 
         <div className="problem_examples">
           {problem?.examples?.map((example: any, index: number) => (
-            <div>
+            <div key={example.id}>
               <div className="example_heading">Example {index + 1}:</div>
 
               <div key={example.id} className="example_fields_container">
@@ -78,8 +78,8 @@ const Description = ({ data, loading }: Props) => {
         </div>
 
         <div className="problem_topics">
-          {problem?.hints?.map((hint: any) => (
-            <Collapsible>
+          {problem?.hints?.map((hint: any, index: number) => (
+            <Collapsible key={index}>
               <Collapsible.Trigger className="hint_trigger">
                 <Tag size={15} />
                 Topics
@@ -94,7 +94,7 @@ const Description = ({ data, loading }: Props) => {
 
         <div className="problem_hints">
           {problem?.hints?.map((hint: any, index: number) => (
-            <Collapsible>
+            <Collapsible key={index}>
               <Collapsible.Trigger className="hint_trigger">
                 <Lightbulb size={16} />
                 Hint {index + 1}
