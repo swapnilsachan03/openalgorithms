@@ -58,27 +58,13 @@
     }
   }
 
-  &_topics {
-    .hint_trigger {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 10px;
-      border-top: 1px solid var(--border-primary);
-      cursor: pointer;
-    }
-
-    .hint_content {
-      margin-left: 38px;
-    }
-  }
-
+  &_topics,
   &_hints {
     .hint_trigger {
       display: flex;
       gap: 12px;
       align-items: center;
-      padding: 10px 10px;
+      padding: 10px;
       border-top: 1px solid var(--border-primary);
       cursor: pointer;
     }
