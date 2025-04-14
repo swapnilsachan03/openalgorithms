@@ -15,7 +15,7 @@ import _ from "lodash";
 
 type Props = {
   loading: boolean;
-  onRemix: (code: string, language: string) => void;
+  onCopyToEditor: (code: string, language: string) => void;
 };
 
 // Dummy submissions data
@@ -63,7 +63,7 @@ const dummySubmissions = [
   },
 ];
 
-const Submissions = ({ loading, onRemix }: Props) => {
+const Submissions = ({ loading, onCopyToEditor }: Props) => {
   const [selectedSubmission, setSelectedSubmission] = useState<
     (typeof dummySubmissions)[0] | null
   >(null);
@@ -88,9 +88,9 @@ const Submissions = ({ loading, onRemix }: Props) => {
     setSelectedSubmission(null);
   };
 
-  const handleRemix = () => {
+  const handleCopyToEditor = () => {
     if (selectedSubmission) {
-      onRemix(selectedSubmission.code, selectedSubmission.language);
+      onCopyToEditor(selectedSubmission.code, selectedSubmission.language);
       setSelectedSubmission(null);
     }
   };
@@ -162,6 +162,7 @@ const Submissions = ({ loading, onRemix }: Props) => {
               return !inline && language ? (
                 <div className="code-block">
                   <div className="code-header">{language}</div>
+
                   <SyntaxHighlighter
                     style={prefersDarkTheme ? materialDark : materialLight}
                     customStyle={{ margin: 0 }}
@@ -190,7 +191,11 @@ const Submissions = ({ loading, onRemix }: Props) => {
         </ReactMarkdown>
 
         <div className="copy_to_editor">
-          <Button color="cyan" onClick={handleRemix} icon={<Copy size={14} />}>
+          <Button
+            color="cyan"
+            onClick={handleCopyToEditor}
+            icon={<Copy size={14} />}
+          >
             Copy to editor
           </Button>
         </div>

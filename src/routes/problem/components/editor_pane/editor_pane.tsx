@@ -31,7 +31,7 @@ const EditorPane = ({ loading }: Props) => {
 
   const tabs = getPaneTabs(setSelectedTab);
 
-  const handleRemix = (code: string, language: string) => {
+  const handleCopyToEditor = (code: string, language: string) => {
     setCurrentCode(code);
     setCurrentLanguage(language);
     setSelectedTab("code");
@@ -48,7 +48,9 @@ const EditorPane = ({ loading }: Props) => {
           />
         );
       case "submissions":
-        return <Submissions loading={loading} onRemix={handleRemix} />;
+        return (
+          <Submissions loading={loading} onCopyToEditor={handleCopyToEditor} />
+        );
       default:
         return null;
     }
