@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import Editor from "@monaco-editor/react";
 import { Play } from "lucide-react";
+import { Button } from "generic-ds";
 
 import "./code.scss";
-import { useTheme } from "next-themes";
+
+import Editor from "@monaco-editor/react";
 
 type Props = {
   loading: boolean;
@@ -19,7 +20,19 @@ const initialCode = `def twoSum(nums: List[int], target: int) -> List[int]:
 const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
   const [language, setLanguage] = useState(defaultLanguage || "python");
   const [code, setCode] = useState(defaultCode || initialCode);
-  const { theme } = useTheme();
+
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     if (defaultCode && defaultLanguage) {
@@ -49,7 +62,7 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
           language={language}
           value={code}
           onChange={handleCodeChange}
-          theme={theme == "dark" ? "vs-dark" : "vs-light"}
+          theme={prefersDarkTheme ? "vs-dark" : "light"}
           options={{
             fontFamily: "JetBrains Mono, monospace",
             fontLigatures: true,
@@ -59,7 +72,7 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
             lineNumbers: "on",
             scrollBeyondLastLine: false,
             automaticLayout: true,
-            tabSize: 4,
+            tabSize: 2,
             wordWrap: "on",
             wrappingStrategy: "advanced",
           }}
@@ -79,10 +92,9 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
           <option value="cpp">C++</option>
         </select>
 
-        <button className="submit_button" onClick={handleSubmit}>
-          <Play size={14} />
+        <Button color="cyan" icon={<Play size={14} />} onClick={handleSubmit}>
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );

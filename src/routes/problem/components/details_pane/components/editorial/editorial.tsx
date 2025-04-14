@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { ThumbsUp, ThumbsDown, Eye, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { ThumbsUp, ThumbsDown, Eye, Calendar } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
-  coyWithoutShadows,
   materialDark,
+  materialLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import dayjs from "dayjs";
 
 import "./editorial.scss";
 import Chip from "@/components/ui/chip";
-import { useTheme } from "next-themes";
 
 type Props = {
   data: any;
@@ -18,14 +17,21 @@ type Props = {
 };
 
 const Editorial = ({ data, loading }: Props) => {
-  const { theme, setTheme } = useTheme();
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
   useEffect(() => {
-    // const storedTheme = localStorage.getItem("theme") || "system";
-    setTheme("dark");
-  }, [setTheme]);
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const handleLike = () => {
     if (userDisliked) setUserDisliked(false);
@@ -130,9 +136,7 @@ The hash table approach is more efficient because we only need to traverse the a
                   <div className="code-block">
                     <div className="code-header">{language}</div>
                     <SyntaxHighlighter
-                      style={
-                        theme === "dark" ? materialDark : coyWithoutShadows
-                      }
+                      style={prefersDarkTheme ? materialDark : materialLight}
                       customStyle={{ margin: 0 }}
                       codeTagProps={{
                         style: {

@@ -1,13 +1,21 @@
-import { useState } from "react";
-import { ArrowLeft, Clock, User, Copy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Clock, Copy, Timer, ChartBar, Code } from "lucide-react";
 import dayjs from "dayjs";
-import Editor from "@monaco-editor/react";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {
+  materialDark,
+  materialLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import "./submissions.scss";
+import { Button } from "generic-ds";
+import Chip from "@/components/ui/chip";
+import _ from "lodash";
 
 type Props = {
   loading: boolean;
-  onRemix: (code: string, language: string) => void;
+  onCopyToEditor: (code: string, language: string) => void;
 };
 
 // Dummy submissions data
@@ -55,10 +63,22 @@ const dummySubmissions = [
   },
 ];
 
-const Submissions = ({ loading, onRemix }: Props) => {
+const Submissions = ({ loading, onCopyToEditor }: Props) => {
   const [selectedSubmission, setSelectedSubmission] = useState<
     (typeof dummySubmissions)[0] | null
   >(null);
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const handleSubmissionClick = (submission: (typeof dummySubmissions)[0]) => {
     setSelectedSubmission(submission);
@@ -68,9 +88,9 @@ const Submissions = ({ loading, onRemix }: Props) => {
     setSelectedSubmission(null);
   };
 
-  const handleRemix = () => {
+  const handleCopyToEditor = () => {
     if (selectedSubmission) {
-      onRemix(selectedSubmission.code, selectedSubmission.language);
+      onCopyToEditor(selectedSubmission.code, selectedSubmission.language);
       setSelectedSubmission(null);
     }
   };
@@ -80,58 +100,104 @@ const Submissions = ({ loading, onRemix }: Props) => {
   }
 
   if (selectedSubmission) {
+    const submissionContent = `\`\`\`${selectedSubmission.language}\n${selectedSubmission.code}\n\`\`\``;
+
     return (
       <div className="submission_detail">
         <div className="submission_detail_header">
-          <button className="back_button" onClick={handleBack}>
-            <ArrowLeft size={16} />
-          </button>
-          <div className="submission_info">
-            <div className="submission_meta">
-              <span
-                className={`status status_${selectedSubmission.status
-                  .toLowerCase()
-                  .replace(" ", "_")}`}
-              >
-                {selectedSubmission.status}
-              </span>
-              <span>{selectedSubmission.runtime}</span>
-              <span>{selectedSubmission.memory}</span>
-            </div>
-            <div className="submission_user">
-              <User size={14} />
-              <span className="username">@{selectedSubmission.user.name}</span>
-              <Clock size={14} />
-              <span>
+          <Button
+            color="neutral"
+            size="small"
+            variant="outline"
+            style={{ padding: "6px" }}
+            onClick={handleBack}
+          >
+            <ArrowLeft size={14} />
+          </Button>
+
+          <div className="submission_detail_meta">
+            <span
+              className={`status status_${selectedSubmission.status
+                .toLowerCase()
+                .replace(" ", "_")}`}
+            >
+              {selectedSubmission.status}
+            </span>
+
+            <div className="submission_detail_stats">
+              <Chip icon={<Timer size={13} />}>
+                {selectedSubmission.runtime}
+              </Chip>
+
+              <Chip icon={<ChartBar size={13} />}>
+                {selectedSubmission.memory}
+              </Chip>
+
+              <Chip icon={<Clock size={13} />}>
                 {dayjs(selectedSubmission.timestamp).format(
                   "MMM DD, YYYY HH:mm"
                 )}
-              </span>
+              </Chip>
             </div>
           </div>
-          <button className="remix_button" onClick={handleRemix}>
-            <Copy size={14} />
-            Remix
-          </button>
         </div>
 
-        <div className="submission_code">
-          <Editor
-            height="100%"
-            defaultLanguage={selectedSubmission.language}
-            value={selectedSubmission.code}
-            theme="vs-dark"
-            options={{
-              readOnly: true,
-              minimap: { enabled: false },
-              fontSize: 14,
-              lineNumbers: "on",
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              tabSize: 4,
-              wordWrap: "on",
-            }}
-          />
+        <ReactMarkdown
+          components={{
+            code({
+              node,
+              inline,
+              className,
+              children,
+              ...props
+            }: {
+              node?: any;
+              inline?: boolean;
+              className?: string;
+              children?: React.ReactNode;
+            }) {
+              const match = /language-(\w+)/.exec(className || "");
+              const language = match ? match[1] : "";
+
+              return !inline && language ? (
+                <div className="code-block">
+                  <div className="code-header">{language}</div>
+
+                  <SyntaxHighlighter
+                    style={prefersDarkTheme ? materialDark : materialLight}
+                    customStyle={{ margin: 0 }}
+                    codeTagProps={{
+                      style: {
+                        fontFamily: "JetBrains Mono",
+                        fontSize: "13px",
+                      },
+                    }}
+                    language={language}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, "")}
+                  </SyntaxHighlighter>
+                </div>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {submissionContent}
+        </ReactMarkdown>
+
+        <div className="copy_to_editor">
+          <Button
+            color="cyan"
+            onClick={handleCopyToEditor}
+            icon={<Copy size={14} />}
+          >
+            Copy to editor
+          </Button>
         </div>
       </div>
     );
@@ -149,20 +215,25 @@ const Submissions = ({ loading, onRemix }: Props) => {
             <div className="submission_card_main">
               <div className="submission_card_info">
                 <span
-                  className={`status status_${submission.status
+                  className={`status_small status_${submission.status
                     .toLowerCase()
                     .replace(" ", "_")}`}
                 >
                   {submission.status}
                 </span>
-                <span>{submission.runtime}</span>
-                <span>{submission.memory}</span>
-              </div>
-              <div className="submission_card_meta">
-                <span className="language">{submission.language}</span>
+
                 <span>
                   {dayjs(submission.timestamp).format("MMM DD, YYYY HH:mm")}
                 </span>
+              </div>
+
+              <div className="submission_card_meta">
+                <Chip icon={<Code size={13} />}>
+                  {_.capitalize(submission.language)}
+                </Chip>
+
+                <Chip icon={<Timer size={13} />}>{submission.runtime}</Chip>
+                <Chip icon={<ChartBar size={13} />}>{submission.memory}</Chip>
               </div>
             </div>
           </div>
