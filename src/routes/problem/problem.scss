@@ -4,11 +4,11 @@
   height: calc(100vh - 60px);
   gap: 8px;
   padding-bottom: 8px;
-  background-color: var(--background);
+  background-color: var(--background-secondary);
 }
 
 .problem_details_pane {
-  background-color: var(--background-secondary);
+  background-color: var(--background);
   border: 1px solid var(--border-primary);
   border-radius: 8px;
   height: 100%;
@@ -16,7 +16,7 @@
 }
 
 .editor_pane {
-  background-color: var(--background-secondary);
+  background-color: var(--background);
   border-radius: 8px;
   border: 1px solid var(--border-primary);
   height: 100%;
@@ -24,7 +24,7 @@
 }
 
 .judging_pane {
-  background-color: var(--background-secondary);
+  background-color: var(--background);
   border-radius: 8px;
   border: 1px solid var(--border-primary);
   height: 100%;

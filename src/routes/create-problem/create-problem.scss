@@ -1,0 +1,98 @@
+.create-problem {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 32px;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 32px;
+  }
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    gap: 52px;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--foreground);
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .group-subheader {
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .markdown-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+
+    .w-md-editor {
+      background: var(--background-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+    }
+
+    .w-md-editor-toolbar {
+      border-bottom: 1px solid var(--border-primary);
+      background: var(--background-secondary);
+    }
+
+    .w-md-editor-preview {
+      box-shadow: inset 1px 0 0 0 var(--border-primary);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

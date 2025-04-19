@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { Button, Select } from "generic-ds";
+import Editor, { type Monaco } from "@monaco-editor/react";
 
 import "./code.scss";
-
-import Editor from "@monaco-editor/react";
+import VSCDarkCustom from "@/themes/vsc-dark-custom.json";
 
 type Props = {
   loading: boolean;
@@ -53,6 +53,23 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
     return <div className="code">Loading...</div>;
   }
 
+  const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+    // Define custom dark theme
+    monaco.editor.defineTheme("custom-dark", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [],
+      colors: {
+        "editor.background": "#141414",
+      },
+    });
+
+    // Set the theme
+    if (prefersDarkTheme) {
+      monaco.editor.setTheme("custom-dark");
+    }
+  };
+
   return (
     <div className="code">
       <div className="code_editor">
@@ -76,6 +93,7 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
             wordWrap: "on",
             wrappingStrategy: "advanced",
           }}
+          onMount={handleEditorDidMount}
         />
       </div>
 
