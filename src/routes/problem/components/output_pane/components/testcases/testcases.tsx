@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
+import { Button } from "generic-ds";
+
 import "./testcases.scss";
 
 type Props = {
@@ -34,14 +36,15 @@ const Testcases = ({ loading }: Props) => {
       <div className="input_section">
         <div className="section_header">
           <h3>Test Case</h3>
-          <button
-            className="run_button"
+          <Button
+            size="medium"
+            color="sky"
             onClick={handleRun}
             disabled={isRunning}
           >
             <Play size={14} />
             Run
-          </button>
+          </Button>
         </div>
         <textarea
           value={customInput}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Play } from "lucide-react";
-import { Button } from "generic-ds";
+import { Check } from "lucide-react";
+import { Button, Select } from "generic-ds";
 
 import "./code.scss";
 
@@ -80,19 +80,23 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
       </div>
 
       <div className="code_toolbar">
-        <select
+        <Select
           value={language}
-          onChange={e => setLanguage(e.target.value)}
-          className="language_select"
-        >
-          <option value="python">Python</option>
-          <option value="javascript">JavaScript</option>
-          <option value="typescript">TypeScript</option>
-          <option value="java">Java</option>
-          <option value="cpp">C++</option>
-        </select>
+          onChange={lang => setLanguage(lang)}
+          variant="outline"
+          color="zinc"
+          options={[
+            { value: "python", label: "Python" },
+            { value: "javascript", label: "JavaScript" },
+            { value: "typescript", label: "TypeScript" },
+            { value: "java", label: "Java" },
+            { value: "cpp", label: "C++" },
+          ]}
+          placeholder="Select Language"
+          direction="top"
+        />
 
-        <Button color="cyan" icon={<Play size={14} />} onClick={handleSubmit}>
+        <Button color="green" icon={<Check size={14} />} onClick={handleSubmit}>
           Submit
         </Button>
       </div>

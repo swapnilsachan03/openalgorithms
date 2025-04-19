@@ -9,8 +9,7 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import "./submissions.scss";
-import { Button } from "generic-ds";
-import Chip from "@/components/ui/chip";
+import { Chip, Button } from "generic-ds";
 import _ from "lodash";
 
 type Props = {
@@ -125,15 +124,15 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
             </span>
 
             <div className="submission_detail_stats">
-              <Chip icon={<Timer size={13} />}>
+              <Chip icon={<Timer size={13} />} size="small">
                 {selectedSubmission.runtime}
               </Chip>
 
-              <Chip icon={<ChartBar size={13} />}>
+              <Chip icon={<ChartBar size={13} />} size="small">
                 {selectedSubmission.memory}
               </Chip>
 
-              <Chip icon={<Clock size={13} />}>
+              <Chip icon={<Clock size={13} />} size="small">
                 {dayjs(selectedSubmission.timestamp).format(
                   "MMM DD, YYYY HH:mm"
                 )}
@@ -228,12 +227,17 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
               </div>
 
               <div className="submission_card_meta">
-                <Chip icon={<Code size={13} />}>
+                <Chip icon={<Code size={13} />} size="small">
                   {_.capitalize(submission.language)}
                 </Chip>
 
-                <Chip icon={<Timer size={13} />}>{submission.runtime}</Chip>
-                <Chip icon={<ChartBar size={13} />}>{submission.memory}</Chip>
+                <Chip icon={<Timer size={13} />} size="small">
+                  {submission.runtime}
+                </Chip>
+
+                <Chip icon={<ChartBar size={13} />} size="small">
+                  {submission.memory}
+                </Chip>
               </div>
             </div>
           </div>

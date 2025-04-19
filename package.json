@@ -15,7 +15,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "generic-ds": "^0.0.9",
+    "generic-ds": "^0.1.5",
     "graphql": "^16.10.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.488.0",

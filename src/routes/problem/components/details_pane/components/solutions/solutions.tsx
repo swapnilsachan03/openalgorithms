@@ -8,7 +8,9 @@ import {
   ArrowBigDown,
   Eye,
   UserCheck,
+  Search,
 } from "lucide-react";
+import { Chip, Button, Input, IconButton, Avatar } from "generic-ds";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -18,8 +20,6 @@ import {
 import dayjs from "dayjs";
 
 import "./solutions.scss";
-import { Button, Input } from "generic-ds";
-import Chip from "@/components/ui/chip";
 
 type Props = {
   data: any;
@@ -211,21 +211,20 @@ const Solutions = ({ data, loading }: Props) => {
     return (
       <div className="solution_detail">
         <div className="solution_detail_header">
-          <Button
+          <IconButton
             color="neutral"
             size="small"
             variant="outline"
-            style={{ padding: "6px" }}
+            icon={<ArrowLeft size={14} />}
+            ariaLabel="Back"
             onClick={handleBack}
-          >
-            <ArrowLeft size={14} />
-          </Button>
+          />
 
           <div className="solution_title_container">
             <h2>{selectedSolution.title}</h2>
 
             <div className="solution_meta">
-              <Chip icon={<Eye size={13} />} className="chip_small">
+              <Chip icon={<Eye size={13} />} size="small">
                 {selectedSolution.views}
               </Chip>
 
@@ -233,12 +232,12 @@ const Solutions = ({ data, loading }: Props) => {
                 href={`/u/${selectedSolution.user.id}`}
                 className="solution_author"
               >
-                <Chip icon={<UserCheck size={13} />} className="chip_small">
+                <Chip icon={<UserCheck size={13} />} size="small">
                   {selectedSolution.user.name}
                 </Chip>
               </a>
 
-              <Chip icon={<Clock size={13} />}>
+              <Chip icon={<Clock size={13} />} size="small">
                 {dayjs(selectedSolution.createdAt).format("MMM DD, YYYY")}
               </Chip>
             </div>
@@ -320,16 +319,19 @@ const Solutions = ({ data, loading }: Props) => {
   return (
     <div className="solutions">
       <div className="solutions_header">
-        <Input
-          type="text"
-          placeholder="Search for a solution"
-          color="cyan"
-          variant="outline"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
+        <div className="search_container">
+          <Input
+            type="text"
+            placeholder="Search for a solution"
+            color="sky"
+            variant="outline"
+            icon={<Search size={16} />}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
 
-        <Button color="cyan">Share your solution</Button>
+        <Button color="sky">Share your solution</Button>
       </div>
 
       <div className="solutions_list">
@@ -347,21 +349,21 @@ const Solutions = ({ data, loading }: Props) => {
             </h3>
 
             <div className="solution_meta">
-              <Chip icon={<Eye size={13} />} className="chip_small">
+              <Chip icon={<Eye size={13} />} size="small">
                 {solution.views}
               </Chip>
 
-              <Chip icon={<ArrowBigUp size={15} />} className="chip_small">
+              <Chip icon={<ArrowBigUp size={15} />} size="small">
                 {solution.likes}
               </Chip>
 
-              <Chip icon={<ArrowBigDown size={15} />} className="chip_small">
+              <Chip icon={<ArrowBigDown size={15} />} size="small">
                 {solution.dislikes}
               </Chip>
             </div>
 
-            <div className="user_avatar">
-              <UserCheck size={16} />
+            <div className="avatar_container">
+              <Avatar name={solution.user.name} size="x-small" randomizeColor />
             </div>
           </div>
         ))}

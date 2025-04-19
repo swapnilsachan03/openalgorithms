@@ -5,6 +5,10 @@
     align-items: center;
     margin-bottom: 16px;
     gap: 12px;
+
+    .search_container {
+      flex: 1;
+    }
   }
 
   &_list {
@@ -59,6 +63,7 @@
   &_meta {
     display: flex;
     gap: 8px;
+    margin-top: 2px;
   }
 
   &_content {
@@ -100,23 +105,10 @@
   }
 }
 
-.user_avatar {
+.avatar_container {
   position: absolute;
-  top: 12px;
+  top: 8px;
   left: -40px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--background-secondary);
-  border: 1px solid var(--border-primary);
-}
-
-.chip_small {
-  gap: 4px;
 }
 
 .code-block {
