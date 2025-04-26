@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { Button } from "generic-ds";
 import classNames from "classnames";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
 import "./markdown-editor.scss";
 
@@ -70,9 +72,9 @@ const toolbar: ToolbarButton[] = [
     icon: <FileCode size={14} />,
     label: "Code Block",
     action: (text: string) => ({
-      text: `\`\`\`\n${text}\n\`\`\``,
-      selectionStart: 4,
-      selectionEnd: text.length + 4,
+      text: `\`\`\`cpp\n${text}\n\`\`\``,
+      selectionStart: 7,
+      selectionEnd: text.length + 7,
     }),
   },
   {
@@ -231,6 +233,29 @@ export default function MarkdownEditor({
             className="editor-textarea"
             placeholder="Write your markdown here..."
             spellCheck={false}
+            onKeyDown={e => {
+              if (e.key === "Enter" && textareaRef) {
+                const { selectionStart } = textareaRef;
+                const textBefore = content.slice(0, selectionStart);
+                const line = textBefore.split("\n").pop() || "";
+                const match = line.match(/^(\s*([-*+]|\d+\.)\s+)/);
+                if (match) {
+                  e.preventDefault();
+                  const prefix = match[1];
+                  const newContent =
+                    content.slice(0, selectionStart) +
+                    "\n" +
+                    prefix +
+                    content.slice(textareaRef.selectionEnd);
+                  handleChange(newContent);
+                  // set cursor after the prefix
+                  setTimeout(() => {
+                    const pos = selectionStart + 1 + prefix.length;
+                    textareaRef.setSelectionRange(pos, pos);
+                  }, 0);
+                }
+              }
+            }}
           />
         </div>
 
@@ -281,6 +306,7 @@ export default function MarkdownEditor({
                 );
               },
             }}
+            remarkPlugins={[remarkGfm, remarkBreaks]}
           >
             {content}
           </ReactMarkdown>
