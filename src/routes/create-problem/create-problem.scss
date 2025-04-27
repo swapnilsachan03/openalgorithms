@@ -20,13 +20,18 @@
     flex-direction: column;
     gap: 20px;
     padding-bottom: 48px;
-    border-bottom: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--border-primary);
 
     h2 {
       font-size: 20px;
       font-weight: 600;
       color: var(--foreground);
     }
+  }
+
+  .form-section-without-border {
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .section-header {
@@ -69,26 +74,6 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-  }
-
-  .markdown-wrapper {
-    border-radius: 8px;
-    overflow: hidden;
-
-    .w-md-editor {
-      background: var(--background-primary);
-      border: 1px solid var(--border-primary);
-      border-radius: 8px;
-    }
-
-    .w-md-editor-toolbar {
-      border-bottom: 1px solid var(--border-primary);
-      background: var(--background-secondary);
-    }
-
-    .w-md-editor-preview {
-      box-shadow: inset 1px 0 0 0 var(--border-primary);
-    }
   }
 
   .form-actions {

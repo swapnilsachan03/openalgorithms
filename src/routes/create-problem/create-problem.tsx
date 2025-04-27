@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
@@ -12,14 +14,16 @@ import {
   PlusCircle,
   X,
   Plus,
+  Globe,
 } from "lucide-react";
 import { Input, Button, Select, TextArea, IconButton } from "generic-ds";
 
-import "./create-problem.scss";
 import { createProblemMutation } from "@/routes/problem/modules/queries";
 import { useIsAdmin } from "@/stores/userStore";
 import { Toast } from "@/lib/toast";
 import MarkdownEditor from "@/components/ui/markdown-editor";
+
+import "./create-problem.scss";
 
 interface Example {
   id: string;
@@ -36,9 +40,10 @@ const difficultyOptions = [
 
 const CreateProblem = () => {
   const navigate = useNavigate();
-  const isAdmin = true; // useIsAdmin(); // Uncomment this line when integrating with the actual user store
+  const isAdmin = useIsAdmin();
   const [createProblem, { loading }] = useMutation(createProblemMutation);
 
+  const [difficulty, setDifficulty] = useState<string>();
   const [description, setDescription] = useState("");
   const [editorial, setEditorial] = useState("");
   const [examples, setExamples] = useState<Example[]>([
@@ -83,12 +88,14 @@ const CreateProblem = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+    const editorialTitle = formData.get("editorialTitle") as string;
 
     try {
       const input = {
         title: formData.get("title"),
+        slug: formData.get("slug"),
         description,
-        difficulty: formData.get("difficulty"),
+        difficulty,
         timeLimitInSeconds: Number(formData.get("timeLimit")),
         memoryLimitInMB: Number(formData.get("memoryLimit")),
         examples: examples.map(({ input, output, explanation }) => ({
@@ -96,14 +103,20 @@ const CreateProblem = () => {
           output,
           explanation,
         })),
-        hints: formData.getAll("hints[]").map(hint => ({ content: hint })),
+        hints: formData.getAll("hints[]"),
         topics: formData.getAll("topics[]"),
-        editorial: {
-          content: editorial,
-        },
+        ...(!_.isEmpty(editorialTitle) && !_.isEmpty(editorial)
+          ? {
+              editorial: {
+                title: editorialTitle,
+                content: editorial,
+              },
+            }
+          : {}),
       };
 
       const result = await createProblem({ variables: { input } });
+
       if (result.data?.createProblem) {
         Toast.success("Problem created successfully");
         navigate(`/problem/${result.data.createProblem.slug}`);
@@ -129,8 +142,22 @@ const CreateProblem = () => {
                 name="title"
                 placeholder="Enter problem title"
                 variant="outline"
-                color="yellow"
+                color="sky"
                 icon={<AlignLeft size={14} />}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-field">
+            <span className="form-label">Slug (for routing)</span>
+            <div className="input-with-icon">
+              <Input
+                name="slug"
+                placeholder="Enter problem slug"
+                variant="outline"
+                color="sky"
+                icon={<Globe size={14} />}
                 required
               />
             </div>
@@ -150,8 +177,10 @@ const CreateProblem = () => {
               <span className="form-label">Difficulty</span>
               <Select
                 options={difficultyOptions}
-                variant="outline"
-                color="yellow"
+                onChange={setDifficulty}
+                value={difficulty}
+                variant="outline-input"
+                color="sky"
               />
             </div>
 
@@ -163,7 +192,7 @@ const CreateProblem = () => {
                   type="number"
                   min="1"
                   variant="outline"
-                  color="yellow"
+                  color="sky"
                   icon={<Timer size={14} />}
                   required
                 />
@@ -178,7 +207,7 @@ const CreateProblem = () => {
                   type="number"
                   min="1"
                   variant="outline"
-                  color="yellow"
+                  color="sky"
                   icon={<Database size={14} />}
                   required
                 />
@@ -191,7 +220,7 @@ const CreateProblem = () => {
           <div className="section-header">
             <h2>Example Test Cases</h2>
 
-            <Button onClick={addExample} color="yellow">
+            <Button onClick={addExample} color="sky">
               <Plus size={14} />
               Add Example
             </Button>
@@ -219,7 +248,7 @@ const CreateProblem = () => {
                     }
                     icon={<Hash size={14} />}
                     variant="outline"
-                    color="yellow"
+                    color="sky"
                     placeholder="Example input"
                     required
                   />
@@ -235,7 +264,7 @@ const CreateProblem = () => {
                       updateExample(example.id, "output", e.target.value)
                     }
                     variant="outline"
-                    color="yellow"
+                    color="sky"
                     icon={<ListChecks size={14} />}
                     placeholder="Example output"
                     required
@@ -251,7 +280,7 @@ const CreateProblem = () => {
                     updateExample(example.id, "explanation", e.target.value)
                   }
                   variant="outline"
-                  color="yellow"
+                  color="sky"
                   placeholder="Explain the example"
                   rows={3}
                 />
@@ -269,7 +298,7 @@ const CreateProblem = () => {
                 name="topics[]"
                 icon={<Tag size={14} />}
                 variant="outline"
-                color="yellow"
+                color="sky"
                 placeholder="Enter topics (comma separated)"
               />
             </div>
@@ -281,7 +310,7 @@ const CreateProblem = () => {
               <TextArea
                 name="hints[]"
                 variant="outline"
-                color="yellow"
+                color="sky"
                 placeholder="Enter hints (one per line)"
                 rows={3}
               />
@@ -289,8 +318,22 @@ const CreateProblem = () => {
           </div>
         </div>
 
-        <div className="form-section">
-          <h2>Editorial</h2>
+        <div className="form-section form-section-without-border">
+          <h2>Editorial (optional)</h2>
+
+          <div className="form-field">
+            <span className="form-label">Editorial Title</span>
+            <div className="input-with-icon">
+              <Input
+                name="editorialTitle"
+                placeholder="Enter editorial title"
+                variant="outline"
+                color="sky"
+                icon={<Lightbulb size={14} />}
+              />
+            </div>
+          </div>
+
           <div className="form-field">
             <span className="form-label">Editorial Content</span>
             <MarkdownEditor
