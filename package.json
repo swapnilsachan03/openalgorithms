@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky && husky install"
   },
   "dependencies": {
     "@apollo/client": "^3.13.7",
@@ -42,6 +43,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.5.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.29.1",
     "vite": "^6.2.6",

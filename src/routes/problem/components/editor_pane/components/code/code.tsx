@@ -4,7 +4,6 @@ import { Button, Select } from "generic-ds";
 import Editor, { type Monaco } from "@monaco-editor/react";
 
 import "./code.scss";
-import VSCDarkCustom from "@/themes/vsc-dark-custom.json";
 
 type Props = {
   loading: boolean;
@@ -46,15 +45,15 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
   };
 
   const handleSubmit = () => {
-    console.log("Submitting code:", { language, code });
+    // console.log("Submitting code:", { language, code });
   };
 
   if (loading) {
     return <div className="code">Loading...</div>;
   }
 
+  // eslint-disable-next-line
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
-    // Define custom dark theme
     monaco.editor.defineTheme("custom-dark", {
       base: "vs-dark",
       inherit: true,
@@ -64,7 +63,6 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
       },
     });
 
-    // Set the theme
     if (prefersDarkTheme) {
       monaco.editor.setTheme("custom-dark");
     }
