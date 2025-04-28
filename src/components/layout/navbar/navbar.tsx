@@ -1,7 +1,7 @@
 import _ from "lodash";
-
 import { Button } from "generic-ds";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import classNames from "classnames";
 
 import "./navbar.scss";
 
@@ -12,11 +12,16 @@ const navbarLinks = [
   { href: "/interviews", label: "Interviews" },
 ];
 
-type Props = {};
+const Navbar = () => {
+  const location = useLocation();
+  const isProblemSolvingPage =
+    location.pathname.startsWith("/problem/") &&
+    !location.pathname.includes("/create");
 
-const Navbar = (props: Props) => {
   return (
-    <nav className="navbar">
+    <nav
+      className={classNames("navbar", { "no-border": isProblemSolvingPage })}
+    >
       <Link to="/" className="navbar_logo">
         OpenAlgorithms
       </Link>

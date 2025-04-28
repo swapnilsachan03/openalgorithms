@@ -39,7 +39,7 @@ const OutputPane = ({ loading }: Props) => {
 
   return (
     <div className="output">
-      <PaneHeader tabs={tabs} defaultActiveTab={selectedTab} />
+      <PaneHeader tabs={tabs} selectedTab={selectedTab} />
       <div className="output_content">{renderPaneContent()}</div>
     </div>
   );

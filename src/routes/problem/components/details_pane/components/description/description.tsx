@@ -2,11 +2,9 @@ import _ from "lodash";
 import { useState } from "react";
 import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb, Star } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { Collapsible, Chip } from "generic-ds";
 
 import "./description.scss";
-
-import Collapsible from "@/components/ui/collapsible";
-import Chip from "@/components/ui/chip";
 
 type Props = {
   data: any;
@@ -33,19 +31,33 @@ const Description = ({ data, loading }: Props) => {
     return <div className="problem">Loading...</div>;
   }
 
+  let chipColor: "neutral" | "green" | "yellow" | "red" = "neutral";
+
+  if (problem?.difficulty === "EASY") chipColor = "green";
+  if (problem?.difficulty === "MEDIUM") chipColor = "yellow";
+  if (problem?.difficulty === "HARD") chipColor = "red";
+
   return (
     <div className="problem">
       <div className="problem_details">
         <h1 className="problem_title">{problem?.title}</h1>
 
         <div className="problem_metadata">
-          <Chip className={`tag_${problem?.difficulty}`}>
+          <Chip color={chipColor} size="small">
             {_.capitalize(problem?.difficulty)}
           </Chip>
 
-          <Chip icon={<Tag size={13} />}>Topics</Chip>
-          <Chip icon={<Lightbulb size={13} />}>Hint</Chip>
-          <Chip icon={<Eye size={13} />}>{problem?.views}</Chip>
+          <Chip icon={<Tag size={13} />} size="small">
+            Topics
+          </Chip>
+
+          <Chip icon={<Lightbulb size={13} />} size="small">
+            Hint
+          </Chip>
+
+          <Chip icon={<Eye size={13} />} size="small">
+            {problem?.views}
+          </Chip>
         </div>
 
         <div className="problem_description">
@@ -80,7 +92,10 @@ const Description = ({ data, loading }: Props) => {
         <div className="problem_topics">
           {problem?.hints?.map((hint: any, index: number) => (
             <Collapsible key={index}>
-              <Collapsible.Trigger className="hint_trigger">
+              <Collapsible.Trigger
+                chevronPosition="right"
+                className="hint_trigger"
+              >
                 <Tag size={15} />
                 Topics
               </Collapsible.Trigger>
@@ -95,7 +110,10 @@ const Description = ({ data, loading }: Props) => {
         <div className="problem_hints">
           {problem?.hints?.map((hint: any, index: number) => (
             <Collapsible key={index}>
-              <Collapsible.Trigger className="hint_trigger">
+              <Collapsible.Trigger
+                className="hint_trigger"
+                chevronPosition="right"
+              >
                 <Lightbulb size={16} />
                 Hint {index + 1}
               </Collapsible.Trigger>

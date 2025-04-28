@@ -9,7 +9,7 @@ import {
 import dayjs from "dayjs";
 
 import "./editorial.scss";
-import Chip from "@/components/ui/chip";
+import { Chip } from "generic-ds";
 
 type Props = {
   data: any;
@@ -107,11 +107,13 @@ The hash table approach is more efficient because we only need to traverse the a
         <h1 className="editorial_title">{editorial.title}</h1>
 
         <div className="editorial_metadata">
-          <Chip icon={<Calendar size={13} />}>
+          <Chip icon={<Calendar size={13} />} size="small">
             {dayjs(editorial.createdAt).format("MMM DD, YYYY")}
           </Chip>
 
-          <Chip icon={<Eye size={13} />}>{editorial.views}</Chip>
+          <Chip icon={<Eye size={13} />} size="small">
+            {editorial.views}
+          </Chip>
         </div>
 
         <div className="editorial_content">

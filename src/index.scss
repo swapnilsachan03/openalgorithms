@@ -1,15 +1,15 @@
-$background-light: #f8f8f8;
+$background-light: #ffffff;
 $foreground-light: #171717;
-$background-secondary-light: #ffffff;
+$background-secondary-light: #f8f8f8;
 $background-tertiary-light: #f2f2f2;
 $text-secondary-light: #737373;
 $text-accent-light: #2ba0b0;
 $border-primary-light: #e5e5e5;
 
-$background-dark: #0d0d0d;
+$background-dark: #141414;
 $foreground-dark: #ededed;
-$background-secondary-dark: #202020;
-$background-tertiary-dark: #3a3a3a;
+$background-secondary-dark: #0d0d0d;
+$background-tertiary-dark: #202020;
 $text-secondary-dark: #b3b3b3;
 $text-accent-dark: #51c0ef;
 $border-primary-dark: #747474;
@@ -51,6 +51,10 @@ body {
   font-size: 15px;
   background-color: var(--background);
   color: var(--foreground);
+}
+
+.problem-page-body {
+  background-color: var(--background-secondary);
 }
 
 pre,

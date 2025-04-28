@@ -16,27 +16,7 @@
     align-items: center;
     padding: 8px;
     border-top: 1px solid var(--border-primary);
-    background-color: var(--background-secondary);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
-  }
-}
-
-.language_select {
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;
-  border: 1px solid var(--border-primary);
-  background: var(--background-tertiary);
-  color: var(--foreground);
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-  }
-
-  option {
-    background: var(--background-secondary);
   }
 }

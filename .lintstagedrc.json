@@ -1,0 +1,6 @@
+{
+  "*.ts": ["prettier --write", "eslint --max-warnings=0"],
+  "*.tsx": ["prettier --write", "eslint --max-warnings=0"],
+  "*.html": ["eslint", "prettier --write"],
+  "*.scss": "prettier --write"
+}
