@@ -1,6 +1,12 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import { ApolloProvider } from "@apollo/client";
+
+import { getApolloClient } from "./lib/apolloClient";
+import { useUserToken } from "./stores/userStore";
+
+import RouteWrapper from "@/components/layout/route_wrapper";
 
 import Navbar from "./components/layout/navbar";
 import Home from "./routes/home/home";
@@ -12,6 +18,8 @@ import Practice from "./routes/practice/practice";
 import Interviews from "./routes/interviews/interviews";
 import Playground from "./routes/playground/playground";
 import CreateProblem from "./routes/create-problem/create-problem";
+import Login from "./routes/login/login";
+import SignUp from "./routes/signup/signup";
 
 function App() {
   const location = useLocation();
@@ -28,11 +36,23 @@ function App() {
     }
   }, [location]);
 
+  const token = useUserToken();
+  const client = getApolloClient(token);
+
   return (
-    <>
+    <ApolloProvider client={client}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route
+          path="/login"
+          element={
+            <RouteWrapper isAuthRoute>
+              <Login />
+            </RouteWrapper>
+          }
+        />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/learn" element={<Learn />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/problem/:slug" element={<Problem />} />
@@ -44,7 +64,7 @@ function App() {
       </Routes>
 
       <Toaster position="top-right" />
-    </>
+    </ApolloProvider>
   );
 }
 

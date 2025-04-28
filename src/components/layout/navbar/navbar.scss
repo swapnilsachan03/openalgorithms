@@ -28,6 +28,12 @@
       text-underline-offset: 2px;
     }
   }
+
+  &_actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
 }
 
 .no-border {

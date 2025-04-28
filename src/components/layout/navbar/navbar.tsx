@@ -1,9 +1,17 @@
 import _ from "lodash";
-import { Button } from "generic-ds";
-import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
+import { Button, IconButton } from "generic-ds";
+import { Link, useLocation } from "react-router-dom";
+
+import {
+  useIsLoggedIn,
+  useUserActions,
+  useUserToken,
+} from "@/stores/userStore";
 
 import "./navbar.scss";
+import { LogIn, LogOut, User2 } from "lucide-react";
+import { onLogout } from "@/routes/login/modules/login_module";
 
 const navbarLinks = [
   { href: "/learn", label: "Learn" },
@@ -14,9 +22,19 @@ const navbarLinks = [
 
 const Navbar = () => {
   const location = useLocation();
+
   const isProblemSolvingPage =
     location.pathname.startsWith("/problem/") &&
     !location.pathname.includes("/create");
+
+  const isLoggedIn = useIsLoggedIn();
+  const token = useUserToken();
+  const actions = useUserActions();
+
+  const handleLogout = async () => {
+    const res = await onLogout(token as string, actions);
+    if (res) window.location.href = "/";
+  };
 
   return (
     <nav
@@ -35,7 +53,35 @@ const Navbar = () => {
           ))}
         </div>
 
-        <Button variant="solid" size="medium" label="Sign In" />
+        {isLoggedIn ? (
+          <div className="navbar_actions">
+            <Link to="/me">
+              <Button
+                variant="solid"
+                size="medium"
+                icon={<User2 size={14} />}
+                label="Profile"
+              />
+            </Link>
+
+            <IconButton
+              ariaLabel="Logout"
+              icon={<LogOut size={14} />}
+              onClick={handleLogout}
+            />
+          </div>
+        ) : (
+          <div className="navbar_actions">
+            <Link to="/login">
+              <Button
+                variant="solid"
+                size="medium"
+                icon={<LogIn size={14} />}
+                label="Sign In"
+              />
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
