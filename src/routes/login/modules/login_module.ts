@@ -49,3 +49,40 @@ export const onLogin = async (
 
   return false;
 };
+
+export const onLogout = async (token: string, actions: ActionsInterface) => {
+  const url = import.meta.env.VITE_SERVER_URL + "/auth/logout";
+
+  const { setIsAdmin, setUserId, setIsLoggedIn, setUserToken } = actions;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status != 200) {
+      throw new Error("Not able to logout, please try again later.");
+    }
+
+    setUserToken(null);
+    setIsAdmin(false);
+    setIsLoggedIn(false);
+    setUserId(null);
+
+    Toast.success("Logged out successfully");
+
+    return true;
+  } catch (error: Error | unknown) {
+    Toast.error(
+      error instanceof Error
+        ? error.message
+        : "Not able to logout, please try again later."
+    );
+  }
+
+  return false;
+};
