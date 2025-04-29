@@ -1,6 +1,6 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ApolloProvider } from "@apollo/client";
 
 import { getApolloClient } from "./lib/apolloClient";
@@ -22,19 +22,15 @@ import Login from "./routes/login/login";
 import SignUp from "./routes/signup/signup";
 
 function App() {
-  const location = useLocation();
+  const [isProblemPage, setIsProblemPage] = useState(false);
 
   useEffect(() => {
-    const isProblemPage =
-      location.pathname.startsWith("/problem/") &&
-      !location.pathname.includes("/create");
-
     if (isProblemPage) {
       document.body.classList.add("problem-page-body");
     } else {
       document.body.classList.remove("problem-page-body");
     }
-  }, [location]);
+  }, [isProblemPage]);
 
   const token = useUserToken();
   const client = getApolloClient(token);
@@ -43,7 +39,6 @@ function App() {
     <ApolloProvider client={client}>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route
           path="/login"
           element={
@@ -52,10 +47,24 @@ function App() {
             </RouteWrapper>
           }
         />
-        <Route path="/signup" element={<SignUp />} />
+
+        <Route
+          path="/signup"
+          element={
+            <RouteWrapper isAuthRoute>
+              <SignUp />
+            </RouteWrapper>
+          }
+        />
+
+        <Route
+          path="/problem/:slug"
+          element={<Problem setIsProblemPage={setIsProblemPage} />}
+        />
+
+        <Route path="/" element={<Home />} />
         <Route path="/learn" element={<Learn />} />
         <Route path="/practice" element={<Practice />} />
-        <Route path="/problem/:slug" element={<Problem />} />
         <Route path="/problem/create" element={<CreateProblem />} />
         <Route path="/playground" element={<Playground />} />
         <Route path="/interviews" element={<Interviews />} />

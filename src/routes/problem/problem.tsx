@@ -18,9 +18,13 @@ import DetailsPane from "@problem/components/details_pane/details_pane";
 import EditorPane from "@problem/components/editor_pane/editor_pane";
 import OutputPane from "@problem/components/output_pane/output_pane";
 
-type Props = {};
+interface ProblemProps {
+  setIsProblemPage: (isProblemPage: boolean) => void;
+}
 
-const Problem = (props: Props) => {
+const Problem = (props: ProblemProps) => {
+  const { setIsProblemPage } = props;
+
   const { slug } = useParams();
   const { width } = useWindowSize();
 
@@ -72,12 +76,25 @@ const Problem = (props: Props) => {
         setOutputRatio(newoutputWidth / parentWidth);
       }
     },
-    [isDragging, parentWidth, detailsWidth, outputWidth]
+    [
+      isDragging,
+      parentWidth,
+      detailsWidth,
+      outputWidth,
+      setDetailsRatio,
+      setEditorRatio,
+      setOutputRatio,
+    ]
   );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(null);
   }, []);
+
+  useEffect(() => {
+    setIsProblemPage(true);
+    return () => setIsProblemPage(false);
+  }, [setIsProblemPage]);
 
   useEffect(() => {
     if (isDragging !== null) {
@@ -90,7 +107,7 @@ const Problem = (props: Props) => {
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const { loading, error, data } = useQuery(getProblemBySlugQuery, {
+  const { loading, data } = useQuery(getProblemBySlugQuery, {
     variables: {
       slug,
     },
@@ -107,7 +124,7 @@ const Problem = (props: Props) => {
       </div>
 
       <div className="editor_pane" style={{ minWidth: editorWidth }}>
-        <EditorPane data={data} loading={loading} />
+        <EditorPane loading={loading} />
         <div
           className={`resize_handle ${isDragging === 2 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(2)}
@@ -115,7 +132,7 @@ const Problem = (props: Props) => {
       </div>
 
       <div className="judging_pane" style={{ minWidth: outputWidth }}>
-        <OutputPane data={data} loading={loading} />
+        <OutputPane loading={loading} />
       </div>
     </div>
   );
