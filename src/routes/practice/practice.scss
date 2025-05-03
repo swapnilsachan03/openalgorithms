@@ -1,5 +1,7 @@
 .practice {
-  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 0px;
 
   &_header {
     display: flex;
@@ -8,12 +10,19 @@
     margin-bottom: 32px;
 
     h1 {
-      font-size: 32px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
     }
   }
 
   &_content {
     min-height: 200px;
+  }
+}
+
+.problem_title_link {
+  transition: all ease-in-out 0.2s;
+  &:hover {
+    color: var(--text-accent);
   }
 }
