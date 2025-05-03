@@ -80,10 +80,12 @@ const Description = ({ problem, loading }: Props) => {
                   {example?.input}
                 </pre>
 
-                <pre className="example_field">
-                  <strong>Explanation: </strong>
-                  {example?.explanation}
-                </pre>
+                {example?.explanation ? (
+                  <pre className="example_field">
+                    <strong>Explanation: </strong>
+                    {example.explanation}
+                  </pre>
+                ) : null}
               </div>
             </div>
           ))}

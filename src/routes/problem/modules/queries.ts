@@ -21,7 +21,7 @@ export const getProblemBySlugQuery = gql`
         id
         input
         output
-        problemId
+        explanation
       }
       userSolutions {
         id

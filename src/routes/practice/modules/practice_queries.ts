@@ -14,6 +14,7 @@ export const getProblemsQuery = gql`
         id
         title
         slug
+        difficulty
         likes
         dislikes
         bookmarks

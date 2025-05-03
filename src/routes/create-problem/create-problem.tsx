@@ -103,8 +103,8 @@ const CreateProblem = () => {
           output,
           explanation,
         })),
-        hints: formData.getAll("hints[]"),
-        topics: formData.getAll("topics[]"),
+        hints: _.split(formData.getAll("hints") as unknown as string, "\n"),
+        topics: [],
         ...(!_.isEmpty(editorialTitle) && !_.isEmpty(editorial)
           ? {
               editorial: {
@@ -308,7 +308,7 @@ const CreateProblem = () => {
             <span className="form-label">Hints</span>
             <div className="input-with-icon">
               <TextArea
-                name="hints[]"
+                name="hints"
                 variant="outline"
                 color="sky"
                 placeholder="Enter hints (one per line)"
@@ -347,7 +347,7 @@ const CreateProblem = () => {
         <div className="form-actions">
           <Button type="submit" color="sky" disabled={loading}>
             <PlusCircle size={14} />
-            Create Problem
+            Create problem
           </Button>
         </div>
       </form>

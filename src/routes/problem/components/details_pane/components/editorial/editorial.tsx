@@ -8,6 +8,8 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Chip } from "generic-ds";
 import dayjs from "dayjs";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
 import { Problem } from "@/generated/graphql";
 
@@ -160,6 +162,7 @@ The hash table approach is more efficient because we only need to traverse the a
                 );
               },
             }}
+            remarkPlugins={[remarkBreaks, remarkGfm]}
           >
             {editorial?.content || ""}
           </ReactMarkdown>

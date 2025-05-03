@@ -137,7 +137,7 @@ const Practice = () => {
         {isAdmin && (
           <Link to="../create-problem">
             <Button color="cyan" icon={<PlusCircle size={16} />}>
-              Create Problem
+              Create problem
             </Button>
           </Link>
         )}
