@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const getProblemsQuery = gql`
-  query Problems($filters: GetAllProblemsFilterInput) {
+  query getProblems($filters: GetAllProblemsFilterInput) {
     problems(filters: $filters) {
       pageInfo {
         currentPage

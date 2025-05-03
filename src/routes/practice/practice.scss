@@ -20,6 +20,11 @@
   }
 }
 
+.problem_filters {
+  display: flex;
+  gap: 8px;
+}
+
 .problem_title_link {
   transition: all ease-in-out 0.2s;
   &:hover {

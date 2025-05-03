@@ -67,7 +67,7 @@ export default function Table<T extends Record<string, unknown>>({
                   <th
                     key={String(col.key)}
                     className={`
-                    px-4 ${compact ? "py-1.5" : "py-2"}
+                    px-4 ${compact ? "py-1.5" : "py-2"} font-semibold
                     ${alignClass}
                     ${col.width || ""}
                     ${showBorders ? "border-collapse border" : ""}

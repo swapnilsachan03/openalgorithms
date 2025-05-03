@@ -1,19 +1,37 @@
-import React from "react";
+import _ from "lodash";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
-import { Button } from "generic-ds";
+import { PlusCircle, Search } from "lucide-react";
+import { Button, Input, Select } from "generic-ds";
 import { useQuery } from "@apollo/client";
 
 import { Problem } from "@/generated/graphql";
 import Table, { Column } from "@/components/ui/table";
 import { useIsAdmin } from "@/stores/userStore";
 
-import "./practice.scss";
 import { getProblemsQuery } from "./modules/practice_queries";
-import _ from "lodash";
+
+import "./practice.scss";
+
+const difficultyOptions = [
+  { value: "ALL", label: "All" },
+  { value: "EASY", label: "Easy" },
+  { value: "MEDIUM", label: "Medium" },
+  { value: "HARD", label: "Hard" },
+];
 
 const Practice = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [difficulty, setDifficulty] = useState<string | undefined>(undefined);
+
   const isAdmin = useIsAdmin();
+
+  const { loading, data } = useQuery(getProblemsQuery, {
+    variables: {
+      filters: { search: searchQuery, difficulty, take: 10, skip: 0 },
+    },
+    fetchPolicy: "cache-first",
+  });
 
   type ProblemRow = {
     title: React.ReactNode;
@@ -21,7 +39,7 @@ const Practice = () => {
     topics: string[];
     difficulty: string;
     acceptance: number;
-    popularity: number;
+    rating: number;
   };
 
   const columns: Column<ProblemRow>[] = [
@@ -59,14 +77,12 @@ const Practice = () => {
         _.size(topics as string[]) ? (
           _.size(topics as string[])
         ) : (
-          <span className="text-secondary">No topics mapped</span>
+          <em className="text-secondary">No topics mapped</em>
         ),
     },
     { key: "views", label: "Views", align: "center" },
-    { key: "popularity", label: "Popularity", align: "center" },
+    { key: "rating", label: "Rating", align: "center" },
   ];
-
-  const { loading, data } = useQuery(getProblemsQuery);
 
   const problems: Problem[] = data?.problems?.edges;
 
@@ -91,14 +107,33 @@ const Practice = () => {
       topics,
       difficulty,
       acceptance: (100 * accepted) / total,
-      popularity: (100 * likes) / dislikes,
+      rating: (10 * likes) / dislikes,
     };
   });
 
   return (
     <div className="practice">
       <div className="practice_header">
-        <h1>Practice Problems</h1>
+        <div className="problem_filters">
+          <Input
+            placeholder="Search for a problem"
+            color="sky"
+            variant="outline"
+            icon={<Search size={16} />}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+
+          <Select
+            value={difficulty}
+            onChange={setDifficulty}
+            variant="outline"
+            color="zinc"
+            options={difficultyOptions}
+            placeholder="Difficulty"
+          />
+        </div>
+
         {isAdmin && (
           <Link to="../create-problem">
             <Button color="cyan" icon={<PlusCircle size={16} />}>
@@ -116,7 +151,7 @@ const Practice = () => {
           loading={loading}
           striped
           hover
-          emptyText="No users found."
+          emptyText="No problems found."
         />
       </div>
     </div>

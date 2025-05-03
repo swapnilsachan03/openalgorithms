@@ -98,7 +98,7 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
       <div className="code_toolbar">
         <Select
           value={language}
-          onChange={lang => setLanguage(lang)}
+          onChange={setLanguage}
           variant="outline"
           color="zinc"
           options={[
