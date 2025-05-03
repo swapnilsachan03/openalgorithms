@@ -1,6 +1,6 @@
 {
-  "*.ts": ["prettier --write", "eslint --max-warnings=0"],
-  "*.tsx": ["prettier --write", "eslint --max-warnings=0"],
+  "*.ts": ["prettier --write", "eslint --max-warnings=0 --no-warn-ignored"],
+  "*.tsx": ["prettier --write", "eslint --max-warnings=0 --no-warn-ignored"],
   "*.html": ["eslint", "prettier --write"],
   "*.scss": "prettier --write"
 }

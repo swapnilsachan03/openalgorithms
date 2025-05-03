@@ -42,7 +42,7 @@ export const getProblemBySlugQuery = gql`
       topics
       editorial {
         id
-        # title
+        title
         content
         views
         likes

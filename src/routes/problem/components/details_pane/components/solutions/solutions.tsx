@@ -19,10 +19,13 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import dayjs from "dayjs";
 
+import { Problem, UserSolution } from "@/generated/graphql";
+
 import "./solutions.scss";
+import _ from "lodash";
 
 type Props = {
-  data: any;
+  problem: Problem;
   loading: boolean;
 };
 
@@ -158,11 +161,11 @@ This solution maintains the original indices while sorting.
   },
 ];
 
-const Solutions = ({ data, loading }: Props) => {
+const Solutions = ({ problem, loading }: Props) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSolution, setSelectedSolution] = useState<
-    (typeof dummySolutions)[0] | null
-  >(null);
+  const [selectedSolution, setSelectedSolution] = useState<UserSolution | null>(
+    null
+  );
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
@@ -179,7 +182,7 @@ const Solutions = ({ data, loading }: Props) => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const handleSolutionClick = (solution: (typeof dummySolutions)[0]) => {
+  const handleSolutionClick = (solution: UserSolution) => {
     setSelectedSolution(solution);
   };
 
@@ -203,9 +206,11 @@ const Solutions = ({ data, loading }: Props) => {
     return <div className="solutions">Loading...</div>;
   }
 
-  const filteredSolutions = dummySolutions.filter(solution =>
-    solution.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSolutions = !_.isEmpty(problem?.userSolutions)
+    ? problem?.userSolutions
+    : dummySolutions.filter(solution =>
+        solution.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   if (selectedSolution) {
     return (
@@ -221,19 +226,19 @@ const Solutions = ({ data, loading }: Props) => {
           />
 
           <div className="solution_title_container">
-            <h2>{selectedSolution.title}</h2>
+            <h2>{selectedSolution?.title}</h2>
 
             <div className="solution_meta">
               <Chip icon={<Eye size={13} />} size="small">
-                {selectedSolution.views}
+                {selectedSolution?.views}
               </Chip>
 
               <a
-                href={`/u/${selectedSolution.user.id}`}
+                href={`/u/${selectedSolution?.user?.id}`}
                 className="solution_author"
               >
                 <Chip icon={<UserCheck size={13} />} size="small">
-                  {selectedSolution.user.name}
+                  {selectedSolution?.user?.name}
                 </Chip>
               </a>
 
@@ -248,13 +253,11 @@ const Solutions = ({ data, loading }: Props) => {
           <ReactMarkdown
             components={{
               code({
-                node,
                 inline,
                 className,
                 children,
                 ...props
               }: {
-                node?: any;
                 inline?: boolean;
                 className?: string;
                 children?: React.ReactNode;
@@ -300,7 +303,7 @@ const Solutions = ({ data, loading }: Props) => {
               onClick={handleLike}
             >
               <ThumbsUp size={14} />
-              <span>{selectedSolution.likes + (userLiked ? 1 : 0)}</span>
+              <span>{selectedSolution?.likes || 0 + (userLiked ? 1 : 0)}</span>
             </button>
 
             <button
@@ -308,7 +311,9 @@ const Solutions = ({ data, loading }: Props) => {
               onClick={handleDislike}
             >
               <ThumbsDown size={14} />
-              <span>{selectedSolution.dislikes + (userDisliked ? 1 : 0)}</span>
+              <span>
+                {selectedSolution?.dislikes || 0 + (userDisliked ? 1 : 0)}
+              </span>
             </button>
           </div>
         </div>
@@ -335,35 +340,39 @@ const Solutions = ({ data, loading }: Props) => {
       </div>
 
       <div className="solutions_list">
-        {filteredSolutions.map(solution => (
-          <div key={solution.id} className="solution_card">
-            <a href={`/u/${solution.user.id}`} className="solution_author">
-              {solution.user.name}
+        {filteredSolutions?.map(solution => (
+          <div key={solution?.id} className="solution_card">
+            <a href={`/u/${solution?.user?.id}`} className="solution_author">
+              {solution?.user?.name}
             </a>
 
             <h3
               className="solution_title"
-              onClick={() => handleSolutionClick(solution)}
+              onClick={() => handleSolutionClick(solution as UserSolution)}
             >
-              {solution.title}
+              {solution?.title}
             </h3>
 
             <div className="solution_meta">
               <Chip icon={<Eye size={13} />} size="small">
-                {solution.views}
+                {solution?.views}
               </Chip>
 
               <Chip icon={<ArrowBigUp size={15} />} size="small">
-                {solution.likes}
+                {solution?.likes}
               </Chip>
 
               <Chip icon={<ArrowBigDown size={15} />} size="small">
-                {solution.dislikes}
+                {solution?.dislikes}
               </Chip>
             </div>
 
             <div className="avatar_container">
-              <Avatar name={solution.user.name} size="x-small" randomizeColor />
+              <Avatar
+                name={solution?.user?.name ?? "deleted_user"}
+                size="x-small"
+                randomizeColor
+              />
             </div>
           </div>
         ))}

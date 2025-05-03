@@ -1,16 +1,17 @@
-import _ from "lodash";
 import { useState } from "react";
 import { Beaker, BookOpen, NotepadText } from "lucide-react";
 
-import "./details_pane.scss";
+import { Problem } from "@/generated/graphql";
 
 import PaneHeader from "../pane_header/pane_header";
 import Description from "./components/description";
 import Editorial from "./components/editorial";
 import Solutions from "./components/solutions";
 
+import "./details_pane.scss";
+
 type Props = {
-  data: any;
+  problem: Problem;
   loading: boolean;
 };
 
@@ -32,7 +33,7 @@ const getPaneTabs = (setSelectedTab: (tab: string) => void) => [
   },
 ];
 
-const DetailsPane = ({ data, loading }: Props) => {
+const DetailsPane = ({ problem, loading }: Props) => {
   const [selectedTab, setSelectedTab] = useState("description");
 
   const tabs = getPaneTabs(setSelectedTab);
@@ -40,7 +41,7 @@ const DetailsPane = ({ data, loading }: Props) => {
   if (loading) {
     return (
       <div className="details_pane">
-        <PaneHeader tabs={tabs} />
+        <PaneHeader tabs={tabs} selectedTab={selectedTab} />
         Loading...
       </div>
     );
@@ -49,11 +50,11 @@ const DetailsPane = ({ data, loading }: Props) => {
   const renderPaneContent = () => {
     switch (selectedTab) {
       case "description":
-        return <Description data={data} loading={loading} />;
+        return <Description problem={problem} loading={loading} />;
       case "editorial":
-        return <Editorial data={data} loading={loading} />;
+        return <Editorial problem={problem} loading={loading} />;
       case "solutions":
-        return <Solutions data={data} loading={loading} />;
+        return <Solutions problem={problem} loading={loading} />;
       default:
         return null;
     }
@@ -61,7 +62,7 @@ const DetailsPane = ({ data, loading }: Props) => {
 
   return (
     <div className="details_pane">
-      <PaneHeader tabs={tabs} />
+      <PaneHeader tabs={tabs} selectedTab={selectedTab} />
       <div className="details_pane_content">{renderPaneContent()}</div>
     </div>
   );
