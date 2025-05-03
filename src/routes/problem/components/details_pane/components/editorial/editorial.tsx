@@ -6,17 +6,21 @@ import {
   materialDark,
   materialLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Chip } from "generic-ds";
 import dayjs from "dayjs";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
+
+import { Problem } from "@/generated/graphql";
 
 import "./editorial.scss";
-import { Chip } from "generic-ds";
 
 type Props = {
-  data: any;
+  problem: Problem;
   loading: boolean;
 };
 
-const Editorial = ({ data, loading }: Props) => {
+const Editorial = ({ problem, loading }: Props) => {
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
@@ -91,7 +95,7 @@ The hash table approach is more efficient because we only need to traverse the a
     dislikes: 3,
   };
 
-  const editorial = data?.problem?.editorial || dummyEditorial;
+  const editorial = problem?.editorial || dummyEditorial;
 
   if (loading) {
     return <div className="editorial">Loading...</div>;
@@ -104,7 +108,7 @@ The hash table approach is more efficient because we only need to traverse the a
   return (
     <div className="editorial">
       <div className="editorial_details">
-        <h1 className="editorial_title">{editorial.title}</h1>
+        <h1 className="editorial_title">{editorial?.title}</h1>
 
         <div className="editorial_metadata">
           <Chip icon={<Calendar size={13} />} size="small">
@@ -120,13 +124,11 @@ The hash table approach is more efficient because we only need to traverse the a
           <ReactMarkdown
             components={{
               code({
-                node,
                 inline,
                 className,
                 children,
                 ...props
               }: {
-                node?: any;
                 inline?: boolean;
                 className?: string;
                 children?: React.ReactNode;
@@ -160,6 +162,7 @@ The hash table approach is more efficient because we only need to traverse the a
                 );
               },
             }}
+            remarkPlugins={[remarkBreaks, remarkGfm]}
           >
             {editorial?.content || ""}
           </ReactMarkdown>

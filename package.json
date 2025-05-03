@@ -8,13 +8,13 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky && husky install"
+    "prepare": "husky && husky install",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.13.7",
     "@monaco-editor/react": "^4.7.0",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@uiw/react-md-editor": "^4.0.5",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "generic-ds": "^0.1.6",
@@ -35,6 +35,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
+    "@graphql-codegen/cli": "^5.0.5",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-document-nodes": "^4.0.16",
+    "@graphql-codegen/typescript-resolvers": "^4.5.0",
     "@types/lodash": "^4.17.16",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",

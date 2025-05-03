@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input } from "generic-ds";
-import { LogIn, UserPlus } from "lucide-react";
+import { KeyRound, LogIn, Mail, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { onLogin } from "./modules/login_module";
@@ -33,6 +33,7 @@ const LoginPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your email"
+              icon={<Mail size={16} />}
               value={username}
               onChange={e => setUsername(e.currentTarget.value)}
               required
@@ -47,6 +48,7 @@ const LoginPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your password"
+              icon={<KeyRound size={16} />}
               value={password}
               onChange={e => setPassword(e.currentTarget.value)}
               required

@@ -4,14 +4,16 @@ import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb, Star } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Collapsible, Chip } from "generic-ds";
 
+import { Problem } from "@/generated/graphql";
+
 import "./description.scss";
 
 type Props = {
-  data: any;
+  problem: Problem;
   loading: boolean;
 };
 
-const Description = ({ data, loading }: Props) => {
+const Description = ({ problem, loading }: Props) => {
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
@@ -24,8 +26,6 @@ const Description = ({ data, loading }: Props) => {
     if (userLiked) setUserLiked(false);
     setUserDisliked(!userDisliked);
   };
-
-  const problem = data?.problem;
 
   if (loading) {
     return <div className="problem">Loading...</div>;
@@ -44,7 +44,7 @@ const Description = ({ data, loading }: Props) => {
 
         <div className="problem_metadata">
           <Chip color={chipColor} size="small">
-            {_.capitalize(problem?.difficulty)}
+            {_.capitalize(problem.difficulty as string)}
           </Chip>
 
           <Chip icon={<Tag size={13} />} size="small">
@@ -65,32 +65,34 @@ const Description = ({ data, loading }: Props) => {
         </div>
 
         <div className="problem_examples">
-          {problem?.examples?.map((example: any, index: number) => (
-            <div key={example.id}>
+          {problem?.examples?.map((example, index: number) => (
+            <div key={example?.id}>
               <div className="example_heading">Example {index + 1}:</div>
 
-              <div key={example.id} className="example_fields_container">
+              <div key={example?.id} className="example_fields_container">
                 <pre className="example_field">
                   <strong>Input: </strong>
-                  {example.input}
+                  {example?.input}
                 </pre>
 
                 <pre className="example_field">
                   <strong>Output: </strong>
-                  {example.input}
+                  {example?.input}
                 </pre>
 
-                <pre className="example_field">
-                  <strong>Explanation: </strong>
-                  {example.explanation}
-                </pre>
+                {example?.explanation ? (
+                  <pre className="example_field">
+                    <strong>Explanation: </strong>
+                    {example.explanation}
+                  </pre>
+                ) : null}
               </div>
             </div>
           ))}
         </div>
 
         <div className="problem_topics">
-          {problem?.hints?.map((hint: any, index: number) => (
+          {problem?.hints?.map((hint, index: number) => (
             <Collapsible key={index}>
               <Collapsible.Trigger
                 chevronPosition="right"
@@ -101,14 +103,14 @@ const Description = ({ data, loading }: Props) => {
               </Collapsible.Trigger>
 
               <Collapsible.Content className="hint_content">
-                {hint.content}
+                {hint?.content}
               </Collapsible.Content>
             </Collapsible>
           ))}
         </div>
 
         <div className="problem_hints">
-          {problem?.hints?.map((hint: any, index: number) => (
+          {problem?.hints?.map((hint, index: number) => (
             <Collapsible key={index}>
               <Collapsible.Trigger
                 className="hint_trigger"
@@ -119,7 +121,7 @@ const Description = ({ data, loading }: Props) => {
               </Collapsible.Trigger>
 
               <Collapsible.Content className="hint_content">
-                {hint.content}
+                {hint?.content}
               </Collapsible.Content>
             </Collapsible>
           ))}

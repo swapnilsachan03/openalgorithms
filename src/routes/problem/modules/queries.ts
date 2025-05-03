@@ -21,7 +21,7 @@ export const getProblemBySlugQuery = gql`
         id
         input
         output
-        problemId
+        explanation
       }
       userSolutions {
         id
@@ -42,7 +42,7 @@ export const getProblemBySlugQuery = gql`
       topics
       editorial {
         id
-        # title
+        title
         content
         views
         likes

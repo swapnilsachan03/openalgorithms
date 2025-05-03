@@ -116,7 +116,7 @@ const Problem = (props: ProblemProps) => {
   return (
     <div className="problem_container" ref={containerRef}>
       <div className="problem_details_pane" style={{ width: detailsWidth }}>
-        <DetailsPane data={data} loading={loading} />
+        <DetailsPane problem={data?.problem} loading={loading} />
         <div
           className={`resize_handle ${isDragging === 1 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(1)}
