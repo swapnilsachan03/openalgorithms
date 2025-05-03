@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input } from "generic-ds";
-import { LogIn, UserPlus } from "lucide-react";
+import { Image, KeyRound, LogIn, Mail, Text, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useUserActions } from "@/stores/userStore";
@@ -38,6 +38,7 @@ const SignupPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your name"
+              icon={<Text size={16} />}
               value={name}
               onChange={e => setName(e.currentTarget.value)}
               required
@@ -51,6 +52,7 @@ const SignupPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your email"
+              icon={<Mail size={16} />}
               value={email}
               onChange={e => setEmail(e.currentTarget.value)}
               required
@@ -64,6 +66,7 @@ const SignupPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your password"
+              icon={<KeyRound size={16} />}
               value={password}
               onChange={e => setPassword(e.currentTarget.value)}
               required
@@ -77,6 +80,7 @@ const SignupPage = () => {
               color="sky"
               variant="outline"
               placeholder="Enter your image URL"
+              icon={<Image size={16} />}
               value={imageUrl}
               onChange={e => setImageUrl(e.currentTarget.value)}
             />
