@@ -1,10 +1,4 @@
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  materialDark,
-  materialLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
   Bold,
   Italic,
@@ -18,11 +12,9 @@ import {
   Redo,
 } from "lucide-react";
 import { Button } from "generic-ds";
-import classNames from "classnames";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
 
 import "./markdown-editor.scss";
+import MarkdownRenderer from "../markdown-renderer";
 
 interface MarkdownEditorProps {
   value: string;
@@ -121,9 +113,7 @@ export default function MarkdownEditor({
   height = 400,
 }: MarkdownEditorProps) {
   const [content, setContent] = useState(value);
-  const [prefersDarkTheme] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+
   const [history, setHistory] = useState<string[]>([value]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [textareaRef, setTextareaRef] = useState<HTMLTextAreaElement | null>(
@@ -259,58 +249,7 @@ export default function MarkdownEditor({
           />
         </div>
 
-        <div className="preview-pane">
-          <ReactMarkdown
-            components={{
-              code({
-                node,
-                inline,
-                className,
-                children,
-                ...props
-              }: {
-                node?: any;
-                inline?: boolean;
-                className?: string;
-                children?: React.ReactNode;
-              }) {
-                const match = /language-(\w+)/.exec(className || "");
-                const language = match ? match[1] : "";
-
-                return !inline && language ? (
-                  <div className="code-block">
-                    <div className="code-header">{language}</div>
-                    <SyntaxHighlighter
-                      style={prefersDarkTheme ? materialDark : materialLight}
-                      customStyle={{ margin: 0 }}
-                      codeTagProps={{
-                        style: {
-                          fontFamily: "JetBrains Mono",
-                          fontSize: "13px",
-                        },
-                      }}
-                      language={language}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  </div>
-                ) : (
-                  <code
-                    className={classNames("inline-code", className)}
-                    {...props}
-                  >
-                    {children}
-                  </code>
-                );
-              },
-            }}
-            remarkPlugins={[remarkGfm, remarkBreaks]}
-          >
-            {content}
-          </ReactMarkdown>
-        </div>
+        <MarkdownRenderer content={content} />
       </div>
     </div>
   );
