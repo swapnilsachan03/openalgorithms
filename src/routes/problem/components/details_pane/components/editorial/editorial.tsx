@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { useState } from "react";
 import { ThumbsUp, ThumbsDown, Eye, Calendar } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  materialDark,
-  materialLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Chip } from "generic-ds";
 import dayjs from "dayjs";
-import remarkBreaks from "remark-breaks";
-import remarkGfm from "remark-gfm";
 
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 import { Problem } from "@/generated/graphql";
 
 import "./editorial.scss";
@@ -24,19 +17,6 @@ const Editorial = ({ problem, loading }: Props) => {
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
-  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setPrefersDarkTheme(e.matches);
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
   const handleLike = () => {
     if (userDisliked) setUserDisliked(false);
     setUserLiked(!userLiked);
@@ -47,55 +27,8 @@ const Editorial = ({ problem, loading }: Props) => {
     setUserDisliked(!userDisliked);
   };
 
-  // Dummy editorial data for development
-  const dummyEditorial = {
-    title: "Two Sum - Editorial Solution",
-    content: `
-## Approach 1: Brute Force
-
-The simplest approach is to check every possible pair of numbers in the array.
-
-\`\`\`python
-def twoSum(nums, target):
-    n = len(nums)
-    for i in range(n):
-        for j in range(i + 1, n):
-            if nums[i] + nums[j] == target:
-                return [i, j]
-    return []
-\`\`\`
-
-**Time Complexity:** O(n²)
-**Space Complexity:** O(1)
-
-## Approach 2: Hash Table
-
-We can use a hash table to achieve O(n) time complexity:
-
-\`\`\`python
-def twoSum(nums, target):
-    seen = {}
-    for i, value in enumerate(nums):
-        remaining = target - value
-        if remaining in seen:
-            return [seen[remaining], i]
-        seen[value] = i
-    return []
-\`\`\`
-
-**Time Complexity:** O(n)
-**Space Complexity:** O(n)
-
-### Why is this better?
-The hash table approach is more efficient because we only need to traverse the array once. For each number, we check if its complement exists in our hash table.
-    `,
-    createdAt: "2023-09-15T10:00:00Z",
-    views: 1234,
-    likes: 42,
-    dislikes: 3,
-  };
-
-  const editorial = problem?.editorial || dummyEditorial;
+  const editorial = problem?.editorial;
+  const editorialContent = editorial?.content ?? "";
 
   if (loading) {
     return <div className="editorial">Loading...</div>;
@@ -121,51 +54,7 @@ The hash table approach is more efficient because we only need to traverse the a
         </div>
 
         <div className="editorial_content">
-          <ReactMarkdown
-            components={{
-              code({
-                inline,
-                className,
-                children,
-                ...props
-              }: {
-                inline?: boolean;
-                className?: string;
-                children?: React.ReactNode;
-              }) {
-                const match = /language-(\w+)/.exec(className || "");
-                const language = match ? match[1] : "";
-
-                return !inline && language ? (
-                  <div className="code-block">
-                    <div className="code-header">{language}</div>
-                    <SyntaxHighlighter
-                      style={prefersDarkTheme ? materialDark : materialLight}
-                      customStyle={{ margin: 0 }}
-                      codeTagProps={{
-                        style: {
-                          fontFamily: "JetBrains Mono",
-                          fontSize: "13px",
-                        },
-                      }}
-                      language={language}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  </div>
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
-            remarkPlugins={[remarkBreaks, remarkGfm]}
-          >
-            {editorial?.content || ""}
-          </ReactMarkdown>
+          <MarkdownRenderer content={editorialContent} />
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -11,18 +11,13 @@ import {
   Search,
 } from "lucide-react";
 import { Chip, Button, Input, IconButton, Avatar } from "generic-ds";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  materialDark,
-  materialLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 import dayjs from "dayjs";
 
 import { Problem, UserSolution } from "@/generated/graphql";
 
 import "./solutions.scss";
 import _ from "lodash";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 type Props = {
   problem: Problem;
@@ -169,19 +164,6 @@ const Solutions = ({ problem, loading }: Props) => {
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
-  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setPrefersDarkTheme(e.matches);
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
   const handleSolutionClick = (solution: UserSolution) => {
     setSelectedSolution(solution);
   };
@@ -250,50 +232,7 @@ const Solutions = ({ problem, loading }: Props) => {
         </div>
 
         <div className="solution_content">
-          <ReactMarkdown
-            components={{
-              code({
-                inline,
-                className,
-                children,
-                ...props
-              }: {
-                inline?: boolean;
-                className?: string;
-                children?: React.ReactNode;
-              }) {
-                const match = /language-(\w+)/.exec(className || "");
-                const language = match ? match[1] : "";
-
-                return !inline && language ? (
-                  <div className="code-block">
-                    <div className="code-header">{language}</div>
-                    <SyntaxHighlighter
-                      style={prefersDarkTheme ? materialDark : materialLight}
-                      customStyle={{ margin: 0 }}
-                      codeTagProps={{
-                        style: {
-                          fontFamily: "JetBrains Mono",
-                          fontSize: "13px",
-                        },
-                      }}
-                      language={language}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  </div>
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
-          >
-            {selectedSolution.content}
-          </ReactMarkdown>
+          <MarkdownRenderer content={selectedSolution.content ?? ""} />
         </div>
 
         <div className="solution_footer">

@@ -30,41 +30,6 @@
 
   &_content {
     margin-bottom: 48px;
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-weight: 600;
-      margin: 18px 0 12px;
-    }
-
-    p {
-      margin-bottom: 12px;
-    }
-
-    .code-block {
-      margin: 16px 0;
-      border-radius: 8px;
-      overflow: hidden;
-      font-family: "Geist";
-      background: var(--background-secondary);
-
-      .code-header {
-        padding: 8px 16px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        background: var(--background-tertiary);
-        text-transform: capitalize;
-      }
-
-      pre {
-        margin: 0 !important;
-        padding: 16px !important;
-        background: var(--background-secondary) !important;
-      }
-    }
   }
 
   &_footer {

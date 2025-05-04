@@ -1,12 +1,12 @@
 import _ from "lodash";
 import { useState } from "react";
 import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb, Star } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import { Collapsible, Chip } from "generic-ds";
 
 import { Problem } from "@/generated/graphql";
 
 import "./description.scss";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 type Props = {
   problem: Problem;
@@ -61,7 +61,7 @@ const Description = ({ problem, loading }: Props) => {
         </div>
 
         <div className="problem_description">
-          <ReactMarkdown>{problem?.description || ""}</ReactMarkdown>
+          <MarkdownRenderer content={problem?.description ?? ""} />
         </div>
 
         <div className="problem_examples">

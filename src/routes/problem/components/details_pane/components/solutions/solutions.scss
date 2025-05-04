@@ -69,18 +69,6 @@
   &_content {
     flex: 1;
     overflow-y: auto;
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-weight: 600;
-      margin: 18px 0 12px;
-    }
-
-    p {
-      margin-bottom: 12px;
-    }
   }
 
   &_detail {
