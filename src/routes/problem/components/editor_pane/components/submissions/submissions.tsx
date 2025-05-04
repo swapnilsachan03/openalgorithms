@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
+import _ from "lodash";
+import { useState } from "react";
 import { ArrowLeft, Clock, Copy, Timer, ChartBar, Code } from "lucide-react";
 import dayjs from "dayjs";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  materialDark,
-  materialLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Chip, Button } from "generic-ds";
+
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 import "./submissions.scss";
-import { Chip, Button } from "generic-ds";
-import _ from "lodash";
 
 type Props = {
   loading: boolean;
@@ -66,18 +62,6 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
   const [selectedSubmission, setSelectedSubmission] = useState<
     (typeof dummySubmissions)[0] | null
   >(null);
-  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setPrefersDarkTheme(e.matches);
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   const handleSubmissionClick = (submission: (typeof dummySubmissions)[0]) => {
     setSelectedSubmission(submission);
@@ -141,53 +125,7 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
           </div>
         </div>
 
-        <ReactMarkdown
-          components={{
-            code({
-              node,
-              inline,
-              className,
-              children,
-              ...props
-            }: {
-              node?: any;
-              inline?: boolean;
-              className?: string;
-              children?: React.ReactNode;
-            }) {
-              const match = /language-(\w+)/.exec(className || "");
-              const language = match ? match[1] : "";
-
-              return !inline && language ? (
-                <div className="code-block">
-                  <div className="code-header">{language}</div>
-
-                  <SyntaxHighlighter
-                    style={prefersDarkTheme ? materialDark : materialLight}
-                    customStyle={{ margin: 0 }}
-                    codeTagProps={{
-                      style: {
-                        fontFamily: "JetBrains Mono",
-                        fontSize: "13px",
-                      },
-                    }}
-                    language={language}
-                    PreTag="div"
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, "")}
-                  </SyntaxHighlighter>
-                </div>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
-            },
-          }}
-        >
-          {submissionContent}
-        </ReactMarkdown>
+        <MarkdownRenderer content={submissionContent} />
 
         <div className="copy_to_editor">
           <Button
