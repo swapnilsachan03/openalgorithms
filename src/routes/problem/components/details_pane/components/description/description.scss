@@ -60,7 +60,7 @@
 
   &_topics,
   &_hints {
-    .hint_trigger {
+    .trigger {
       display: flex;
       gap: 12px;
       align-items: center;
@@ -69,8 +69,13 @@
       cursor: pointer;
     }
 
-    .hint_content {
+    .content {
       margin-left: 38px;
+    }
+
+    .problem_topics {
+      display: flex;
+      gap: 6px;
     }
   }
 

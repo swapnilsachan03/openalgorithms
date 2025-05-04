@@ -18,7 +18,10 @@ export const getProblemsQuery = gql`
         likes
         dislikes
         bookmarks
-        topics
+        topics {
+          id
+          name
+        }
         totalSubmissions
         acceptedSubmissions
         views

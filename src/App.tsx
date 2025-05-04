@@ -37,7 +37,8 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Navbar />
+      <Navbar isProblemPage={isProblemPage} />
+
       <Routes>
         <Route
           path="/login"

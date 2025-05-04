@@ -2,28 +2,29 @@ import _ from "lodash";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   AlignLeft,
   Hash,
   ListChecks,
   Timer,
   Database,
-  Tag,
   Lightbulb,
   PlusCircle,
   X,
   Plus,
   Globe,
 } from "lucide-react";
-import { Input, Button, Select, TextArea, IconButton } from "generic-ds";
+import { Input, Button, Select, TextArea, IconButton, Chip } from "generic-ds";
 
-import { createProblemMutation } from "@/routes/problem/modules/queries";
+import { createProblemMutation } from "@/routes/create-problem/modules/create_problem_mutations";
 import { useIsAdmin } from "@/stores/userStore";
 import { Toast } from "@/lib/toast";
 import MarkdownEditor from "@/components/ui/markdown-editor";
 
 import "./create-problem.scss";
+import { getAllTopicsQuery } from "./modules/create_problem_queries";
+import { Topic } from "@/generated/graphql";
 
 interface Example {
   id: string;
@@ -41,7 +42,13 @@ const difficultyOptions = [
 const CreateProblem = () => {
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
-  const [createProblem, { loading }] = useMutation(createProblemMutation);
+
+  const [createProblem, { loading: mutationLoading }] = useMutation(
+    createProblemMutation
+  );
+
+  const { loading: topicsLoading, data: topicsData } =
+    useQuery(getAllTopicsQuery);
 
   const [difficulty, setDifficulty] = useState<string>();
   const [description, setDescription] = useState("");
@@ -49,6 +56,7 @@ const CreateProblem = () => {
   const [examples, setExamples] = useState<Example[]>([
     { id: "1", input: "", output: "", explanation: "" },
   ]);
+  const [topics, setTopics] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -104,7 +112,7 @@ const CreateProblem = () => {
           explanation,
         })),
         hints: _.split(formData.getAll("hints") as unknown as string, "\n"),
-        topics: [],
+        topics,
         ...(!_.isEmpty(editorialTitle) && !_.isEmpty(editorial)
           ? {
               editorial: {
@@ -127,6 +135,8 @@ const CreateProblem = () => {
     }
   };
 
+  if (topicsLoading) return <div>Loading</div>;
+
   return (
     <div className="create-problem">
       <h1>Create problem</h1>
@@ -137,30 +147,28 @@ const CreateProblem = () => {
 
           <div className="form-field">
             <span className="form-label">Problem Title</span>
-            <div className="input-with-icon">
-              <Input
-                name="title"
-                placeholder="Enter problem title"
-                variant="outline"
-                color="sky"
-                icon={<AlignLeft size={14} />}
-                required
-              />
-            </div>
+
+            <Input
+              name="title"
+              placeholder="Enter problem title"
+              variant="outline"
+              color="sky"
+              icon={<AlignLeft size={14} />}
+              required
+            />
           </div>
 
           <div className="form-field">
             <span className="form-label">Slug (for routing)</span>
-            <div className="input-with-icon">
-              <Input
-                name="slug"
-                placeholder="Enter problem slug"
-                variant="outline"
-                color="sky"
-                icon={<Globe size={14} />}
-                required
-              />
-            </div>
+
+            <Input
+              name="slug"
+              placeholder="Enter problem slug"
+              variant="outline"
+              color="sky"
+              icon={<Globe size={14} />}
+              required
+            />
           </div>
 
           <div className="form-field">
@@ -175,6 +183,7 @@ const CreateProblem = () => {
           <div className="form-row">
             <div className="form-field">
               <span className="form-label">Difficulty</span>
+
               <Select
                 options={difficultyOptions}
                 onChange={setDifficulty}
@@ -186,32 +195,30 @@ const CreateProblem = () => {
 
             <div className="form-field">
               <span className="form-label">Time Limit (seconds)</span>
-              <div className="input-with-icon">
-                <Input
-                  name="timeLimit"
-                  type="number"
-                  min="1"
-                  variant="outline"
-                  color="sky"
-                  icon={<Timer size={14} />}
-                  required
-                />
-              </div>
+
+              <Input
+                name="timeLimit"
+                type="number"
+                min="1"
+                variant="outline"
+                color="sky"
+                icon={<Timer size={14} />}
+                required
+              />
             </div>
 
             <div className="form-field">
               <span className="form-label">Memory Limit (MB)</span>
-              <div className="input-with-icon">
-                <Input
-                  name="memoryLimit"
-                  type="number"
-                  min="1"
-                  variant="outline"
-                  color="sky"
-                  icon={<Database size={14} />}
-                  required
-                />
-              </div>
+
+              <Input
+                name="memoryLimit"
+                type="number"
+                min="1"
+                variant="outline"
+                color="sky"
+                icon={<Database size={14} />}
+                required
+              />
             </div>
           </div>
         </div>
@@ -240,40 +247,39 @@ const CreateProblem = () => {
 
               <div className="form-field">
                 <span className="form-label">Input</span>
-                <div className="input-with-icon">
-                  <Input
-                    value={example.input}
-                    onChange={e =>
-                      updateExample(example.id, "input", e.target.value)
-                    }
-                    icon={<Hash size={14} />}
-                    variant="outline"
-                    color="sky"
-                    placeholder="Example input"
-                    required
-                  />
-                </div>
+
+                <Input
+                  value={example.input}
+                  onChange={e =>
+                    updateExample(example.id, "input", e.target.value)
+                  }
+                  icon={<Hash size={14} />}
+                  variant="outline"
+                  color="sky"
+                  placeholder="Example input"
+                  required
+                />
               </div>
 
               <div className="form-field">
                 <span className="form-label">Output</span>
-                <div className="input-with-icon">
-                  <Input
-                    value={example.output}
-                    onChange={e =>
-                      updateExample(example.id, "output", e.target.value)
-                    }
-                    variant="outline"
-                    color="sky"
-                    icon={<ListChecks size={14} />}
-                    placeholder="Example output"
-                    required
-                  />
-                </div>
+
+                <Input
+                  value={example.output}
+                  onChange={e =>
+                    updateExample(example.id, "output", e.target.value)
+                  }
+                  variant="outline"
+                  color="sky"
+                  icon={<ListChecks size={14} />}
+                  placeholder="Example output"
+                  required
+                />
               </div>
 
               <div className="form-field">
                 <span className="form-label">Explanation</span>
+
                 <TextArea
                   value={example.explanation}
                   onChange={e =>
@@ -291,30 +297,45 @@ const CreateProblem = () => {
 
         <div className="form-section">
           <h2>Topics & Hints</h2>
+
           <div className="form-field">
             <span className="form-label">Topics</span>
-            <div className="input-with-icon">
-              <Input
-                name="topics[]"
-                icon={<Tag size={14} />}
-                variant="outline"
-                color="sky"
-                placeholder="Enter topics (comma separated)"
-              />
+
+            <div className="topics-selector">
+              {topicsData.topics.map((topic: Topic) => {
+                const topicSelected = _.includes(topics, topic.id);
+
+                const onSelect = () => {
+                  if (topicSelected)
+                    setTopics(prev => prev.filter(id => id !== topic.id));
+                  else setTopics(prev => [...prev, topic.id]);
+                };
+
+                return (
+                  <div className="topic-chip" onClick={onSelect}>
+                    <Chip
+                      variant={topicSelected ? "solid" : "outline"}
+                      color="sky"
+                      key={topic.id}
+                    >
+                      {topic.name}
+                    </Chip>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div className="form-field">
             <span className="form-label">Hints</span>
-            <div className="input-with-icon">
-              <TextArea
-                name="hints"
-                variant="outline"
-                color="sky"
-                placeholder="Enter hints (one per line)"
-                rows={3}
-              />
-            </div>
+
+            <TextArea
+              name="hints"
+              variant="outline"
+              color="sky"
+              placeholder="Enter hints (one per line)"
+              rows={3}
+            />
           </div>
         </div>
 
@@ -323,15 +344,14 @@ const CreateProblem = () => {
 
           <div className="form-field">
             <span className="form-label">Editorial Title</span>
-            <div className="input-with-icon">
-              <Input
-                name="editorialTitle"
-                placeholder="Enter editorial title"
-                variant="outline"
-                color="sky"
-                icon={<Lightbulb size={14} />}
-              />
-            </div>
+
+            <Input
+              name="editorialTitle"
+              placeholder="Enter editorial title"
+              variant="outline"
+              color="sky"
+              icon={<Lightbulb size={14} />}
+            />
           </div>
 
           <div className="form-field">
@@ -345,7 +365,7 @@ const CreateProblem = () => {
         </div>
 
         <div className="form-actions">
-          <Button type="submit" color="sky" disabled={loading}>
+          <Button type="submit" color="sky" disabled={mutationLoading}>
             <PlusCircle size={14} />
             Create problem
           </Button>

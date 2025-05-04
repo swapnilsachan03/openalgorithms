@@ -44,12 +44,14 @@ const Description = ({ problem, loading }: Props) => {
 
         <div className="problem_metadata">
           <Chip color={chipColor} size="small">
-            {_.capitalize(problem.difficulty as string)}
+            {_.capitalize(problem?.difficulty as string)}
           </Chip>
 
-          <Chip icon={<Tag size={13} />} size="small">
-            Topics
-          </Chip>
+          {!_.isEmpty(problem?.topics) ? (
+            <Chip icon={<Tag size={13} />} size="small">
+              Topics
+            </Chip>
+          ) : null}
 
           <Chip icon={<Lightbulb size={13} />} size="small">
             Hint
@@ -91,36 +93,38 @@ const Description = ({ problem, loading }: Props) => {
           ))}
         </div>
 
-        <div className="problem_topics">
-          {problem?.hints?.map((hint, index: number) => (
-            <Collapsible key={index}>
-              <Collapsible.Trigger
-                chevronPosition="right"
-                className="hint_trigger"
-              >
+        {!_.isEmpty(problem?.topics) ? (
+          <div className="problem_topics">
+            <Collapsible>
+              <Collapsible.Trigger chevronPosition="right" className="trigger">
                 <Tag size={15} />
                 Topics
               </Collapsible.Trigger>
 
-              <Collapsible.Content className="hint_content">
-                {hint?.content}
+              <Collapsible.Content className="content">
+                <div className="problem_topics">
+                  {problem?.topics?.map(topic => {
+                    return (
+                      <Chip variant="solid" size="small" key={topic?.id}>
+                        {topic?.name}
+                      </Chip>
+                    );
+                  })}
+                </div>
               </Collapsible.Content>
             </Collapsible>
-          ))}
-        </div>
+          </div>
+        ) : null}
 
         <div className="problem_hints">
           {problem?.hints?.map((hint, index: number) => (
             <Collapsible key={index}>
-              <Collapsible.Trigger
-                className="hint_trigger"
-                chevronPosition="right"
-              >
+              <Collapsible.Trigger className="trigger" chevronPosition="right">
                 <Lightbulb size={16} />
                 Hint {index + 1}
               </Collapsible.Trigger>
 
-              <Collapsible.Content className="hint_content">
+              <Collapsible.Content className="content">
                 {hint?.content}
               </Collapsible.Content>
             </Collapsible>

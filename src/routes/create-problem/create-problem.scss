@@ -80,4 +80,14 @@
     display: flex;
     justify-content: flex-end;
   }
+
+  .topics-selector {
+    display: flex;
+    gap: 6px;
+
+    .topic-chip {
+      display: inline;
+      cursor: pointer;
+    }
+  }
 }

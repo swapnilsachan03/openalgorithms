@@ -39,7 +39,10 @@ export const getProblemBySlugQuery = gql`
         content
         problemId
       }
-      topics
+      topics {
+        id
+        name
+      }
       editorial {
         id
         title
@@ -69,34 +72,6 @@ export const getSolutionByIdQuery = gql`
         id
         name
       }
-    }
-  }
-`;
-
-export const createProblemMutation = gql`
-  mutation CreateProblem($input: CreateProblemInput) {
-    createProblem(input: $input) {
-      id
-      title
-      slug
-      description
-      createdById
-      timeLimitInSeconds
-      memoryLimitInMB
-      difficulty
-      editorial {
-        id
-        content
-      }
-      examples {
-        input
-        output
-        explanation
-      }
-      hints {
-        content
-      }
-      topics
     }
   }
 `;

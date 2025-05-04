@@ -1,7 +1,7 @@
 import _ from "lodash";
 import classNames from "classnames";
 import { Button, IconButton } from "generic-ds";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   useIsLoggedIn,
@@ -20,13 +20,11 @@ const navbarLinks = [
   { href: "/interviews", label: "Interviews" },
 ];
 
-const Navbar = () => {
-  const location = useLocation();
+type Props = {
+  isProblemPage: boolean;
+};
 
-  const isProblemSolvingPage =
-    location.pathname.startsWith("/problem/") &&
-    !location.pathname.includes("/create");
-
+const Navbar = ({ isProblemPage }: Props) => {
   const isLoggedIn = useIsLoggedIn();
   const token = useUserToken();
   const actions = useUserActions();
@@ -37,9 +35,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={classNames("navbar", { "no-border": isProblemSolvingPage })}
-    >
+    <nav className={classNames("navbar", { "no-border": isProblemPage })}>
       <Link to="/" className="navbar_logo">
         OpenAlgorithms
       </Link>
