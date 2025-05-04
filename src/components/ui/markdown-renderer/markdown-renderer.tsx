@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import React, { useEffect, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import ReactMarkdown from "react-markdown";
 import {
   materialDark,
-  materialLight,
+  oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import classNames from "classnames";
 import remarkGfm from "remark-gfm";
@@ -18,9 +18,18 @@ type Props = {
 const MarkdownRenderer = (props: Props) => {
   const { content } = props;
 
-  const [prefersDarkTheme] = useState(
+  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) =>
+      setPrefersDarkTheme(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   return (
     <div className="markdown-renderer">
@@ -37,13 +46,13 @@ const MarkdownRenderer = (props: Props) => {
             children?: React.ReactNode;
           }) {
             const match = /language-(\w+)/.exec(className || "");
-            const language = match ? match[1] : "";
+            const language = match ? match[1] : "text";
 
             return !inline && language ? (
               <div className="code-block">
                 <div className="code-header">{language}</div>
                 <SyntaxHighlighter
-                  style={prefersDarkTheme ? materialDark : materialLight}
+                  style={prefersDarkTheme ? materialDark : oneLight}
                   customStyle={{ margin: 0 }}
                   codeTagProps={{
                     style: {

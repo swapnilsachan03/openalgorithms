@@ -249,7 +249,9 @@ export default function MarkdownEditor({
           />
         </div>
 
-        <MarkdownRenderer content={content} />
+        <div className="preview-pane">
+          <MarkdownRenderer content={content} />
+        </div>
       </div>
     </div>
   );
