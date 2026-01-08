@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 
 import { getApolloClient } from "./lib/apolloClient";
 import { useUserToken } from "./stores/userStore";

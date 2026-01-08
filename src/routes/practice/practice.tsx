@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { PlusCircle, Search } from "lucide-react";
 import { Button, Input, Select } from "generic-ds";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 import { Problem } from "@/generated/graphql";
 import Table, { Column } from "@/components/ui/table";
@@ -12,6 +12,8 @@ import { useIsAdmin } from "@/stores/userStore";
 import { getProblemsQuery } from "./modules/practice_queries";
 
 import "./practice.scss";
+
+const EMPTY_PROBLEMS: Problem[] = [];
 
 const difficultyOptions = [
   { value: "ALL", label: "All" },
@@ -84,9 +86,9 @@ const Practice = () => {
     { key: "rating", label: "Rating", align: "center" },
   ];
 
-  const problems: Problem[] = data?.problems?.edges;
+  const problems: Problem[] = _.get(data, "problems.edges", EMPTY_PROBLEMS);
 
-  const rows: ProblemRow[] = problems?.map(problem => {
+  const rows: ProblemRow[] = problems.map(problem => {
     const title = problem.title ?? "";
     const accepted = problem.acceptedSubmissions ?? 0;
     const total = problem.totalSubmissions || 1;
@@ -127,8 +129,8 @@ const Practice = () => {
           <Select
             value={difficulty}
             onChange={setDifficulty}
-            variant="outline"
-            color="zinc"
+            variant="outline-input"
+            color="sky"
             options={difficultyOptions}
             placeholder="Difficulty"
           />

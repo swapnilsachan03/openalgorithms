@@ -1,6 +1,7 @@
+import _ from "lodash";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 import "./problem.scss";
 
@@ -13,6 +14,7 @@ import {
 } from "@/stores/panelDimensionsStore";
 
 import { getProblemBySlugQuery } from "@problem/modules/queries";
+import { Problem } from "@/generated/graphql";
 
 import DetailsPane from "@problem/components/details_pane/details_pane";
 import EditorPane from "@problem/components/editor_pane/editor_pane";
@@ -22,15 +24,20 @@ interface ProblemProps {
   setIsProblemPage: (isProblemPage: boolean) => void;
 }
 
-const Problem = (props: ProblemProps) => {
+const ProblemPage = (props: ProblemProps) => {
   const { setIsProblemPage } = props;
 
   const { slug } = useParams();
   const { width } = useWindowSize();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const [parentWidth, setParentWidth] = useState<number>(width);
 
-  const parentWidth = containerRef.current?.offsetWidth ?? width;
+  useEffect(() => {
+    if (containerRef.current) {
+      setParentWidth(containerRef.current.offsetWidth);
+    }
+  }, [width]);
 
   const detailsRatio = useDetailsRatio();
   const editorRatio = useEditorRatio();
@@ -113,10 +120,12 @@ const Problem = (props: ProblemProps) => {
     },
   });
 
+  const problem = _.get(data, "problem", {}) as Problem;
+
   return (
     <div className="problem_container" ref={containerRef}>
       <div className="problem_details_pane" style={{ width: detailsWidth }}>
-        <DetailsPane problem={data?.problem} loading={loading} />
+        <DetailsPane problem={problem} loading={loading} />
         <div
           className={`resize_handle ${isDragging === 1 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(1)}
@@ -138,4 +147,4 @@ const Problem = (props: ProblemProps) => {
   );
 };
 
-export default Problem;
+export default ProblemPage;

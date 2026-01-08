@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import {
   AlignLeft,
   Hash,
@@ -21,6 +21,7 @@ import { Input, Button, Select, TextArea, IconButton } from "generic-ds";
 import { createProblemMutation } from "@/routes/problem/modules/queries";
 import { useIsAdmin } from "@/stores/userStore";
 import { Toast } from "@/lib/toast";
+import { Problem } from "@/generated/graphql";
 import MarkdownEditor from "@/components/ui/markdown-editor";
 
 import "./create-problem.scss";
@@ -117,9 +118,12 @@ const CreateProblem = () => {
 
       const result = await createProblem({ variables: { input } });
 
-      if (result.data?.createProblem) {
+      const problem = (result.data as { createProblem: Problem })
+        ?.createProblem;
+
+      if (problem) {
         Toast.success("Problem created successfully");
-        navigate(`/problem/${result.data.createProblem.slug}`);
+        navigate(`/problem/${problem.slug}`);
       }
     } catch (error) {
       Toast.error("Failed to create problem");
