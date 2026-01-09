@@ -29,7 +29,7 @@ class ToastManager {
       position: "bottom-left",
       icon: "⚠️",
       style: {
-        backgroundColor: "#fef3c7",
+        backgroundColor: "#fffcefff",
         color: "#92400e",
       },
     });
