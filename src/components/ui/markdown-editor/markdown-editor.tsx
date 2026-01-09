@@ -10,6 +10,8 @@ import {
   ListOrdered,
   Undo,
   Redo,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Button } from "generic-ds";
 
@@ -113,6 +115,7 @@ export default function MarkdownEditor({
   height = 400,
 }: MarkdownEditorProps) {
   const [content, setContent] = useState(value);
+  const [isPreview, setIsPreview] = useState(false);
 
   const [history, setHistory] = useState<string[]>([value]);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -138,7 +141,8 @@ export default function MarkdownEditor({
 
     handleChange(newContent);
 
-    // Set cursor position after update
+    /* set cursor position after update */
+
     setTimeout(() => {
       if (textareaRef) {
         textareaRef.focus();
@@ -154,7 +158,8 @@ export default function MarkdownEditor({
     setContent(newContent);
     onChange(newContent);
 
-    // Add to history
+    /* add to history */
+
     const newHistory = [...history.slice(0, historyIndex + 1), newContent];
     setHistory(newHistory);
     setHistoryIndex(newHistory.length - 1);
@@ -189,6 +194,7 @@ export default function MarkdownEditor({
             disabled={historyIndex === 0}
             icon={<Undo size={14} />}
           />
+
           <Button
             variant="ghost"
             size="small"
@@ -211,11 +217,24 @@ export default function MarkdownEditor({
               icon={item.icon}
             />
           ))}
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="small"
+            onClick={() => setIsPreview(!isPreview)}
+            title="Toggle Preview"
+            icon={isPreview ? <EyeOff size={14} /> : <Eye size={14} />}
+          />
         </div>
       </div>
 
       <div className="editor-container">
-        <div className="editor-pane">
+        {isPreview ? (
+          <div className="preview-pane">
+            <MarkdownRenderer content={content} />
+          </div>
+        ) : (
           <textarea
             ref={ref => setTextareaRef(ref)}
             value={content}
@@ -247,11 +266,7 @@ export default function MarkdownEditor({
               }
             }}
           />
-        </div>
-
-        <div className="preview-pane">
-          <MarkdownRenderer content={content} />
-        </div>
+        )}
       </div>
     </div>
   );
