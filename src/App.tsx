@@ -1,12 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { ConfigProvider, theme } from "antd";
 import { ApolloProvider } from "@apollo/client/react";
 
-import { getApolloClient } from "./lib/apolloClient";
-import { useUserToken } from "./stores/userStore";
-
 import RouteWrapper from "@/components/layout/route_wrapper";
+import { getApolloClient } from "@/lib/apolloClient";
+import { useUserToken } from "@/stores/userStore";
+import { useSystemTheme } from "@/hooks/useSystemTheme";
 
 import Navbar from "./components/layout/navbar";
 import Home from "./routes/home/home";
@@ -32,47 +33,57 @@ function App() {
     }
   }, [isProblemPage]);
 
+  const systemTheme = useSystemTheme();
+
+  const antdTheme = {
+    algorithm:
+      systemTheme === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
+  };
+
   const token = useUserToken();
   const client = getApolloClient(token);
 
   return (
     <ApolloProvider client={client}>
-      <Navbar />
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <RouteWrapper isAuthRoute>
-              <Login />
-            </RouteWrapper>
-          }
-        />
+      <ConfigProvider theme={antdTheme}>
+        <Navbar />
 
-        <Route
-          path="/signup"
-          element={
-            <RouteWrapper isAuthRoute>
-              <SignUp />
-            </RouteWrapper>
-          }
-        />
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <RouteWrapper isAuthRoute>
+                <Login />
+              </RouteWrapper>
+            }
+          />
 
-        <Route
-          path="/problem/:slug"
-          element={<Problem setIsProblemPage={setIsProblemPage} />}
-        />
+          <Route
+            path="/signup"
+            element={
+              <RouteWrapper isAuthRoute>
+                <SignUp />
+              </RouteWrapper>
+            }
+          />
 
-        <Route path="/" element={<Home />} />
-        <Route path="/learn" element={<Learn />} />
-        <Route path="/practice" element={<Practice />} />
-        <Route path="/create-problem" element={<CreateProblem />} />
-        <Route path="/playground" element={<Playground />} />
-        <Route path="/interviews" element={<Interviews />} />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route
+            path="/problem/:slug"
+            element={<Problem setIsProblemPage={setIsProblemPage} />}
+          />
 
-      <Toaster position="top-right" />
+          <Route path="/" element={<Home />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/practice" element={<Practice />} />
+          <Route path="/create-problem" element={<CreateProblem />} />
+          <Route path="/playground" element={<Playground />} />
+          <Route path="/interviews" element={<Interviews />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+
+        <Toaster position="top-right" />
+      </ConfigProvider>
     </ApolloProvider>
   );
 }
