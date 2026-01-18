@@ -15,6 +15,7 @@
     "@apollo/client": "^4.0.11",
     "@monaco-editor/react": "^4.7.0",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "antd": "^6.2.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "generic-ds": "^0.1.7",
