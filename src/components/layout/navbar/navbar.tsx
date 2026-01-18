@@ -1,17 +1,23 @@
+/**-- external --*/
+
 import _ from "lodash";
 import classNames from "classnames";
-import { Button, IconButton } from "generic-ds";
 import { Link, useLocation } from "react-router-dom";
+import { Button } from "antd";
+import { LogIn, LogOut, User2 } from "lucide-react";
+
+/**-- internal --*/
 
 import {
   useIsLoggedIn,
   useUserActions,
   useUserToken,
 } from "@/stores/userStore";
+import { onLogout } from "@/routes/login/modules/login_module";
+
+/**-- relative --*/
 
 import "./navbar.scss";
-import { LogIn, LogOut, User2 } from "lucide-react";
-import { onLogout } from "@/routes/login/modules/login_module";
 
 const navbarLinks = [
   { href: "/learn", label: "Learn" },
@@ -58,16 +64,19 @@ const Navbar = () => {
             <Link to="/me">
               <Button
                 variant="solid"
-                size="medium"
+                color="default"
                 icon={<User2 size={14} />}
-                label="Profile"
-              />
+              >
+                Profile
+              </Button>
             </Link>
 
-            <IconButton
-              ariaLabel="Logout"
-              icon={<LogOut size={14} />}
+            <Button
+              variant="text"
+              color="default"
+              aria-label="Logout"
               onClick={handleLogout}
+              icon={<LogOut size={14} />}
             />
           </div>
         ) : (
@@ -75,10 +84,11 @@ const Navbar = () => {
             <Link to="/login">
               <Button
                 variant="solid"
-                size="medium"
+                color="default"
                 icon={<LogIn size={14} />}
-                label="Sign In"
-              />
+              >
+                Sign in
+              </Button>
             </Link>
           </div>
         )}

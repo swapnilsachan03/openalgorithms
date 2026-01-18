@@ -1,12 +1,18 @@
+/**-- external --*/
+
 import { useState } from "react";
-import { Button, Input } from "generic-ds";
+import { Button, Input } from "antd";
 import { KeyRound, LogIn, Mail, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { onLogin } from "./modules/login_module";
+/**-- internal --*/
+
 import { useUserActions } from "@/stores/userStore";
 
+/**-- relative --*/
+
 import "./login.scss";
+import { onLogin } from "./modules/login_module";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -30,10 +36,8 @@ const LoginPage = () => {
 
             <Input
               type="text"
-              color="sky"
-              variant="outline"
               placeholder="Enter your email"
-              icon={<Mail size={16} />}
+              prefix={<Mail size={16} />}
               value={username}
               onChange={e => setUsername(e.currentTarget.value)}
               required
@@ -45,10 +49,8 @@ const LoginPage = () => {
 
             <Input
               type="password"
-              color="sky"
-              variant="outline"
               placeholder="Enter your password"
-              icon={<KeyRound size={16} />}
+              prefix={<KeyRound size={16} />}
               value={password}
               onChange={e => setPassword(e.currentTarget.value)}
               required
@@ -59,21 +61,22 @@ const LoginPage = () => {
         <div className="action_container">
           <Link to="/signup">
             <Button
-              variant="outline"
-              color="sky"
-              label="Sign Up"
+              variant="outlined"
+              color="geekblue"
               icon={<UserPlus size={14} />}
-            />
+            >
+              Sign up
+            </Button>
           </Link>
 
           <Button
-            type="submit"
-            color="sky"
             variant="solid"
-            label="Login"
+            color="geekblue"
             icon={<LogIn size={14} />}
             onClick={handleSubmit}
-          />
+          >
+            Login
+          </Button>
         </div>
       </div>
     </div>
