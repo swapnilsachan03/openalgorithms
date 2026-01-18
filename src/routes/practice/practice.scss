@@ -23,10 +23,15 @@
 .problem_filters {
   display: flex;
   gap: 8px;
+
+  .select-difficulty {
+    width: 150px;
+  }
 }
 
 .problem_title_link {
   transition: all ease-in-out 0.2s;
+
   &:hover {
     color: var(--text-accent);
   }
