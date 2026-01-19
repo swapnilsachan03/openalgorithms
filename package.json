@@ -18,7 +18,6 @@
     "antd": "^6.2.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "generic-ds": "^0.1.7",
     "graphql": "^16.10.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.503.0",
