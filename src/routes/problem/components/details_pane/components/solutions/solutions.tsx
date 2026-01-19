@@ -1,4 +1,6 @@
+import _ from "lodash";
 import { useState } from "react";
+import { Avatar, Button, Input, Tag } from "antd";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -10,14 +12,13 @@ import {
   UserCheck,
   Search,
 } from "lucide-react";
-import { Chip, Button, Input, IconButton, Avatar } from "generic-ds";
 import dayjs from "dayjs";
 
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 import { Problem, UserSolution } from "@/generated/graphql";
+import { avatarStyles, tagStyle } from "@/lib/styles";
 
 import "./solutions.scss";
-import _ from "lodash";
-import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 type Props = {
   problem: Problem;
@@ -198,12 +199,11 @@ const Solutions = ({ problem, loading }: Props) => {
     return (
       <div className="solution_detail">
         <div className="solution_detail_header">
-          <IconButton
-            color="neutral"
+          <Button
             size="small"
-            variant="outline"
+            variant="outlined"
             icon={<ArrowLeft size={14} />}
-            ariaLabel="Back"
+            aria-label="Back"
             onClick={handleBack}
           />
 
@@ -211,22 +211,22 @@ const Solutions = ({ problem, loading }: Props) => {
             <h2>{selectedSolution?.title}</h2>
 
             <div className="solution_meta">
-              <Chip icon={<Eye size={13} />} size="small">
+              <Tag icon={<Eye size={13} />} style={tagStyle}>
                 {selectedSolution?.views}
-              </Chip>
+              </Tag>
 
               <a
                 href={`/u/${selectedSolution?.user?.id}`}
                 className="solution_author"
               >
-                <Chip icon={<UserCheck size={13} />} size="small">
+                <Tag icon={<UserCheck size={13} />} style={tagStyle}>
                   {selectedSolution?.user?.name}
-                </Chip>
+                </Tag>
               </a>
 
-              <Chip icon={<Clock size={13} />} size="small">
+              <Tag icon={<Clock size={13} />} style={tagStyle}>
                 {dayjs(selectedSolution.createdAt).format("MMM DD, YYYY")}
-              </Chip>
+              </Tag>
             </div>
           </div>
         </div>
@@ -260,6 +260,18 @@ const Solutions = ({ problem, loading }: Props) => {
     );
   }
 
+  const getAvatarInitials = (name: string) => {
+    const names = name.split(" ");
+
+    if (names.length === 1) {
+      return names[0][0].toUpperCase() + names[0][1]?.toUpperCase() || "";
+    } else {
+      return (
+        names[0][0].toUpperCase() + names[names.length - 1][0].toUpperCase()
+      );
+    }
+  };
+
   return (
     <div className="solutions">
       <div className="solutions_header">
@@ -267,15 +279,15 @@ const Solutions = ({ problem, loading }: Props) => {
           <Input
             type="text"
             placeholder="Search for a solution"
-            color="sky"
-            variant="outline"
-            icon={<Search size={16} />}
+            prefix={<Search size={16} />}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <Button color="sky">Share your solution</Button>
+        <Button variant="solid" color="geekblue">
+          Share your solution
+        </Button>
       </div>
 
       <div className="solutions_list">
@@ -293,25 +305,26 @@ const Solutions = ({ problem, loading }: Props) => {
             </h3>
 
             <div className="solution_meta">
-              <Chip icon={<Eye size={13} />} size="small">
+              <Tag icon={<Eye size={13} />} style={tagStyle}>
                 {solution?.views}
-              </Chip>
+              </Tag>
 
-              <Chip icon={<ArrowBigUp size={15} />} size="small">
+              <Tag icon={<ArrowBigUp size={15} />} style={tagStyle}>
                 {solution?.likes}
-              </Chip>
+              </Tag>
 
-              <Chip icon={<ArrowBigDown size={15} />} size="small">
+              <Tag icon={<ArrowBigDown size={15} />} style={tagStyle}>
                 {solution?.dislikes}
-              </Chip>
+              </Tag>
             </div>
 
             <div className="avatar_container">
               <Avatar
-                name={solution?.user?.name ?? "deleted_user"}
-                size="x-small"
-                randomizeColor
-              />
+                size="default"
+                style={avatarStyles[_.random(avatarStyles.length - 1)]}
+              >
+                {getAvatarInitials(solution?.user?.name ?? "deleted_user")}
+              </Avatar>
             </div>
           </div>
         ))}

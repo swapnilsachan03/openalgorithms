@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { ThumbsUp, ThumbsDown, Eye, Calendar } from "lucide-react";
-import { Chip } from "generic-ds";
+import { Tag } from "antd";
 import dayjs from "dayjs";
 
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
+import { tagStyle } from "@/lib/styles";
 import { Problem } from "@/generated/graphql";
 
 import "./editorial.scss";
@@ -44,13 +45,13 @@ const Editorial = ({ problem, loading }: Props) => {
         <h1 className="editorial_title">{editorial?.title}</h1>
 
         <div className="editorial_metadata">
-          <Chip icon={<Calendar size={13} />} size="small">
+          <Tag icon={<Calendar size={13} />} style={tagStyle}>
             {dayjs(editorial.createdAt).format("MMM DD, YYYY")}
-          </Chip>
+          </Tag>
 
-          <Chip icon={<Eye size={13} />} size="small">
+          <Tag icon={<Eye size={13} />} style={tagStyle}>
             {editorial.views}
-          </Chip>
+          </Tag>
         </div>
 
         <div className="editorial_content">

@@ -13,7 +13,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { Button } from "generic-ds";
+import { Button } from "antd";
 
 import "./markdown-editor.scss";
 import MarkdownRenderer from "../markdown-renderer";
@@ -188,7 +188,8 @@ export default function MarkdownEditor({
       <div className="toolbar">
         <div className="toolbar-group">
           <Button
-            variant="ghost"
+            variant="text"
+            color="default"
             size="small"
             onClick={handleUndo}
             disabled={historyIndex === 0}
@@ -196,7 +197,8 @@ export default function MarkdownEditor({
           />
 
           <Button
-            variant="ghost"
+            variant="text"
+            color="default"
             size="small"
             onClick={handleRedo}
             disabled={historyIndex === history.length - 1}
@@ -210,7 +212,8 @@ export default function MarkdownEditor({
           {toolbar.map((item, index) => (
             <Button
               key={index}
-              variant="ghost"
+              variant="text"
+              color="default"
               size="small"
               onClick={() => handleToolbarAction(item.action)}
               title={item.label}
@@ -219,8 +222,8 @@ export default function MarkdownEditor({
           ))}
 
           <Button
-            type="button"
-            variant="ghost"
+            variant="text"
+            color="default"
             size="small"
             onClick={() => setIsPreview(!isPreview)}
             title="Toggle Preview"

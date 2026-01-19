@@ -1,12 +1,18 @@
+/**-- external --*/
+
 import { useState } from "react";
-import { Button, Input } from "generic-ds";
+import { Button, Input } from "antd";
 import { Image, KeyRound, LogIn, Mail, Text, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
+/**-- internal --*/
+
 import { useUserActions } from "@/stores/userStore";
-import { onSignup } from "../login/modules/login_module";
+
+/**-- relative --*/
 
 import "./signup.scss";
+import { onSignup } from "../login/modules/login_module";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -35,10 +41,8 @@ const SignupPage = () => {
             <span>Name</span>
             <Input
               type="text"
-              color="sky"
-              variant="outline"
               placeholder="Enter your name"
-              icon={<Text size={16} />}
+              prefix={<Text size={16} />}
               value={name}
               onChange={e => setName(e.currentTarget.value)}
               required
@@ -49,10 +53,8 @@ const SignupPage = () => {
             <span>Email</span>
             <Input
               type="email"
-              color="sky"
-              variant="outline"
               placeholder="Enter your email"
-              icon={<Mail size={16} />}
+              prefix={<Mail size={16} />}
               value={email}
               onChange={e => setEmail(e.currentTarget.value)}
               required
@@ -63,10 +65,8 @@ const SignupPage = () => {
             <span>Password</span>
             <Input
               type="password"
-              color="sky"
-              variant="outline"
               placeholder="Enter your password"
-              icon={<KeyRound size={16} />}
+              prefix={<KeyRound size={16} />}
               value={password}
               onChange={e => setPassword(e.currentTarget.value)}
               required
@@ -77,10 +77,8 @@ const SignupPage = () => {
             <span>Image URL</span>
             <Input
               type="text"
-              color="sky"
-              variant="outline"
               placeholder="Enter your image URL"
-              icon={<Image size={16} />}
+              prefix={<Image size={16} />}
               value={imageUrl}
               onChange={e => setImageUrl(e.currentTarget.value)}
             />
@@ -90,21 +88,22 @@ const SignupPage = () => {
         <div className="action_container">
           <Link to="/login">
             <Button
-              variant="outline"
-              color="sky"
-              label="Login"
+              variant="outlined"
+              color="geekblue"
               icon={<LogIn size={14} />}
-            />
+            >
+              Login
+            </Button>
           </Link>
 
           <Button
-            type="submit"
-            color="sky"
             variant="solid"
-            label="Sign Up"
+            color="geekblue"
             icon={<UserPlus size={14} />}
             onClick={handleSubmit}
-          />
+          >
+            Sign up
+          </Button>
         </div>
       </div>
     </div>

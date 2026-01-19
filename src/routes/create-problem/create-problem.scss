@@ -1,18 +1,35 @@
 .create-problem {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 32px;
+  width: 100%;
 
   h1 {
-    font-size: 32px;
+    text-align: center;
+    font-size: 24px;
     font-weight: 600;
-    margin-bottom: 32px;
+    padding: 24px 0px;
   }
 
-  &-form {
+  .problem-form {
+    display: flex;
+    gap: 12px;
+  }
+
+  .basic-details {
+    padding: 12px;
+    border: 1px solid var(--border-primary);
+    background-color: var(--background-secondary);
+    border-radius: 12px;
+    width: 50%;
     display: flex;
     flex-direction: column;
     gap: 52px;
+    height: calc(100vh - 200px);
+    overflow: auto;
+  }
+
+  .solutions-editor {
+    width: 50%;
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
   }
 
   .form-section {
@@ -77,6 +94,7 @@
   }
 
   .form-actions {
+    padding: 12px 0px;
     display: flex;
     justify-content: flex-end;
   }

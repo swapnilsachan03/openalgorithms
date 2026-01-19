@@ -1,16 +1,36 @@
 import _ from "lodash";
 import { useState } from "react";
-import { ThumbsUp, ThumbsDown, Eye, Tag, Lightbulb, Star } from "lucide-react";
-import { Collapsible, Chip } from "generic-ds";
+import { Collapse, Tag } from "antd";
+import {
+  ThumbsUp,
+  ThumbsDown,
+  Eye,
+  TagIcon,
+  Lightbulb,
+  Star,
+} from "lucide-react";
 
-import { Problem } from "@/generated/graphql";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
+import { Hint, Problem } from "@/generated/graphql";
+import { tagStyle } from "@/lib/styles";
 
 import "./description.scss";
-import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 type Props = {
   problem: Problem;
   loading: boolean;
+};
+
+const getHintContent = (hint: string) => (
+  <div style={{ paddingInlineStart: 24 }}>{hint}</div>
+);
+
+const getHintsData = (hints: Hint[]) => {
+  return hints?.map((hint, index) => ({
+    key: hint.id,
+    label: <span>Hint {index + 1}</span>,
+    children: getHintContent(hint.content ?? ""),
+  }));
 };
 
 const Description = ({ problem, loading }: Props) => {
@@ -27,14 +47,16 @@ const Description = ({ problem, loading }: Props) => {
     setUserDisliked(!userDisliked);
   };
 
+  const hints = _.get(problem, "hints", []) as Hint[];
+
   if (loading) {
     return <div className="problem">Loading...</div>;
   }
 
-  let chipColor: "neutral" | "green" | "yellow" | "red" = "neutral";
+  let chipColor: "neutral" | "green" | "gold" | "red" = "neutral";
 
   if (problem?.difficulty === "EASY") chipColor = "green";
-  if (problem?.difficulty === "MEDIUM") chipColor = "yellow";
+  if (problem?.difficulty === "MEDIUM") chipColor = "gold";
   if (problem?.difficulty === "HARD") chipColor = "red";
 
   return (
@@ -43,21 +65,21 @@ const Description = ({ problem, loading }: Props) => {
         <h1 className="problem_title">{problem?.title}</h1>
 
         <div className="problem_metadata">
-          <Chip color={chipColor} size="small">
+          <Tag color={chipColor} variant="solid">
             {_.capitalize(problem.difficulty as string)}
-          </Chip>
+          </Tag>
 
-          <Chip icon={<Tag size={13} />} size="small">
+          <Tag icon={<TagIcon size={12} />} style={tagStyle}>
             Topics
-          </Chip>
+          </Tag>
 
-          <Chip icon={<Lightbulb size={13} />} size="small">
+          <Tag icon={<Lightbulb size={12} />} style={tagStyle}>
             Hint
-          </Chip>
+          </Tag>
 
-          <Chip icon={<Eye size={13} />} size="small">
+          <Tag icon={<Eye size={12} />} style={tagStyle}>
             {problem?.views}
-          </Chip>
+          </Tag>
         </div>
 
         <div className="problem_description">
@@ -91,41 +113,7 @@ const Description = ({ problem, loading }: Props) => {
           ))}
         </div>
 
-        <div className="problem_topics">
-          {problem?.hints?.map((hint, index: number) => (
-            <Collapsible key={index}>
-              <Collapsible.Trigger
-                chevronPosition="right"
-                className="hint_trigger"
-              >
-                <Tag size={15} />
-                Topics
-              </Collapsible.Trigger>
-
-              <Collapsible.Content className="hint_content">
-                {hint?.content}
-              </Collapsible.Content>
-            </Collapsible>
-          ))}
-        </div>
-
-        <div className="problem_hints">
-          {problem?.hints?.map((hint, index: number) => (
-            <Collapsible key={index}>
-              <Collapsible.Trigger
-                className="hint_trigger"
-                chevronPosition="right"
-              >
-                <Lightbulb size={16} />
-                Hint {index + 1}
-              </Collapsible.Trigger>
-
-              <Collapsible.Content className="hint_content">
-                {hint?.content}
-              </Collapsible.Content>
-            </Collapsible>
-          ))}
-        </div>
+        <Collapse accordion items={getHintsData(hints)} bordered={false} />
       </div>
 
       <div className="problem_footer">

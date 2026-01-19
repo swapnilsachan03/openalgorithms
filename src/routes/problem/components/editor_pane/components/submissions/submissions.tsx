@@ -1,12 +1,13 @@
 import _ from "lodash";
 import { useState } from "react";
 import { ArrowLeft, Clock, Copy, Timer, ChartBar, Code } from "lucide-react";
+import { Button, Tag } from "antd";
 import dayjs from "dayjs";
-import { Chip, Button } from "generic-ds";
 
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 import "./submissions.scss";
+import { tagStyle } from "@/lib/styles";
 
 type Props = {
   loading: boolean;
@@ -89,14 +90,10 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
       <div className="submission_detail">
         <div className="submission_detail_header">
           <Button
-            color="neutral"
-            size="small"
-            variant="outline"
-            style={{ padding: "6px" }}
+            variant="outlined"
             onClick={handleBack}
-          >
-            <ArrowLeft size={14} />
-          </Button>
+            icon={<ArrowLeft size={14} />}
+          />
 
           <div className="submission_detail_meta">
             <span
@@ -108,19 +105,19 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
             </span>
 
             <div className="submission_detail_stats">
-              <Chip icon={<Timer size={13} />} size="small">
+              <Tag style={tagStyle} icon={<Timer size={13} />}>
                 {selectedSubmission.runtime}
-              </Chip>
+              </Tag>
 
-              <Chip icon={<ChartBar size={13} />} size="small">
+              <Tag style={tagStyle} icon={<ChartBar size={13} />}>
                 {selectedSubmission.memory}
-              </Chip>
+              </Tag>
 
-              <Chip icon={<Clock size={13} />} size="small">
+              <Tag style={tagStyle} icon={<Clock size={13} />}>
                 {dayjs(selectedSubmission.timestamp).format(
                   "MMM DD, YYYY HH:mm"
                 )}
-              </Chip>
+              </Tag>
             </div>
           </div>
         </div>
@@ -129,7 +126,8 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
 
         <div className="copy_to_editor">
           <Button
-            color="cyan"
+            variant="solid"
+            color="blue"
             onClick={handleCopyToEditor}
             icon={<Copy size={14} />}
           >
@@ -165,17 +163,17 @@ const Submissions = ({ loading, onCopyToEditor }: Props) => {
               </div>
 
               <div className="submission_card_meta">
-                <Chip icon={<Code size={13} />} size="small">
+                <Tag style={tagStyle} icon={<Code size={13} />}>
                   {_.capitalize(submission.language)}
-                </Chip>
+                </Tag>
 
-                <Chip icon={<Timer size={13} />} size="small">
+                <Tag style={tagStyle} icon={<Timer size={13} />}>
                   {submission.runtime}
-                </Chip>
+                </Tag>
 
-                <Chip icon={<ChartBar size={13} />} size="small">
+                <Tag style={tagStyle} icon={<ChartBar size={13} />}>
                   {submission.memory}
-                </Chip>
+                </Tag>
               </div>
             </div>
           </div>
