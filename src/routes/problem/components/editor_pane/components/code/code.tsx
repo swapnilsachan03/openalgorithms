@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
-import { Button, Select } from "generic-ds";
+import { Button, Select } from "antd";
 import Editor, { type Monaco } from "@monaco-editor/react";
 
 import "./code.scss";
@@ -11,7 +11,14 @@ type Props = {
   defaultLanguage?: string;
 };
 
-// Initial template for the Two Sum problem
+const languageOptions = [
+  { value: "python", label: "Python" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "java", label: "Java" },
+  { value: "cpp", label: "C++" },
+];
+
 const initialCode = `def twoSum(nums: List[int], target: int) -> List[int]:
     # Write your solution here
     pass`;
@@ -35,8 +42,8 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
 
   useEffect(() => {
     if (defaultCode && defaultLanguage) {
-      setCode(defaultCode);
-      setLanguage(defaultLanguage);
+      // setCode(defaultCode);
+      // setLanguage(defaultLanguage);
     }
   }, [defaultCode, defaultLanguage]);
 
@@ -97,22 +104,18 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
 
       <div className="code_toolbar">
         <Select
+          placeholder="Select Language"
           value={language}
           onChange={setLanguage}
-          variant="outline"
-          color="zinc"
-          options={[
-            { value: "python", label: "Python" },
-            { value: "javascript", label: "JavaScript" },
-            { value: "typescript", label: "TypeScript" },
-            { value: "java", label: "Java" },
-            { value: "cpp", label: "C++" },
-          ]}
-          placeholder="Select Language"
-          direction="top"
+          options={languageOptions}
         />
 
-        <Button color="green" icon={<Check size={14} />} onClick={handleSubmit}>
+        <Button
+          variant="solid"
+          color="green"
+          icon={<Check size={14} />}
+          onClick={handleSubmit}
+        >
           Submit
         </Button>
       </div>

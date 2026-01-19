@@ -190,8 +190,8 @@ const CreateProblem = () => {
                   <Select
                     placeholder="Select difficulty"
                     value={difficulty}
-                    options={difficultyOptions}
                     onChange={setDifficulty}
+                    options={difficultyOptions}
                     className="select-difficulty"
                   />
                 </div>
@@ -367,7 +367,12 @@ const CreateProblem = () => {
         </div>
 
         <div className="form-actions">
-          <Button disabled={loading} type="primary" color="geekblue">
+          <Button
+            disabled={loading}
+            type="primary"
+            color="geekblue"
+            onClick={handleSubmit}
+          >
             <PlusCircle size={14} />
             Create problem
           </Button>

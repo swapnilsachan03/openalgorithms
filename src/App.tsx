@@ -9,18 +9,18 @@ import { getApolloClient } from "@/lib/apolloClient";
 import { useUserToken } from "@/stores/userStore";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 
-import Navbar from "./components/layout/navbar";
-import Home from "./routes/home/home";
-import Problem from "./routes/problem/problem";
-import NotFound from "./routes/not-found/not-found";
-import About from "./routes/about/about";
-import Learn from "./routes/learn/learn";
-import Practice from "./routes/practice/practice";
-import Interviews from "./routes/interviews/interviews";
-import Playground from "./routes/playground/playground";
-import CreateProblem from "./routes/create-problem/create-problem";
-import Login from "./routes/login/login";
-import SignUp from "./routes/signup/signup";
+import Navbar from "@/components/layout/navbar";
+import Home from "@/routes/home/home";
+import Problem from "@/routes/problem/problem";
+import NotFound from "@/routes/not-found/not-found";
+import About from "@/routes/about/about";
+import Learn from "@/routes/learn/learn";
+import Practice from "@/routes/practice/practice";
+import Interviews from "@/routes/interviews/interviews";
+import Playground from "@/routes/playground/playground";
+import CreateProblem from "@/routes/create-problem/create-problem";
+import Login from "@/routes/login/login";
+import SignUp from "@/routes/signup/signup";
 
 function App() {
   const [isProblemPage, setIsProblemPage] = useState(false);

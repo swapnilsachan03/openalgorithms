@@ -100,10 +100,10 @@ const Practice = () => {
         <div className="problem_filters">
           <Input
             placeholder="Search for a problem"
-            color="sky"
             prefix={<Search size={16} />}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
+            allowClear
           />
 
           <Select
