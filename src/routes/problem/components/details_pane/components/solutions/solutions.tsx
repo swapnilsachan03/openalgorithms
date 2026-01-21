@@ -282,6 +282,7 @@ const Solutions = ({ problem, loading }: Props) => {
             prefix={<Search size={16} />}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
+            allowClear
           />
         </div>
 

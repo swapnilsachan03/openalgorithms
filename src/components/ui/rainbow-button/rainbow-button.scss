@@ -30,11 +30,17 @@ $color-5: hsl(90, 100%, 63%);
   background-clip: padding-box, border-box, border-box;
   background-origin: border-box;
   animation: rainbow 4s linear infinite;
-  background-image: linear-gradient(#121213, #121213),
-    linear-gradient(#121213 50%, rgba(18, 18, 19, 0.6) 80%, rgba(18, 18, 19, 0)),
+  background-image:
+    linear-gradient(#121213, #121213),
+    linear-gradient(
+      #121213 50%,
+      rgba(18, 18, 19, 0.6) 80%,
+      rgba(18, 18, 19, 0)
+    ),
     linear-gradient(90deg, $color-1, $color-2, $color-3, $color-4, $color-5);
   background-position: 0% 50%;
   transition: none;
+  font-size: 15px;
 
   &:before {
     content: "";
@@ -73,7 +79,8 @@ $color-5: hsl(90, 100%, 63%);
 
   @media (prefers-color-scheme: dark) {
     color: rgb(9 9 11);
-    background-image: linear-gradient(#fff, #fff),
+    background-image:
+      linear-gradient(#fff, #fff),
       linear-gradient(#fff 50%, rgba(255, 255, 255, 0.6) 80%, rgba(0, 0, 0, 0)),
       linear-gradient(90deg, $color-1, $color-2, $color-3, $color-4, $color-5);
 

@@ -74,3 +74,16 @@ code {
 br {
   display: block;
 }
+
+a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+pre,
+code,
+h1,
+h2,
+h3 {
+  margin: 0px;
+}

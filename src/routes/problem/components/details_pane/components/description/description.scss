@@ -11,6 +11,7 @@
   &_title {
     font-size: 24px;
     font-weight: 700;
+    margin-top: 0px;
     margin-bottom: 8px;
   }
 
@@ -49,10 +50,10 @@
       margin-bottom: 6px;
     }
 
-    .example_fields_container {
+    .example_fields {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
       padding-left: 16px;
       border-left: 3px solid var(--border-primary);
     }

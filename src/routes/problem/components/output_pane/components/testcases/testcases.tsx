@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 
 import "./testcases.scss";
 
@@ -35,7 +35,7 @@ const Testcases = ({ loading }: Props) => {
     <div className="testcases">
       <div className="input_section">
         <div className="section_header">
-          <h3>Test Case</h3>
+          <span>Test cases</span>
           <Button
             variant="solid"
             color="gold"
@@ -47,7 +47,7 @@ const Testcases = ({ loading }: Props) => {
           </Button>
         </div>
 
-        <textarea
+        <Input.TextArea
           value={customInput}
           onChange={e => setCustomInput(e.target.value)}
           className="input_editor"
@@ -58,8 +58,9 @@ const Testcases = ({ loading }: Props) => {
 
       <div className="output_section">
         <div className="section_header">
-          <h3>Output</h3>
+          <span>Output</span>
         </div>
+
         <pre className="output_display">
           {isRunning ? "Running..." : runOutput}
         </pre>

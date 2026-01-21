@@ -91,19 +91,19 @@ const Description = ({ problem, loading }: Props) => {
             <div key={example?.id}>
               <div className="example_heading">Example {index + 1}:</div>
 
-              <div key={example?.id} className="example_fields_container">
-                <pre className="example_field">
+              <div key={example?.id} className="example_fields">
+                <pre>
                   <strong>Input: </strong>
                   {example?.input}
                 </pre>
 
-                <pre className="example_field">
+                <pre>
                   <strong>Output: </strong>
                   {example?.input}
                 </pre>
 
                 {example?.explanation ? (
-                  <pre className="example_field">
+                  <pre>
                     <strong>Explanation: </strong>
                     {example.explanation}
                   </pre>
