@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useState } from "react";
-import { Collapse, Tag } from "antd";
+import { Button, Collapse, Tag } from "antd";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -135,9 +135,7 @@ const Description = ({ problem, loading }: Props) => {
           </button>
         </div>
 
-        <button className="bookmark_button">
-          <Star size={16} className="icon" />
-        </button>
+        <Button variant="dashed" icon={<Star size={14} />} />
       </div>
     </div>
   );

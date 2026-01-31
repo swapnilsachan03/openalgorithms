@@ -22,7 +22,6 @@ import {
 
 /**-- internal --*/
 
-import { createProblemMutation } from "@/routes/problem/modules/queries";
 import { useIsAdmin } from "@/stores/userStore";
 import { Toast } from "@/lib/toast";
 import { Problem } from "@/generated/graphql";
@@ -31,7 +30,8 @@ import MarkdownEditor from "@/components/ui/markdown-editor";
 /**-- relative --*/
 
 import "./create-problem.scss";
-import { difficultyOptions, Example } from "./module/create-problem-utils";
+import { createProblemMutation } from "./module/mutations";
+import { difficultyOptions, Example } from "./module/utils";
 
 const { TextArea } = Input;
 
