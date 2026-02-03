@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
-import { Hint, Problem } from "@/generated/graphql";
+import { Hint, Problem, Topic } from "@/generated/graphql";
 import { tagStyle } from "@/lib/styles";
 
 import "./description.scss";
@@ -25,12 +25,28 @@ const getHintContent = (hint: string) => (
   <div style={{ paddingInlineStart: 24 }}>{hint}</div>
 );
 
-const getHintsData = (hints: Hint[]) => {
-  return hints?.map((hint, index) => ({
+const getAccordionData = (hints: Hint[], topics: Topic[]) => {
+  const accordionData = hints?.map((hint, index) => ({
     key: hint.id,
     label: <span>Hint {index + 1}</span>,
     children: getHintContent(hint.content ?? ""),
   }));
+
+  accordionData.unshift({
+    key: "topics",
+    label: <span>Topics</span>,
+    children: (
+      <div style={{ paddingInlineStart: 24 }}>
+        {topics.map(topic => (
+          <Tag key={topic.id} color="default" variant="solid">
+            {topic.name}
+          </Tag>
+        ))}
+      </div>
+    ),
+  });
+
+  return accordionData;
 };
 
 const Description = ({ problem, loading }: Props) => {
@@ -48,6 +64,7 @@ const Description = ({ problem, loading }: Props) => {
   };
 
   const hints = _.get(problem, "hints", []) as Hint[];
+  const topics = _.get(problem, "topics", []) as Topic[];
 
   if (loading) {
     return <div className="problem">Loading...</div>;
@@ -113,7 +130,11 @@ const Description = ({ problem, loading }: Props) => {
           ))}
         </div>
 
-        <Collapse accordion items={getHintsData(hints)} bordered={false} />
+        <Collapse
+          accordion
+          items={getAccordionData(hints, topics)}
+          bordered={false}
+        />
       </div>
 
       <div className="problem_footer">
