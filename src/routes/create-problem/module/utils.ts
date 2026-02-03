@@ -10,3 +10,17 @@ export const difficultyOptions = [
   { value: "MEDIUM", label: "Medium" },
   { value: "HARD", label: "Hard" },
 ];
+
+export const initialState = {
+  title: "",
+  slug: "",
+  description: "",
+  difficulty: "",
+  timeLimitInSeconds: 1,
+  memoryLimitInMB: 256,
+  hints: "",
+  editorial: "",
+  editorialTitle: "",
+  examples: [] as Example[],
+  topics: [] as string[],
+};

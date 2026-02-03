@@ -31,7 +31,7 @@ import MarkdownEditor from "@/components/ui/markdown-editor";
 
 import "./create-problem.scss";
 import { createProblemMutation } from "./module/mutations";
-import { difficultyOptions, Example } from "./module/utils";
+import { difficultyOptions, Example, initialState } from "./module/utils";
 import { getTopicsQuery } from "./module/queries";
 
 const CreateProblem = () => {
@@ -48,13 +48,21 @@ const CreateProblem = () => {
     value: topic.id,
   }));
 
-  const [difficulty, setDifficulty] = useState<string>();
-  const [topics, setTopics] = useState<string[]>([]);
-  const [description, setDescription] = useState("");
-  const [editorial, setEditorial] = useState("");
-  const [examples, setExamples] = useState<Example[]>([
-    { id: "1", input: "", output: "", explanation: "" },
-  ]);
+  const [problemDetails, setProblemDetails] = useState(initialState);
+
+  const {
+    title,
+    slug,
+    description,
+    difficulty,
+    timeLimitInSeconds,
+    memoryLimitInMB,
+    hints,
+    editorial,
+    editorialTitle,
+    examples,
+    topics,
+  } = problemDetails;
 
   const [prefersDarkTheme, setPrefersDarkTheme] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -78,8 +86,15 @@ const CreateProblem = () => {
 
   if (!isAdmin) return null;
 
+  const updateField = (field: keyof typeof initialState, value: unknown) => {
+    setProblemDetails({
+      ...problemDetails,
+      [field]: value,
+    });
+  };
+
   const addExample = () => {
-    setExamples([
+    updateField("examples", [
       ...examples,
       {
         id: _.uniqueId("example-"),
@@ -96,35 +111,36 @@ const CreateProblem = () => {
       return;
     }
 
-    setExamples(examples.filter(ex => ex.id !== id));
+    updateField(
+      "examples",
+      examples.filter(ex => ex.id !== id)
+    );
   };
 
   const updateExample = (id: string, field: keyof Example, value: string) => {
-    setExamples(
+    updateField(
+      "examples",
       examples.map(ex => (ex.id === id ? { ...ex, [field]: value } : ex))
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const editorialTitle = formData.get("editorialTitle") as string;
-
+  const handleSubmit = async () => {
     try {
       const input = {
-        title: formData.get("title"),
-        slug: formData.get("slug"),
+        title,
+        slug,
         description,
         difficulty,
-        timeLimitInSeconds: Number(formData.get("timeLimit")),
-        memoryLimitInMB: Number(formData.get("memoryLimit")),
+        timeLimitInSeconds,
+        memoryLimitInMB,
         examples: examples.map(({ input, output, explanation }) => ({
           input,
           output,
           explanation,
         })),
-        hints: _.split(formData.getAll("hints") as unknown as string, "\n"),
-        topics: [],
+        hints: _.split(hints, "\n"),
+        topics,
+        testcases: [],
         ...(!_.isEmpty(editorialTitle) && !_.isEmpty(editorial)
           ? {
               editorial: {
@@ -154,7 +170,7 @@ const CreateProblem = () => {
     <div className="create-problem">
       <h1>Create problem</h1>
 
-      <form onSubmit={handleSubmit}>
+      <div onSubmit={handleSubmit}>
         <div className="problem-form">
           <div className="basic-details">
             <div className="form-section">
@@ -164,6 +180,8 @@ const CreateProblem = () => {
                 <span className="form-label">Problem Title</span>
                 <Input
                   name="title"
+                  value={title}
+                  onChange={e => updateField("title", e.target.value)}
                   placeholder="Search for a problem"
                   prefix={<AlignLeft size={14} />}
                   required
@@ -174,6 +192,8 @@ const CreateProblem = () => {
                 <span className="form-label">Slug (for routing)</span>
                 <Input
                   name="slug"
+                  value={slug}
+                  onChange={e => updateField("slug", e.target.value)}
                   placeholder="Enter problem slug"
                   prefix={<Globe size={14} />}
                   required
@@ -184,7 +204,7 @@ const CreateProblem = () => {
                 <span className="form-label">Problem Description</span>
                 <MarkdownEditor
                   value={description}
-                  onChange={setDescription}
+                  onChange={value => updateField("description", value)}
                   height={400}
                 />
               </div>
@@ -195,7 +215,7 @@ const CreateProblem = () => {
                   <Select
                     placeholder="Select difficulty"
                     value={difficulty}
-                    onChange={setDifficulty}
+                    onChange={value => updateField("difficulty", value)}
                     options={difficultyOptions}
                     className="select-difficulty"
                   />
@@ -205,6 +225,10 @@ const CreateProblem = () => {
                   <span className="form-label">Time Limit (seconds)</span>
                   <Input
                     name="timeLimit"
+                    value={timeLimitInSeconds}
+                    onChange={e =>
+                      updateField("timeLimitInSeconds", e.target.valueAsNumber)
+                    }
                     type="number"
                     min="1"
                     prefix={<Timer size={14} />}
@@ -216,6 +240,10 @@ const CreateProblem = () => {
                   <span className="form-label">Memory Limit (MB)</span>
                   <Input
                     name="memoryLimit"
+                    value={memoryLimitInMB}
+                    onChange={e =>
+                      updateField("memoryLimitInMB", e.target.valueAsNumber)
+                    }
                     type="number"
                     min="1"
                     prefix={<Database size={14} />}
@@ -297,7 +325,7 @@ const CreateProblem = () => {
                   prefix={<Tag size={14} />}
                   value={topics}
                   options={topicsOptions}
-                  onChange={setTopics}
+                  onChange={value => updateField("topics", value)}
                   loading={areTopicsLoading}
                   mode="multiple"
                   maxTagCount={3}
@@ -308,6 +336,8 @@ const CreateProblem = () => {
                 <span className="form-label">Hints</span>
                 <Input.TextArea
                   name="hints"
+                  value={hints}
+                  onChange={e => updateField("hints", e.target.value)}
                   placeholder="Enter hints (one per line)"
                   rows={3}
                 />
@@ -321,6 +351,8 @@ const CreateProblem = () => {
                 <span className="form-label">Editorial title</span>
                 <Input
                   name="editorialTitle"
+                  value={editorialTitle}
+                  onChange={e => updateField("editorialTitle", e.target.value)}
                   placeholder="Enter editorial title"
                   prefix={<Lightbulb size={14} />}
                 />
@@ -330,7 +362,7 @@ const CreateProblem = () => {
                 <span className="form-label">Editorial Content</span>
                 <MarkdownEditor
                   value={editorial}
-                  onChange={setEditorial}
+                  onChange={value => updateField("editorial", value)}
                   height={400}
                 />
               </div>
@@ -374,7 +406,7 @@ const CreateProblem = () => {
             Create problem
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
