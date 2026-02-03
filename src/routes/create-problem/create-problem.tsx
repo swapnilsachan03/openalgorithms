@@ -3,7 +3,7 @@
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Editor } from "@monaco-editor/react";
 import { Button, Input, Select } from "antd";
 import {
@@ -24,7 +24,7 @@ import {
 
 import { useIsAdmin } from "@/stores/userStore";
 import { Toast } from "@/lib/toast";
-import { Problem } from "@/generated/graphql";
+import { Problem, Topic } from "@/generated/graphql";
 import MarkdownEditor from "@/components/ui/markdown-editor";
 
 /**-- relative --*/
@@ -32,15 +32,24 @@ import MarkdownEditor from "@/components/ui/markdown-editor";
 import "./create-problem.scss";
 import { createProblemMutation } from "./module/mutations";
 import { difficultyOptions, Example } from "./module/utils";
-
-const { TextArea } = Input;
+import { getTopicsQuery } from "./module/queries";
 
 const CreateProblem = () => {
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
+
   const [createProblem, { loading }] = useMutation(createProblemMutation);
+  const { loading: areTopicsLoading, data } = useQuery(getTopicsQuery);
+
+  const topicsData = _.get(data, "topics", []) as Topic[];
+
+  const topicsOptions = topicsData.map(topic => ({
+    label: topic.name,
+    value: topic.id,
+  }));
 
   const [difficulty, setDifficulty] = useState<string>();
+  const [topics, setTopics] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [editorial, setEditorial] = useState("");
   const [examples, setExamples] = useState<Example[]>([
@@ -153,26 +162,22 @@ const CreateProblem = () => {
 
               <div className="form-field">
                 <span className="form-label">Problem Title</span>
-                <div className="input-with-icon">
-                  <Input
-                    name="title"
-                    placeholder="Search for a problem"
-                    prefix={<AlignLeft size={14} />}
-                    required
-                  />
-                </div>
+                <Input
+                  name="title"
+                  placeholder="Search for a problem"
+                  prefix={<AlignLeft size={14} />}
+                  required
+                />
               </div>
 
               <div className="form-field">
                 <span className="form-label">Slug (for routing)</span>
-                <div className="input-with-icon">
-                  <Input
-                    name="slug"
-                    placeholder="Enter problem slug"
-                    prefix={<Globe size={14} />}
-                    required
-                  />
-                </div>
+                <Input
+                  name="slug"
+                  placeholder="Enter problem slug"
+                  prefix={<Globe size={14} />}
+                  required
+                />
               </div>
 
               <div className="form-field">
@@ -198,28 +203,24 @@ const CreateProblem = () => {
 
                 <div className="form-field">
                   <span className="form-label">Time Limit (seconds)</span>
-                  <div className="input-with-icon">
-                    <Input
-                      name="timeLimit"
-                      type="number"
-                      min="1"
-                      prefix={<Timer size={14} />}
-                      required
-                    />
-                  </div>
+                  <Input
+                    name="timeLimit"
+                    type="number"
+                    min="1"
+                    prefix={<Timer size={14} />}
+                    required
+                  />
                 </div>
 
                 <div className="form-field">
                   <span className="form-label">Memory Limit (MB)</span>
-                  <div className="input-with-icon">
-                    <Input
-                      name="memoryLimit"
-                      type="number"
-                      min="1"
-                      prefix={<Database size={14} />}
-                      required
-                    />
-                  </div>
+                  <Input
+                    name="memoryLimit"
+                    type="number"
+                    min="1"
+                    prefix={<Database size={14} />}
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -247,37 +248,33 @@ const CreateProblem = () => {
 
                   <div className="form-field">
                     <span className="form-label">Input</span>
-                    <div className="input-with-icon">
-                      <Input
-                        value={example.input}
-                        onChange={e =>
-                          updateExample(example.id, "input", e.target.value)
-                        }
-                        prefix={<Hash size={14} />}
-                        placeholder="Example input"
-                        required
-                      />
-                    </div>
+                    <Input
+                      value={example.input}
+                      onChange={e =>
+                        updateExample(example.id, "input", e.target.value)
+                      }
+                      prefix={<Hash size={14} />}
+                      placeholder="Example input"
+                      required
+                    />
                   </div>
 
                   <div className="form-field">
                     <span className="form-label">Output</span>
-                    <div className="input-with-icon">
-                      <Input
-                        value={example.output}
-                        onChange={e =>
-                          updateExample(example.id, "output", e.target.value)
-                        }
-                        prefix={<ListChecks size={14} />}
-                        placeholder="Example output"
-                        required
-                      />
-                    </div>
+                    <Input
+                      value={example.output}
+                      onChange={e =>
+                        updateExample(example.id, "output", e.target.value)
+                      }
+                      prefix={<ListChecks size={14} />}
+                      placeholder="Example output"
+                      required
+                    />
                   </div>
 
                   <div className="form-field">
                     <span className="form-label">Explanation</span>
-                    <TextArea
+                    <Input.TextArea
                       value={example.explanation}
                       onChange={e =>
                         updateExample(example.id, "explanation", e.target.value)
@@ -292,26 +289,28 @@ const CreateProblem = () => {
 
             <div className="form-section">
               <h2>Topics & Hints</h2>
+
               <div className="form-field">
                 <span className="form-label">Topics</span>
-                <div className="input-with-icon">
-                  <Input
-                    name="topics[]"
-                    prefix={<Tag size={14} />}
-                    placeholder="Enter topics (comma separated)"
-                  />
-                </div>
+                <Select
+                  placeholder="Select topics related to the problem"
+                  prefix={<Tag size={14} />}
+                  value={topics}
+                  options={topicsOptions}
+                  onChange={setTopics}
+                  loading={areTopicsLoading}
+                  mode="multiple"
+                  maxTagCount={3}
+                />
               </div>
 
               <div className="form-field">
                 <span className="form-label">Hints</span>
-                <div className="input-with-icon">
-                  <TextArea
-                    name="hints"
-                    placeholder="Enter hints (one per line)"
-                    rows={3}
-                  />
-                </div>
+                <Input.TextArea
+                  name="hints"
+                  placeholder="Enter hints (one per line)"
+                  rows={3}
+                />
               </div>
             </div>
 
@@ -320,13 +319,11 @@ const CreateProblem = () => {
 
               <div className="form-field">
                 <span className="form-label">Editorial title</span>
-                <div className="input-with-icon">
-                  <Input
-                    name="editorialTitle"
-                    placeholder="Enter editorial title"
-                    prefix={<Lightbulb size={14} />}
-                  />
-                </div>
+                <Input
+                  name="editorialTitle"
+                  placeholder="Enter editorial title"
+                  prefix={<Lightbulb size={14} />}
+                />
               </div>
 
               <div className="form-field">
