@@ -15,11 +15,11 @@
   }
 
   .basic-details {
+    width: 50%;
     padding: 12px;
     border: 1px solid var(--border-primary);
     background-color: var(--background-secondary);
     border-radius: 12px;
-    width: 50%;
     display: flex;
     flex-direction: column;
     gap: 52px;
@@ -27,10 +27,39 @@
     overflow: auto;
   }
 
-  .solutions-editor {
+  .testcase-editor {
     width: 50%;
+    padding: 12px;
     border: 1px solid var(--border-primary);
+    background-color: var(--background-secondary);
     border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+  }
+
+  .testcase-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      .form-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+    }
   }
 
   .form-section {

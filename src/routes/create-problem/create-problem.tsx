@@ -4,8 +4,7 @@ import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client/react";
-import { Editor } from "@monaco-editor/react";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Select, Tabs } from "antd";
 import {
   AlignLeft,
   Hash,
@@ -60,22 +59,14 @@ const CreateProblem = () => {
     hints,
     editorial,
     editorialTitle,
-    examples,
     topics,
+    examples,
+    testcases,
   } = problemDetails;
 
-  const [prefersDarkTheme, setPrefersDarkTheme] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+  const [activeTestcase, setActiveTestcase] = useState<string>(
+    testcases.length > 0 ? testcases[0].id : ""
   );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setPrefersDarkTheme(e.matches);
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -165,6 +156,69 @@ const CreateProblem = () => {
       console.error(error);
     }
   };
+
+  type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
+  const onEdit = (targetKey: TargetKey, action: "add" | "remove") => {
+    if (action === "add") {
+      const newTestcase = {
+        id: _.uniqueId("testcase-"),
+        input: "",
+        output: "",
+      };
+
+      updateField("testcases", [...testcases, newTestcase]);
+      setActiveTestcase(newTestcase.id);
+    } else {
+      const idx = testcases.findIndex(tc => tc.id === targetKey);
+      const updatedTestcases = testcases.filter(tc => tc.id !== targetKey);
+
+      if (updatedTestcases.length === 0) return;
+
+      updateField("testcases", updatedTestcases);
+      setActiveTestcase(
+        idx === 0 ? updatedTestcases[0].id : updatedTestcases[idx - 1].id
+      );
+    }
+  };
+
+  const testcaseItems = testcases.map((testcase, index) => ({
+    label: `Testcase ${index + 1}`,
+    key: testcase.id,
+    children: (
+      <div className="testcase-form">
+        <div className="form-field">
+          <span className="form-label">Input</span>
+          <Input.TextArea
+            value={testcase.input}
+            onChange={e => {
+              const newTestcases = [...testcases];
+              newTestcases[index].input = e.target.value;
+              updateField("testcases", newTestcases);
+            }}
+            placeholder="Testcase input"
+            autoSize={{ minRows: 10, maxRows: 15 }}
+            required
+          />
+        </div>
+
+        <div className="form-field">
+          <span className="form-label">Output</span>
+          <Input.TextArea
+            value={testcase.output}
+            onChange={e => {
+              const newTestcases = [...testcases];
+              newTestcases[index].output = e.target.value;
+              updateField("testcases", newTestcases);
+            }}
+            placeholder="Testcase output"
+            autoSize={{ minRows: 10, maxRows: 15 }}
+            required
+          />
+        </div>
+      </div>
+    ),
+  }));
 
   return (
     <div className="create-problem">
@@ -369,28 +423,16 @@ const CreateProblem = () => {
             </div>
           </div>
 
-          <div className="solutions-editor">
-            <Editor
-              height="100%"
-              defaultLanguage="python"
-              language={"cpp"}
-              value={"sdvfd"}
-              onChange={() => {}}
-              theme={prefersDarkTheme ? "vs-dark" : "light"}
-              options={{
-                fontFamily: "JetBrains Mono, monospace",
-                fontLigatures: true,
-                minimap: { enabled: false },
-                fontSize: 13.5,
-                lineHeight: 1.6,
-                lineNumbers: "on",
-                scrollBeyondLastLine: false,
-                automaticLayout: true,
-                tabSize: 2,
-                wordWrap: "on",
-                wrappingStrategy: "advanced",
-              }}
-              // onMount={handleEditorDidMount}
+          <div className="testcase-editor">
+            <h2>Testcases</h2>
+
+            <Tabs
+              type="editable-card"
+              size="small"
+              activeKey={activeTestcase}
+              onChange={setActiveTestcase}
+              onEdit={onEdit}
+              items={testcaseItems}
             />
           </div>
         </div>
