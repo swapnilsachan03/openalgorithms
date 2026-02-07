@@ -3,7 +3,7 @@
 import _ from "lodash";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Search } from "lucide-react";
+import { Pencil, Plus, Search } from "lucide-react";
 import { Button, Input, Select, Table, TableProps } from "antd";
 import { useQuery } from "@apollo/client/react";
 
@@ -23,7 +23,11 @@ import {
   getPracticeTableRows,
 } from "./modules/practice_utils";
 
-const getPracticeTableHeaders = (): TableProps<ProblemRow>["columns"] => {
+const getPracticeTableHeaders = ({
+  isAdmin,
+}: {
+  isAdmin: boolean;
+}): TableProps<ProblemRow>["columns"] => {
   const headers = [
     {
       title: "Name",
@@ -56,24 +60,41 @@ const getPracticeTableHeaders = (): TableProps<ProblemRow>["columns"] => {
 
         return <span style={{ color }}>{_.capitalize(difficulty)}</span>;
       },
+      width: 150,
     },
-    { title: "Acceptance", key: "acceptance", dataIndex: "acceptance" },
+    {
+      title: "Acceptance",
+      key: "acceptance",
+      dataIndex: "acceptance",
+      width: 150,
+    },
     {
       title: "Topics",
       key: "topics",
       dataIndex: "topics",
+      width: 150,
       render: (topics: string[]) =>
-        _.size(topics) ? (
-          _.size(topics)
-        ) : (
+        _.size(topics) ?? (
           <span className="text-secondary">No topics mapped</span>
         ),
     },
-    { title: "Views", key: "views", dataIndex: "views" },
-    { title: "Rating", key: "rating", dataIndex: "rating" },
+    { title: "Views", key: "views", dataIndex: "views", width: 120 },
+    { title: "Rating", key: "rating", dataIndex: "rating", width: 120 },
+    {
+      title: "Edit",
+      key: "edit",
+      dataIndex: "name",
+      width: 50,
+      render: (name: { slug: string }) => (
+        <Link to={`../edit-problem/${name.slug}`}>
+          <Button color="primary" variant="link" icon={<Pencil size={14} />} />
+        </Link>
+      ),
+      isVisible: isAdmin,
+    },
   ];
 
-  return headers;
+  return _.filter(headers, header => header.isVisible !== false);
 };
 
 const Practice = () => {
@@ -91,7 +112,7 @@ const Practice = () => {
 
   const problems: Problem[] = _.get(data, "problems.edges", EMPTY_PROBLEMS);
 
-  const columns = getPracticeTableHeaders();
+  const columns = getPracticeTableHeaders({ isAdmin });
   const rows: ProblemRow[] = getPracticeTableRows(problems);
 
   return (
