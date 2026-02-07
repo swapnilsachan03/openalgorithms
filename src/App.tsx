@@ -76,6 +76,7 @@ function App() {
           <Route path="/learn" element={<Learn />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/create-problem" element={<CreateProblem />} />
+          <Route path="/edit-problem/:slug" element={<CreateProblem />} />
           <Route path="/playground" element={<Playground />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/about" element={<About />} />
