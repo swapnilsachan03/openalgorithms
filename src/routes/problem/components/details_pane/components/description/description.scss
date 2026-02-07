@@ -4,18 +4,25 @@
   height: 100%;
   justify-content: space-between;
 
-  &_details {
+  .problem-details {
     overflow-y: auto;
   }
 
-  &_title {
+  .topic-array {
+    padding-inline-start: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .problem-title {
     font-size: 24px;
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 8px;
   }
 
-  &_metadata {
+  .problem-metadata {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -23,7 +30,7 @@
     margin-bottom: 24px;
   }
 
-  &_description {
+  .problem-description {
     margin-bottom: 48px;
 
     h1,
@@ -39,18 +46,18 @@
     }
   }
 
-  &_examples {
+  .problem-examples {
     display: flex;
     flex-direction: column;
     gap: 20px;
     margin-bottom: 48px;
 
-    .example_heading {
+    .example-heading {
       font-weight: 700;
       margin-bottom: 6px;
     }
 
-    .example_fields {
+    .example-fields {
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -59,21 +66,22 @@
     }
   }
 
-  &_footer {
+  .problem-footer {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     align-self: self-end;
 
-    .like_dislike_container {
+    .like-dislike-container {
       display: flex;
       gap: 2px;
       border-radius: 8px;
       overflow: hidden;
     }
 
-    .stat_button {
+    .stat-button {
+      border: none;
       display: flex;
       gap: 6px;
       align-items: center;
