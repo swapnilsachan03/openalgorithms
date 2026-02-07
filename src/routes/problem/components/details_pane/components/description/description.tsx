@@ -32,6 +32,10 @@ const getAccordionData = (hints: Hint[], topics: Topic[]) => {
     children: getHintContent(hint.content ?? ""),
   }));
 
+  if (topics.length === 0) {
+    return accordionData;
+  }
+
   accordionData.unshift({
     key: "topics",
     label: <span>Topics</span>,
