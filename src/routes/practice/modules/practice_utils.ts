@@ -30,7 +30,7 @@ export const getPracticeTableRows = (problems: Problem[]) => {
     const views = problem.views ?? 0;
     const likes = problem.likes ?? 0;
     const dislikes = problem.dislikes || 1;
-    const topics = (problem.topics ?? []).map(t => t ?? "");
+    const topics = (problem.topics ?? []).map(t => t?.name ?? "");
     const difficulty = problem.difficulty ?? "MEDIUM";
     const slug = problem.slug ?? "create";
 

@@ -41,6 +41,7 @@ export const getProblemBySlugQuery = gql`
       }
       topics {
         id
+        name
       }
       editorial {
         id

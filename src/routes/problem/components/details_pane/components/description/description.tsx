@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
-import { Hint, Problem } from "@/generated/graphql";
+import { Hint, Problem, Topic } from "@/generated/graphql";
 import { tagStyle } from "@/lib/styles";
 
 import "./description.scss";
@@ -25,12 +25,32 @@ const getHintContent = (hint: string) => (
   <div style={{ paddingInlineStart: 24 }}>{hint}</div>
 );
 
-const getHintsData = (hints: Hint[]) => {
-  return hints?.map((hint, index) => ({
+const getAccordionData = (hints: Hint[], topics: Topic[]) => {
+  const accordionData = hints?.map((hint, index) => ({
     key: hint.id,
     label: <span>Hint {index + 1}</span>,
     children: getHintContent(hint.content ?? ""),
   }));
+
+  if (topics.length === 0) {
+    return accordionData;
+  }
+
+  accordionData.unshift({
+    key: "topics",
+    label: <span>Topics</span>,
+    children: (
+      <div className="topic-array">
+        {topics.map(topic => (
+          <Tag key={topic.id} color="default" variant="solid">
+            {topic.name}
+          </Tag>
+        ))}
+      </div>
+    ),
+  });
+
+  return accordionData;
 };
 
 const Description = ({ problem, loading }: Props) => {
@@ -48,6 +68,7 @@ const Description = ({ problem, loading }: Props) => {
   };
 
   const hints = _.get(problem, "hints", []) as Hint[];
+  const topics = _.get(problem, "topics", []) as Topic[];
 
   if (loading) {
     return <div className="problem">Loading...</div>;
@@ -61,10 +82,10 @@ const Description = ({ problem, loading }: Props) => {
 
   return (
     <div className="problem">
-      <div className="problem_details">
-        <h1 className="problem_title">{problem?.title}</h1>
+      <div className="problem-details">
+        <h1 className="problem-title">{problem?.title}</h1>
 
-        <div className="problem_metadata">
+        <div className="problem-metadata">
           <Tag color={chipColor} variant="solid">
             {_.capitalize(problem.difficulty as string)}
           </Tag>
@@ -82,16 +103,16 @@ const Description = ({ problem, loading }: Props) => {
           </Tag>
         </div>
 
-        <div className="problem_description">
+        <div className="problem-description">
           <MarkdownRenderer content={problem?.description ?? ""} />
         </div>
 
-        <div className="problem_examples">
+        <div className="problem-examples">
           {problem?.examples?.map((example, index: number) => (
             <div key={example?.id}>
-              <div className="example_heading">Example {index + 1}:</div>
+              <div className="example-heading">Example {index + 1}:</div>
 
-              <div key={example?.id} className="example_fields">
+              <div key={example?.id} className="example-fields">
                 <pre>
                   <strong>Input: </strong>
                   {example?.input}
@@ -113,13 +134,17 @@ const Description = ({ problem, loading }: Props) => {
           ))}
         </div>
 
-        <Collapse accordion items={getHintsData(hints)} bordered={false} />
+        <Collapse
+          accordion
+          items={getAccordionData(hints, topics)}
+          bordered={false}
+        />
       </div>
 
-      <div className="problem_footer">
-        <div className="like_dislike_container">
+      <div className="problem-footer">
+        <div className="like-dislike-container">
           <button
-            className={`stat_button ${userLiked ? "button_liked" : ""}`}
+            className={`stat-button ${userLiked ? "button-liked" : ""}`}
             onClick={handleLike}
           >
             <ThumbsUp size={14} className="icon" />
@@ -127,7 +152,7 @@ const Description = ({ problem, loading }: Props) => {
           </button>
 
           <button
-            className={`stat_button ${userDisliked ? "button_disliked" : ""}`}
+            className={`stat-button ${userDisliked ? "button-disliked" : ""}`}
             onClick={handleDislike}
           >
             <ThumbsDown size={14} className="icon" />
