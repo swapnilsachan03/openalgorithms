@@ -87,7 +87,12 @@ const getPracticeTableHeaders = ({
       width: 50,
       render: (name: { slug: string }) => (
         <Link to={`../edit-problem/${name.slug}`}>
-          <Button color="primary" variant="link" icon={<Pencil size={14} />} />
+          <Button
+            color="primary"
+            variant="link"
+            size="small"
+            icon={<Pencil size={14} />}
+          />
         </Link>
       ),
       isVisible: isAdmin,
@@ -105,9 +110,14 @@ const Practice = () => {
 
   const { loading, data } = useQuery(getProblemsQuery, {
     variables: {
-      filters: { search: searchQuery, difficulty, take: 10, skip: 0 },
+      filters: {
+        search: searchQuery,
+        difficulty: difficulty !== "ALL" ? difficulty : undefined,
+        take: 10,
+        skip: 0,
+      },
     },
-    fetchPolicy: "cache-first",
+    fetchPolicy: "cache-and-network",
   });
 
   const problems: Problem[] = _.get(data, "problems.edges", EMPTY_PROBLEMS);
