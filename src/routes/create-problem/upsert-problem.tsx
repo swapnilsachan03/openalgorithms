@@ -3,7 +3,7 @@
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Button } from "antd";
 import { PlusCircle, Upload } from "lucide-react";
 
@@ -24,7 +24,7 @@ import {
   initializeProblemDetailsState,
   initialState,
 } from "./module/utils";
-import { getTopicsQuery, getProblemBySlugQuery } from "./module/queries";
+import { getTopicsQuery, getProblemDetailsQuery } from "./module/queries";
 
 const UpsertProblem = () => {
   const navigate = useNavigate();
@@ -35,42 +35,45 @@ const UpsertProblem = () => {
   const [createProblem, { loading }] = useMutation(createProblemMutation);
   const { loading: topicsLoading, data } = useQuery(getTopicsQuery);
 
-  const [
-    getProblemDetails,
-    { loading: getProblemDetailsLoading, data: getProblemBySlug },
-  ] = useLazyQuery(getProblemBySlugQuery);
-
-  const topicsData = _.get(data, "topics", []) as Topic[];
+  const {
+    loading: isProblemDetailsLoading,
+    data: problemDetailsData,
+    error: problemDetailsError,
+  } = useQuery(getProblemDetailsQuery, {
+    variables: { slug },
+    skip: !slug,
+  });
 
   useEffect(() => {
     if (!isAdmin) {
       Toast.error("You don't have permission to access this page");
       navigate("/");
     }
+  }, [isAdmin, navigate]);
 
-    if (slug) {
-      getProblemDetails({
-        variables: { slug },
-      });
-    }
-  }, [isAdmin, navigate, slug, getProblemDetails]);
+  if (!isAdmin) {
+    return null;
+  } else if (isProblemDetailsLoading) {
+    return <div>Loading...</div>;
+  } else if (problemDetailsError) {
+    Toast.error("Failed to load problem details");
+    navigate("/practice");
+  }
 
-  if (slug && !getProblemDetailsLoading && getProblemBySlug) {
-    const problem = _.get(getProblemBySlug, "problem", {}) as Problem;
+  if (problemDetailsData && slug) {
+    const problem = _.get(
+      problemDetailsData,
+      "problem",
+      null
+    ) as Problem | null;
 
-    if (!_.isEmpty(problem)) {
+    if (problem && problemDetails === initialState) {
       const initializedState = initializeProblemDetailsState(problem);
-
-      if (!_.isEqual(initializedState, problemDetails)) {
-        setProblemDetails(initializedState);
-      }
-    } else {
-      Toast.error("Problem not found");
-      navigate("/");
+      setProblemDetails(initializedState);
     }
   }
 
-  if (!isAdmin) return null;
+  const topicsData = _.get(data, "topics", []) as Topic[];
 
   const updateField = (field: keyof typeof initialState, value: unknown) => {
     setProblemDetails({
@@ -82,10 +85,6 @@ const UpsertProblem = () => {
   const onSubmit = async () => {
     await handleSubmit({ problemDetails, navigate, createProblem });
   };
-
-  if (getProblemDetailsLoading) {
-    return <div>Loading...</div>;
-  }
 
   const pageTitle = slug ? "Edit problem" : "Create problem";
   const actionLabel = slug ? "Update problem" : "Create problem";

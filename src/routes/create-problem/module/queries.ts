@@ -9,8 +9,8 @@ export const getTopicsQuery = gql`
   }
 `;
 
-export const getProblemBySlugQuery = gql`
-  query getProblemBySlug($slug: String) {
+export const getProblemDetailsQuery = gql`
+  query getProblemDetails($slug: String) {
     problem(slug: $slug) {
       id
       title
