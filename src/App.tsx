@@ -18,7 +18,7 @@ import Learn from "@/routes/learn/learn";
 import Practice from "@/routes/practice/practice";
 import Interviews from "@/routes/interviews/interviews";
 import Playground from "@/routes/playground/playground";
-import UpsertProblem from "@/routes/create-problem/upsert-problem";
+import UpsertProblem from "@/routes/upsert-problem/upsert-problem";
 import Login from "@/routes/login/login";
 import SignUp from "@/routes/signup/signup";
 
