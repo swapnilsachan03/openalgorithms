@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { Button } from "antd";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Upload } from "lucide-react";
 
 /**-- internal --*/
 
@@ -15,7 +15,7 @@ import { Problem, Topic } from "@/generated/graphql";
 
 /**-- relative --*/
 
-import "./create-problem.scss";
+import "./upsert-problem.scss";
 import BasicDetails from "./components/basic-details";
 import Testcases from "./components/testcases";
 import { createProblemMutation } from "./module/mutations";
@@ -26,7 +26,7 @@ import {
 } from "./module/utils";
 import { getTopicsQuery, getProblemBySlugQuery } from "./module/queries";
 
-const CreateProblem = () => {
+const UpsertProblem = () => {
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
   const { slug } = useParams();
@@ -88,6 +88,7 @@ const CreateProblem = () => {
   }
 
   const pageTitle = slug ? "Edit problem" : "Create problem";
+  const actionLabel = slug ? "Update problem" : "Create problem";
 
   return (
     <div className="create-problem">
@@ -115,8 +116,8 @@ const CreateProblem = () => {
             color="geekblue"
             onClick={onSubmit}
           >
-            <PlusCircle size={14} />
-            Create problem
+            {slug ? <Upload size={14} /> : <PlusCircle size={14} />}
+            {actionLabel}
           </Button>
         </div>
       </div>
@@ -124,4 +125,4 @@ const CreateProblem = () => {
   );
 };
 
-export default CreateProblem;
+export default UpsertProblem;
