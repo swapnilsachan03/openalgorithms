@@ -18,7 +18,7 @@ import Learn from "@/routes/learn/learn";
 import Practice from "@/routes/practice/practice";
 import Interviews from "@/routes/interviews/interviews";
 import Playground from "@/routes/playground/playground";
-import CreateProblem from "@/routes/create-problem/create-problem";
+import UpsertProblem from "@/routes/upsert-problem/upsert-problem";
 import Login from "@/routes/login/login";
 import SignUp from "@/routes/signup/signup";
 
@@ -75,7 +75,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/practice" element={<Practice />} />
-          <Route path="/create-problem" element={<CreateProblem />} />
+          <Route path="/create-problem" element={<UpsertProblem />} />
+          <Route path="/edit-problem/:slug" element={<UpsertProblem />} />
           <Route path="/playground" element={<Playground />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/about" element={<About />} />
