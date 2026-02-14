@@ -14,9 +14,12 @@ export interface Testcase {
   id: string;
   input: string;
   output: string;
+  isNew: boolean;
+  isUpdated: boolean;
 }
 
 export interface ProblemState {
+  id?: string;
   title: string;
   slug: string;
   description: string;
@@ -49,12 +52,21 @@ export const initialState: ProblemState = {
   editorialTitle: "",
   examples: [{ id: "1", input: "", output: "", explanation: "" }],
   topics: [],
-  testcases: [{ id: _.uniqueId("testcase-"), input: "", output: "" }],
+  testcases: [
+    {
+      id: _.uniqueId("testcase-"),
+      input: "",
+      output: "",
+      isNew: true,
+      isUpdated: false,
+    },
+  ],
 };
 
 export const initializeProblemDetailsState = (
   problem: Problem
 ): ProblemState => {
+  const id = _.get(problem, "id", undefined);
   const title = _.get(problem, "title", "") as string;
   const slug = _.get(problem, "slug", "") as string;
   const description = _.get(problem, "description", "") as string;
@@ -78,6 +90,7 @@ export const initializeProblemDetailsState = (
   }>;
 
   return {
+    id,
     title,
     slug,
     description,
@@ -98,22 +111,25 @@ export const initializeProblemDetailsState = (
       id: testcase.id,
       input: testcase.input,
       output: testcase.output,
+      isNew: false,
+      isUpdated: false,
     })),
   };
 };
 
-export const handleSubmit = async ({
-  problemDetails,
-  navigate,
-  createProblem,
-}: {
-  problemDetails: ProblemState;
-  navigate: (path: string) => void;
-  createProblem: (options: {
-    variables: { input: unknown };
-  }) => Promise<unknown>;
-}) => {
+type MutationFunction = (options: {
+  variables: { input: unknown };
+}) => Promise<unknown>;
+
+export const handleSubmit = async (
+  problemDetails: ProblemState,
+  intialProblemDetails: ProblemState,
+  navigate: (params: string) => void,
+  createProblem: MutationFunction,
+  updateProblem: MutationFunction
+) => {
   const {
+    id,
     title,
     slug,
     description,
@@ -130,6 +146,7 @@ export const handleSubmit = async ({
 
   try {
     const input = {
+      id,
       title,
       slug,
       description,
@@ -143,7 +160,6 @@ export const handleSubmit = async ({
       })),
       hints: hints.split("\n"),
       topics,
-      testcases: testcases.map(({ input, output }) => ({ input, output })),
       ...(editorialTitle && editorial
         ? {
             editorial: {
@@ -154,14 +170,58 @@ export const handleSubmit = async ({
         : {}),
     };
 
-    const result = await createProblem({ variables: { input } });
+    if (id) {
+      const initialTestcases = intialProblemDetails.testcases;
+      const currentTestcases = problemDetails.testcases;
 
-    const problem = (result as { data?: { createProblem: Problem } }).data
-      ?.createProblem;
+      const addedTestcases = _.filter(currentTestcases, tc =>
+        _.get(tc, "isNew")
+      ).map(tc => ({ input: tc.input, output: tc.output }));
 
-    if (problem) {
-      Toast.success("Problem created successfully");
-      navigate(`/problem/${problem.slug}`);
+      const updatedTestcases = _.filter(
+        currentTestcases,
+        tc => _.get(tc, "isUpdated") && !_.get(tc, "isNew")
+      ).map(tc => ({ id: tc.id, input: tc.input, output: tc.output }));
+
+      const deletedTestcases = _.difference(
+        _.map(initialTestcases, "id"),
+        _.map(currentTestcases, "id")
+      );
+
+      const testcasesInput = {
+        addedTestcases,
+        updatedTestcases,
+        deletedTestcases,
+      };
+
+      const result = await updateProblem({
+        variables: { input: { ...input, testcases: testcasesInput } },
+      });
+
+      const problem = (result as { data?: { updateProblem: Problem } }).data
+        ?.updateProblem;
+
+      if (problem) {
+        Toast.success("Problem updated successfully");
+        navigate(`/problem/${problem.slug}`);
+      }
+    } else {
+      const testcasesInput = testcases.map(({ input, output }) => ({
+        input,
+        output,
+      }));
+
+      const result = await createProblem({
+        variables: { input: { ...input, testcases: testcasesInput } },
+      });
+
+      const problem = (result as { data?: { createProblem: Problem } }).data
+        ?.createProblem;
+
+      if (problem) {
+        Toast.success("Problem created successfully");
+        navigate(`/problem/${problem.slug}`);
+      }
     }
   } catch (error) {
     Toast.error("Failed to create problem");

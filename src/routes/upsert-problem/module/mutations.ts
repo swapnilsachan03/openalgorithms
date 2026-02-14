@@ -6,26 +6,16 @@ export const createProblemMutation = gql`
       id
       title
       slug
-      description
-      createdById
-      timeLimitInSeconds
-      memoryLimitInMB
-      difficulty
-      editorial {
-        id
-        content
-      }
-      examples {
-        input
-        output
-        explanation
-      }
-      hints {
-        content
-      }
-      topics {
-        id
-      }
+    }
+  }
+`;
+
+export const updateProblemMutation = gql`
+  mutation UpdateProblem($input: UpdateProblemInput) {
+    updateProblem(input: $input) {
+      id
+      title
+      slug
     }
   }
 `;

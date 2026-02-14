@@ -18,7 +18,10 @@ import { Problem, Topic } from "@/generated/graphql";
 import "./upsert-problem.scss";
 import BasicDetails from "./components/basic-details";
 import Testcases from "./components/testcases";
-import { createProblemMutation } from "./module/mutations";
+import {
+  createProblemMutation,
+  updateProblemMutation,
+} from "./module/mutations";
 import {
   handleSubmit,
   initializeProblemDetailsState,
@@ -27,14 +30,20 @@ import {
 import { getTopicsQuery, getProblemDetailsQuery } from "./module/queries";
 
 const UpsertProblem = () => {
+  const { slug } = useParams();
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
-  const { slug } = useParams();
 
   const [problemDetails, setProblemDetails] = useState(initialState);
-  const [createProblem, { loading }] = useMutation(createProblemMutation);
-  const { loading: topicsLoading, data } = useQuery(getTopicsQuery);
 
+  const [createProblem, { loading: isCreating }] = useMutation(
+    createProblemMutation
+  );
+  const [updateProblem, { loading: isUpdating }] = useMutation(
+    updateProblemMutation
+  );
+
+  const { loading: topicsLoading, data } = useQuery(getTopicsQuery);
   const {
     loading: isProblemDetailsLoading,
     data: problemDetailsData,
@@ -60,15 +69,15 @@ const UpsertProblem = () => {
     navigate("/practice");
   }
 
-  if (problemDetailsData && slug) {
-    const problem = _.get(
-      problemDetailsData,
-      "problem",
-      null
-    ) as Problem | null;
+  const fetchedProblem = _.get(
+    problemDetailsData,
+    "problem",
+    null
+  ) as Problem | null;
 
-    if (problem && problemDetails === initialState) {
-      const initializedState = initializeProblemDetailsState(problem);
+  if (problemDetailsData && slug) {
+    if (fetchedProblem && problemDetails === initialState) {
+      const initializedState = initializeProblemDetailsState(fetchedProblem);
       setProblemDetails(initializedState);
     }
   }
@@ -83,8 +92,20 @@ const UpsertProblem = () => {
   };
 
   const onSubmit = async () => {
-    await handleSubmit({ problemDetails, navigate, createProblem });
+    const initialProblemDetails = fetchedProblem
+      ? initializeProblemDetailsState(fetchedProblem)
+      : initialState;
+
+    await handleSubmit(
+      problemDetails,
+      initialProblemDetails,
+      navigate,
+      createProblem,
+      updateProblem
+    );
   };
+
+  const isSubmitting = isCreating || isUpdating;
 
   const pageTitle = slug ? "Edit problem" : "Create problem";
   const actionLabel = slug ? "Update problem" : "Create problem";
@@ -110,7 +131,7 @@ const UpsertProblem = () => {
 
         <div className="form-actions">
           <Button
-            disabled={loading}
+            disabled={isSubmitting}
             type="primary"
             color="geekblue"
             onClick={onSubmit}
