@@ -1,0 +1,38 @@
+.practice {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 0px;
+
+  &_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+  }
+
+  &_content {
+    min-height: 200px;
+  }
+}
+
+.problem_filters {
+  display: flex;
+  gap: 8px;
+
+  .select-difficulty {
+    width: 150px;
+  }
+}
+
+.problem_title_link {
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    color: var(--text-accent);
+  }
+}

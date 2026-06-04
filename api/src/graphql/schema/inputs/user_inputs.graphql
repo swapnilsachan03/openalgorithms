@@ -1,0 +1,5 @@
+input UpdateProfileInput {
+  id: ID!
+  email: String
+  image: String
+}

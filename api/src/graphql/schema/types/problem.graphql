@@ -1,0 +1,120 @@
+# import ProblemDifficulty from "../enums/global_enums.graphql"
+# import SubmissionStatus from "../enums/global_enums.graphql"
+# import User from "./user.graphql"
+# import PageInfo from "./common.graphql"
+# import Topic from "./topic.graphql"
+
+type Problem {
+  id: ID!
+  title: String
+  slug: String
+  description: String
+  createdById: ID
+  timeLimitInSeconds: Int
+  memoryLimitInMB: Int
+  views: Int
+  acceptedSubmissions: Int
+  totalSubmissions: Int
+  difficulty: ProblemDifficulty
+  createdBy: User
+  likes: Int
+  dislikes: Int
+  bookmarks: Int
+
+  examples: [Example]
+  solutions: [Solution]
+  userSolutions: [UserSolution]
+  hints: [Hint]
+  topics: [Topic]
+  editorial: Editorial
+  discussions: [Discussion]
+  testcases: [Testcase]
+}
+
+type GetAllProblemsResponse {
+  edges: [Problem]
+  pageInfo: PageInfo
+}
+
+type Hint {
+  id: ID!
+  content: String
+  problemId: ID
+}
+
+type Example {
+  id: ID!
+  input: String
+  output: String
+  explanation: String
+  problemId: ID
+}
+
+type Solution {
+  id: ID!
+  code: String
+  language: String
+  problemId: ID
+  createdAt: DateTime
+}
+
+type Submission {
+  id: ID!
+  userId: ID
+  problemId: ID
+  code: String
+  language: String
+  status: SubmissionStatus
+  verdict: Boolean
+  createdAt: DateTime
+  user: User
+}
+
+type UserSolution {
+  id: ID!
+  authorId: ID
+  problemId: ID
+  title: String
+  content: String
+  views: Int
+  user: User
+  problem: Problem
+  likes: Int
+  dislikes: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Editorial {
+  id: ID!
+  title: String
+  content: String
+  problemId: ID
+  views: Int
+  problem: Problem
+  likes: Int
+  dislikes: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Discussion {
+  id: ID!
+  problemId: ID
+  content: String
+  userId: ID
+  user: User
+  problem: Problem
+  parent: Discussion
+  replies: [Discussion]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Testcase {
+  id: ID!
+  input: String
+  output: String
+}
+
+scalar DateTime

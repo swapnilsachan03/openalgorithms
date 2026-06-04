@@ -1,0 +1,6 @@
+{
+  "*.ts": [
+    "prettier --write",
+    "eslint --max-warnings=0 --ignore-pattern src/generated/graphql.ts --no-warn-ignored"
+  ]
+}

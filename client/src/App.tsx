@@ -1,0 +1,92 @@
+import { Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { ConfigProvider, theme } from "antd";
+import { ApolloProvider } from "@apollo/client/react";
+
+import RouteWrapper from "@/components/layout/route_wrapper";
+import { getApolloClient } from "@/lib/apolloClient";
+import { useUserToken } from "@/stores/userStore";
+import { useSystemTheme } from "@/hooks/useSystemTheme";
+
+import Navbar from "@/components/layout/navbar";
+import Home from "@/routes/home/home";
+import Problem from "@/routes/problem/problem";
+import NotFound from "@/routes/not-found/not-found";
+import About from "@/routes/about/about";
+import Learn from "@/routes/learn/learn";
+import Practice from "@/routes/practice/practice";
+import Interviews from "@/routes/interviews/interviews";
+import Playground from "@/routes/playground/playground";
+import UpsertProblem from "@/routes/upsert-problem/upsert-problem";
+import Login from "@/routes/login/login";
+import SignUp from "@/routes/signup/signup";
+
+function App() {
+  const [isProblemPage, setIsProblemPage] = useState(false);
+
+  useEffect(() => {
+    if (isProblemPage) {
+      document.body.classList.add("problem-page-body");
+    } else {
+      document.body.classList.remove("problem-page-body");
+    }
+  }, [isProblemPage]);
+
+  const systemTheme = useSystemTheme();
+
+  const antdTheme = {
+    algorithm:
+      systemTheme === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
+  };
+
+  const token = useUserToken();
+  const client = getApolloClient(token);
+
+  return (
+    <ApolloProvider client={client}>
+      <ConfigProvider theme={antdTheme}>
+        <Navbar />
+
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <RouteWrapper isAuthRoute>
+                <Login />
+              </RouteWrapper>
+            }
+          />
+
+          <Route
+            path="/signup"
+            element={
+              <RouteWrapper isAuthRoute>
+                <SignUp />
+              </RouteWrapper>
+            }
+          />
+
+          <Route
+            path="/problem/:slug"
+            element={<Problem setIsProblemPage={setIsProblemPage} />}
+          />
+
+          <Route path="/" element={<Home />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/practice" element={<Practice />} />
+          <Route path="/create-problem" element={<UpsertProblem />} />
+          <Route path="/edit-problem/:slug" element={<UpsertProblem />} />
+          <Route path="/playground" element={<Playground />} />
+          <Route path="/interviews" element={<Interviews />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+
+        <Toaster position="top-right" />
+      </ConfigProvider>
+    </ApolloProvider>
+  );
+}
+
+export default App;

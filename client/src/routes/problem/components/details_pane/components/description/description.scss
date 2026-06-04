@@ -1,0 +1,101 @@
+.problem {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+
+  .problem-details {
+    overflow-y: auto;
+  }
+
+  .topic-array {
+    padding-inline-start: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .problem-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 0px;
+    margin-bottom: 8px;
+  }
+
+  .problem-metadata {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .problem-description {
+    margin-bottom: 48px;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 600;
+      margin: 18px 0 12px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+  }
+
+  .problem-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 48px;
+
+    .example-heading {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .example-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      border-left: 3px solid var(--border-primary);
+    }
+  }
+
+  .problem-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: self-end;
+
+    .like-dislike-container {
+      display: flex;
+      gap: 2px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stat-button {
+      border: none;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      padding: 6px 8px;
+      background-color: var(--background-tertiary);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

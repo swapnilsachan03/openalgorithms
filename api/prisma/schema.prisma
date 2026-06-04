@@ -1,0 +1,311 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  hashedPassword String?
+  emailVerified  DateTime?
+  image          String?
+  role           Role      @default(USER)
+
+  accounts                Account[]
+  sessions                Session[]
+  problems                Problem[]
+  interactedProblems      ProblemInteraction[]
+  bookmarkedProblems      BookmarkedProblem[]
+  submissions             Submission[]
+  userSolutions           UserSolution[]
+  dailySubmissionCounts   DailySubmissionCount[]
+  submissionStreaks       SubmissionStreak[]
+  discussions             Discussion[]
+  editorialInteraction    EditorialInteraction[]
+  userSolutionInteraction UserSolutionInteraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Problem {
+  id                  String  @id @default(cuid())
+  title               String
+  slug                String  @unique
+  description         String
+  createdById         String?
+  timeLimitInSeconds  Int
+  memoryLimitInMB     Int
+  views               Int     @default(0)
+  acceptedSubmissions Int     @default(0)
+  totalSubmissions    Int     @default(0)
+
+  difficulty         Difficulty
+  examples           Example[]
+  createdBy          User?                @relation(fields: [createdById], references: [id])
+  solutions          Solution[]
+  submissions        Submission[]
+  userSolutions      UserSolution[]
+  hints              Hint[]
+  topics             ProblemTopic[]
+  editorial          Editorial?
+  discussions        Discussion[]
+  problemInteraction ProblemInteraction[]
+  bookmarkedProblems BookmarkedProblem[]
+  testcases          Testcase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Testcase {
+  id     String @id @default(cuid())
+  input  String
+  output String
+
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId String
+}
+
+model Hint {
+  id        String @id @default(cuid())
+  content   String
+  problemId String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Topic {
+  id          String         @id @default(cuid())
+  name        String         @unique
+  slug        String         @unique
+  description String
+  problems    ProblemTopic[]
+}
+
+model ProblemTopic {
+  problemId String
+  topicId   String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, topicId])
+}
+
+model ProblemInteraction {
+  userId    String
+  problemId String
+  like      Boolean
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, problemId])
+}
+
+model BookmarkedProblem {
+  userId    String
+  problemId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, problemId])
+}
+
+model Example {
+  id          String  @id @default(cuid())
+  input       String
+  output      String
+  explanation String?
+  problemId   String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Solution {
+  id        String @id @default(cuid())
+  code      String
+  language  String
+  problemId String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Submission {
+  id        String             @id @default(cuid())
+  userId    String
+  problemId String
+  code      String
+  language  SubmissionLanguage
+  status    SubmissionStatus   @default(PENDING)
+  verdict   Boolean?
+  createdAt DateTime           @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model UserSolution {
+  id        String  @id @default(cuid())
+  authorId  String?
+  problemId String
+  title     String
+  content   String
+  views     Int     @default(0)
+
+  author                  User?                     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  problem                 Problem                   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  userSolutionInteraction UserSolutionInteraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Editorial {
+  id        String @id @default(cuid())
+  title     String
+  problemId String @unique
+  content   String
+  views     Int    @default(0)
+
+  problem              Problem                @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  editorialInteraction EditorialInteraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Discussion {
+  id        String  @id @default(cuid())
+  problemId String
+  userId    String
+  content   String
+  parentId  String? // For threading
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem     @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  parent  Discussion? @relation("DiscussionThread", fields: [parentId], references: [id], onDelete: SetNull)
+
+  replies Discussion[] @relation("DiscussionThread")
+
+  createdAt DateTime @default(now())
+}
+
+model DailySubmissionCount {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model SubmissionStreak {
+  id        String   @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, startDate])
+}
+
+model EditorialInteraction {
+  editorialId String
+  userId      String
+  like        Boolean
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  editorial Editorial @relation(fields: [editorialId], references: [id], onDelete: Cascade)
+
+  @@id([userId, editorialId])
+}
+
+model UserSolutionInteraction {
+  userSolutionId String
+  userId         String
+  like           Boolean
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userSolution UserSolution @relation(fields: [userSolutionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, userSolutionId])
+}
+
+enum SubmissionStatus {
+  PENDING
+  JUDGING
+  ACCEPTED
+  WRONG_ANSWER
+  RUNTIME_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  COMPILATION_ERROR
+  INTERNAL_ERROR
+}
+
+enum SubmissionLanguage {
+  JAVASCRIPT
+  JAVA
+  CPP
+  PYTHON
+}

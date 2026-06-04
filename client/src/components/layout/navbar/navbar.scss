@@ -1,0 +1,42 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0px;
+  position: sticky;
+  border-bottom: 1px solid var(--border-primary);
+
+  &_logo {
+    margin-left: 2px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &_container {
+    display: flex;
+    gap: 32px;
+  }
+  &_links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  &_link {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  }
+
+  &_actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.no-border {
+  border: none;
+}

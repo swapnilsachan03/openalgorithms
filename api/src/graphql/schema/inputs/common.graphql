@@ -1,0 +1,4 @@
+input LikeDislikeInput {
+  entityId: ID!
+  like: Boolean!
+}

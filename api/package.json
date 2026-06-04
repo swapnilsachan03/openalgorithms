@@ -1,0 +1,59 @@
+{
+  "name": "openalgorithms-api",
+  "version": "0.1.0",
+  "description": "Server for the OpenAlgorithms project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "codegen": "graphql-codegen --config codegen.ts",
+    "dev": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky",
+    "postinstall": "prisma generate"
+  },
+  "keywords": [
+    "openalgorithms",
+    "api"
+  ],
+  "author": "Swapnil Sachan",
+  "license": "ISC",
+  "devDependencies": {
+    "@graphql-codegen/cli": "6.1.0",
+    "@graphql-codegen/typescript": "5.0.7",
+    "@graphql-codegen/typescript-document-nodes": "5.0.7",
+    "@graphql-codegen/typescript-resolvers": "5.1.5",
+    "@types/body-parser": "^1.19.5",
+    "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.16",
+    "@types/ws": "^8.18.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.7.4",
+    "prisma": "^7.3.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.2.0",
+    "@as-integrations/express5": "^1.1.2",
+    "@eslint/js": "^9.25.1",
+    "@graphql-tools/graphql-file-loader": "^8.0.19",
+    "@graphql-tools/load": "^8.0.19",
+    "@graphql-tools/merge": "^9.0.24",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.3.0",
+    "body-parser": "^2.2.1",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6",
+    "lint-staged": "^16.2.7",
+    "lodash": "^4.17.21",
+    "typescript-eslint": "^8.31.0"
+  }
+}

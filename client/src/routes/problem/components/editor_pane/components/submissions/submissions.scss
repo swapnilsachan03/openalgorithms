@@ -1,0 +1,119 @@
+.submissions {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &_list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+.submission_card {
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #3b82f6;
+    background-color: rgba($color: #000, $alpha: 0.02);
+  }
+
+  &_main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &_info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  &_meta {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+  }
+}
+
+.submission_detail {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+
+  &_header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &_meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+
+    .language {
+      text-transform: capitalize;
+    }
+  }
+
+  &_stats {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.code-block {
+  margin: 16px 0 0 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background-secondary);
+
+  .code-header {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: "Geist";
+    color: var(--text-secondary);
+    text-transform: capitalize;
+  }
+}
+
+.copy_to_editor {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.status {
+  font-size: 18px;
+  font-weight: 500;
+
+  &_small {
+    font-size: 14px;
+  }
+
+  &_accepted {
+    color: #22c55e;
+  }
+
+  &_wrong_answer,
+  &_runtime_error {
+    color: #ef4444;
+  }
+
+  &_time_limit_exceeded,
+  &_memory_limit_exceeded {
+    color: #f59e0b;
+  }
+}

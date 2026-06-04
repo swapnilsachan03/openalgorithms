@@ -1,0 +1,9 @@
+# import Problem from "./problem.graphql"
+
+type Topic {
+  id: ID!
+  name: String
+  slug: String
+  description: String
+  problems: [Problem]
+}

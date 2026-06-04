@@ -1,0 +1,19 @@
+# import Role from "../enums/global_enums.graphql"
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  image: String
+  emailVerified: Boolean
+  role: Role
+  sessions: [Session]
+}
+
+type Session {
+  sessionToken: ID
+  userId: ID
+  expires: String
+  createdAt: String
+  updatedAt: String
+}

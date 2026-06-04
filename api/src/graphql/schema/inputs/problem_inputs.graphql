@@ -1,0 +1,79 @@
+# import ProblemDifficulty from "../enums/global_enums.graphql"
+# import SubmissionLanguage from "../enums/global_enums.graphql"
+
+input CreateProblemInput {
+  title: String!
+  slug: String!
+  description: String!
+  timeLimitInSeconds: Int!
+  memoryLimitInMB: Int!
+  difficulty: ProblemDifficulty!
+  examples: [ExampleInput!]!
+  solutions: [SolutionInput!]
+  hints: [String!]
+  topics: [ID!]!
+  editorial: EditorialInput
+  testcases: [TestcaseInput!]!
+}
+
+input UpdateProblemInput {
+  id: ID!
+  title: String
+  slug: String
+  description: String
+  timeLimitInSeconds: Int
+  memoryLimitInMB: Int
+  difficulty: ProblemDifficulty
+  examples: [ExampleInput!]
+  solutions: [SolutionInput!]
+  hints: [String!]
+  topics: [String!]
+  testcases: UpdateTestcasesInput
+}
+
+input ExampleInput {
+  input: String!
+  output: String!
+  explanation: String
+}
+
+input SolutionInput {
+  code: String!
+  language: String!
+}
+
+input EditorialInput {
+  title: String!
+  content: String!
+}
+
+input GetAllProblemsFilterInput {
+  difficulty: ProblemDifficulty
+  topics: [ID!]
+  search: String
+  skip: Int!
+  take: Int!
+}
+
+input TestcaseInput {
+  input: String!
+  output: String!
+}
+
+input UpdatedTestcase {
+  id: ID!
+  input: String!
+  output: String!
+}
+
+input UpdateTestcasesInput {
+  addedTestcases: [TestcaseInput!]
+  updatedTestcases: [UpdatedTestcase!]
+  deletedTestcases: [ID!]
+}
+
+input CreateSubmissionInput {
+  problemId: ID!
+  language: SubmissionLanguage!
+  code: String!
+}
