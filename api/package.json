@@ -8,7 +8,6 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky",
     "postinstall": "prisma generate"
   },
   "keywords": [
@@ -29,7 +28,6 @@
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.16",
     "@types/ws": "^8.18.0",
-    "husky": "^9.1.7",
     "prettier": "^3.7.4",
     "prisma": "^7.3.0",
     "typescript": "^5.8.2"
@@ -52,7 +50,6 @@
     "express": "^5.2.1",
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
-    "lint-staged": "^16.2.7",
     "lodash": "^4.17.21",
     "typescript-eslint": "^8.31.0"
   }
