@@ -1,0 +1,43 @@
+services:
+  graphqlapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: openalgorithms-api:dev
+    container_name: oa_graphqlapi
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/app
+      - node_modules:/app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:18.4
+    container_name: oa_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: openalgorithms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass123
+    volumes:
+      - openalgorithms_db:/var/lib/postgresql
+
+  redis:
+    image: redis:8.6.4
+    container_name: oa_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - openalgorithms_cache:/data
+
+volumes:
+  openalgorithms_db:
+  openalgorithms_cache:
+  node_modules:
