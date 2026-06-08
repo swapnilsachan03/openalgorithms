@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Problem } from "@prisma/client";
+import { Problem } from "@generated/graphql";
 import { GraphQLError } from "graphql";
 
 import { prisma } from "@lib/prisma";
