@@ -66,5 +66,15 @@ app.use(
 const port = process.env.PORT || 4000;
 
 httpServer.listen(port, () => {
-  console.log("Server running on port " + port);
+  console.warn("Server running on port " + port);
 });
+
+const shutdown = () => {
+  httpServer.close(() => {
+    console.warn("Server closed gracefully");
+    process.exit(0);
+  });
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

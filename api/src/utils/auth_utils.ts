@@ -5,8 +5,7 @@ import {
 import { sha256 } from "@oslojs/crypto/sha2";
 
 import { prisma } from "@lib/prisma";
-
-import type { User, Session } from "@prisma/client";
+import { Session, User } from "@/prisma/generated/prisma/client";
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);

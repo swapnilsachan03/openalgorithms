@@ -128,7 +128,7 @@ export type LikeDislikeInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createProblem?: Maybe<Problem>;
-  createSubmission?: Maybe<GenericResponse>;
+  createSubmission?: Maybe<Submission>;
   createTopic?: Maybe<Topic>;
   deleteProblem?: Maybe<GenericResponse>;
   deleteTopic?: Maybe<GenericResponse>;
@@ -286,11 +286,36 @@ export type SolutionInput = {
   language: Scalars['String']['input'];
 };
 
+export type Submission = {
+  __typename?: 'Submission';
+  code?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  language?: Maybe<Scalars['String']['output']>;
+  problemId?: Maybe<Scalars['ID']['output']>;
+  status?: Maybe<SubmissionStatus>;
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['ID']['output']>;
+  verdict?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export enum SubmissionLanguage {
   Cpp = 'CPP',
   Java = 'JAVA',
   Javascript = 'JAVASCRIPT',
   Python = 'PYTHON'
+}
+
+export enum SubmissionStatus {
+  Accepted = 'ACCEPTED',
+  CompilationError = 'COMPILATION_ERROR',
+  InternalError = 'INTERNAL_ERROR',
+  Judging = 'JUDGING',
+  MemoryLimitExceeded = 'MEMORY_LIMIT_EXCEEDED',
+  Pending = 'PENDING',
+  RuntimeError = 'RUNTIME_ERROR',
+  TimeLimitExceeded = 'TIME_LIMIT_EXCEEDED',
+  WrongAnswer = 'WRONG_ANSWER'
 }
 
 export type Testcase = {
@@ -481,7 +506,9 @@ export type ResolversTypes = {
   Solution: ResolverTypeWrapper<Solution>;
   SolutionInput: SolutionInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Submission: ResolverTypeWrapper<Submission>;
   SubmissionLanguage: SubmissionLanguage;
+  SubmissionStatus: SubmissionStatus;
   Testcase: ResolverTypeWrapper<Testcase>;
   TestcaseInput: TestcaseInput;
   Topic: ResolverTypeWrapper<Topic>;
@@ -521,6 +548,7 @@ export type ResolversParentTypes = {
   Solution: Solution;
   SolutionInput: SolutionInput;
   String: Scalars['String']['output'];
+  Submission: Submission;
   Testcase: Testcase;
   TestcaseInput: TestcaseInput;
   Topic: Topic;
@@ -589,7 +617,7 @@ export type HintResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationCreateProblemArgs>>;
-  createSubmission?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationCreateSubmissionArgs>>;
+  createSubmission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<MutationCreateSubmissionArgs>>;
   createTopic?: Resolver<Maybe<ResolversTypes['Topic']>, ParentType, ContextType, RequireFields<MutationCreateTopicArgs, 'input'>>;
   deleteProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProblemArgs, 'id'>>;
   deleteTopic?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteTopicArgs, 'id'>>;
@@ -659,6 +687,18 @@ export type SolutionResolvers<ContextType = any, ParentType extends ResolversPar
   problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
 };
 
+export type SubmissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Submission'] = ResolversParentTypes['Submission']> = {
+  code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['SubmissionStatus']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  verdict?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+};
+
 export type TestcaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Testcase'] = ResolversParentTypes['Testcase']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   input?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -712,6 +752,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   Solution?: SolutionResolvers<ContextType>;
+  Submission?: SubmissionResolvers<ContextType>;
   Testcase?: TestcaseResolvers<ContextType>;
   Topic?: TopicResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

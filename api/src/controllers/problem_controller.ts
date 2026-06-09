@@ -8,7 +8,6 @@ import { AuthContext } from "@/src/index";
 
 import {
   CreateProblemInput,
-  CreateSubmissionInput,
   GetAllProblemsFilterInput,
   UpdateProblemInput,
 } from "@generated/graphql";
@@ -211,46 +210,6 @@ export const deleteProblem = async (
   });
 
   return { isSuccess: !!problem, message: "Problem deleted successfully" };
-};
-
-export const createSubmission = async (
-  parent: unknown,
-  args: { input: CreateSubmissionInput },
-  contextValue: AuthContext
-) => {
-  const { token } = contextValue;
-
-  const sessionRes = token ? await validateSessionToken(token) : null;
-
-  if (_.isNil(token) || !sessionRes?.user) {
-    throw new GraphQLError("You must be logged in to submit", {
-      extensions: { code: "UNAUTHENTICATED" },
-    });
-  }
-
-  const { problemId, code, language } = args.input;
-
-  const problem = await prisma.problem.findUnique({
-    where: { id: problemId },
-  });
-
-  if (_.isNull(problem?.id)) {
-    throw new GraphQLError("Trying to submit solution to an invalid problem", {
-      extensions: { code: "BAD_USER_INPUT" },
-    });
-  }
-
-  const submission = await prisma.submission.create({
-    data: {
-      userId: sessionRes?.user.id,
-      code,
-      problemId,
-      language,
-      status: "PENDING",
-    },
-  });
-
-  return submission;
 };
 
 export const getProblem = async (

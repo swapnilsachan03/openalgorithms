@@ -1,6 +1,5 @@
 import {
   createProblem,
-  createSubmission,
   deleteProblem,
   updateProblem,
 } from "@controllers/problem_controller";
@@ -15,6 +14,8 @@ import {
   deleteTopic,
   updateTopic,
 } from "@controllers/topic_controller";
+
+import { createSubmission } from "@controllers/submission_controller";
 
 export const mutationResolvers = {
   Mutation: {
