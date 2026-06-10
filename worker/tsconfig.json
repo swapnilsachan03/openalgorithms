@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES2023",
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@lib/*": ["./lib/*"],
+    },
+  },
+  "include": ["./**/*"],
+}

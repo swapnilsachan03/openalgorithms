@@ -1,0 +1,28 @@
+{
+  "name": "openalgorithms-worker",
+  "version": "0.1.0",
+  "description": "Worker service for the OpenAlgorithms project",
+  "keywords": [
+    "openalgorithms",
+    "worker"
+  ],
+  "license": "ISC",
+  "author": "Swapnil Sachan",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bullmq": "^5.78.0",
+    "ioredis": "^5.10.1",
+    "lodash": "^4.18.1"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0",
+    "typescript": "^6.0.3"
+  }
+}
