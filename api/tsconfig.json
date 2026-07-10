@@ -1,25 +1,26 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
+      "@prisma_generated/*": ["./prisma/generated/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@lib/*": ["./src/lib/*"],
       "@middlewares/*": ["./src/middlewares/*"],
       "@routes/*": ["./src/routes/*"],
       "@graphql/*": ["./src/graphql/*"],
       "@utils/*": ["./src/utils/*"],
-      "@generated/*": ["./src/generated/*"],
+      "@generated/*": ["./src/generated/*"]
     },
+    "rootDir": "."
   },
-  "include": ["src/**/*"],
+  "include": ["./**/*"]
 }
