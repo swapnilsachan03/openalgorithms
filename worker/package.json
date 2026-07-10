@@ -9,20 +9,35 @@
   "license": "ISC",
   "author": "Swapnil Sachan",
   "type": "module",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "dev": "nodemon",
+    "build": "tsc && tsc-alias --resolve-full-paths",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.1081.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bullmq": "^5.78.0",
+    "dotenv": "^17.4.2",
     "ioredis": "^5.10.1",
     "lodash": "^4.18.1"
   },
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "prisma": "^7.8.0",
+    "tsc-alias": "^1.9.0",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.8.0": true,
+    "msgpackr-extract@3.0.4": true,
+    "prisma@7.8.0": true,
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
   }
 }
