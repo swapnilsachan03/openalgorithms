@@ -28,6 +28,7 @@ import {
   getUser,
   getUserSessions,
 } from "@controllers/user_controller";
+import { getSubmission } from "@/controllers/submission_controller";
 
 export const queryResolvers = {
   Query: {
@@ -38,6 +39,7 @@ export const queryResolvers = {
     problems: getAllProblems,
     userSolution: getUserSolution,
     topics: getTopics,
+    submission: getSubmission,
   },
   User: {
     sessions: getUserSessions,

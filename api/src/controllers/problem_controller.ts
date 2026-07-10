@@ -4,7 +4,7 @@ import { GraphQLError } from "graphql";
 
 import { prisma } from "@lib/prisma";
 import { validateSessionToken } from "@utils/auth_utils";
-import { AuthContext } from "@/src/index";
+import { AuthContext } from "@/index";
 
 import {
   CreateProblemInput,

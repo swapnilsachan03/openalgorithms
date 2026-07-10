@@ -1,5 +1,7 @@
 # import ProblemDifficulty from "../enums/global_enums.graphql"
 # import SubmissionStatus from "../enums/global_enums.graphql"
+# import SubmissionLanguage from "../enums/global_enums.graphql"
+
 # import User from "./user.graphql"
 # import PageInfo from "./common.graphql"
 # import Topic from "./topic.graphql"
@@ -63,7 +65,7 @@ type Submission {
   userId: ID
   problemId: ID
   code: String
-  language: String
+  language: SubmissionLanguage
   status: SubmissionStatus
   verdict: Boolean
   createdAt: DateTime

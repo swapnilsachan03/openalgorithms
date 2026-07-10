@@ -8,7 +8,7 @@ import {
   Problem,
   UpdateTopicInput,
 } from "@generated/graphql";
-import { AuthContext } from "@/src";
+import { AuthContext } from "@/index";
 
 export const getTopics = async () => {
   const topics = await prisma.topic.findMany();

@@ -1,5 +1,6 @@
 # import User from "../types/user.graphql"
 # import Problem from "../types/problem.graphql"
+# import Submission from "../types/problem.graphql"
 # import UserSolution from "../types/problem.graphql"
 # import GetAllProblemsResponse from "../types/problem.graphql"
 # import Topic from "../types/topic.graphql"
@@ -11,6 +12,7 @@ type Query {
   profile: User
   users: [User]
   problem(id: ID, slug: String): Problem
+  submission(id: ID!): Submission
   problems(filters: GetAllProblemsFilterInput): GetAllProblemsResponse
   userSolution(id: ID!): UserSolution
   topics: [Topic]

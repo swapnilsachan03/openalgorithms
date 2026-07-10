@@ -3,7 +3,7 @@ import { CreateSubmissionInput, SubmissionStatus } from "@generated/graphql";
 import { GraphQLError } from "graphql";
 import { Queue } from "bullmq";
 
-import { AuthContext } from "@/src/index";
+import { AuthContext } from "@/index";
 import { validateSessionToken } from "@utils/auth_utils";
 
 import { prisma } from "@lib/prisma";
@@ -69,6 +69,22 @@ export const createSubmission = async (
       removeOnFail: false,
     }
   );
+
+  return submission;
+};
+
+export const getSubmission = async (parent: unknown, args: { id: string }) => {
+  const { id } = args;
+
+  const submission = await prisma.submission.findUnique({
+    where: { id },
+  });
+
+  if (submission === null) {
+    throw new GraphQLError("Submission not found", {
+      extensions: { code: "RESOURCE_NOT_FOUND" },
+    });
+  }
 
   return submission;
 };
