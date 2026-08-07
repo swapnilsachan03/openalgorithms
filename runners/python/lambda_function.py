@@ -113,7 +113,7 @@ def execute(
 # ── Lambda entrypoint ──────────────────────────────────────────────────────────
 
 
-def handler(event, context):
+def lambda_handler(event, context):
     submission_id = event["submissionId"]
     code = event["code"]
     test_cases = event["testCases"]
@@ -158,7 +158,7 @@ def handler(event, context):
             if raw["verdict"] is not None:
                 # Process was killed (TLE/MLE) or crashed (RE)
                 verdict = raw["verdict"]
-            elif raw["stdout"] == tc["expected"].strip():
+            elif raw["stdout"] == tc["output"].strip():
                 verdict = "ACCEPTED"
             else:
                 verdict = "WRONG_ANSWER"
@@ -168,7 +168,7 @@ def handler(event, context):
                     "testCase": i + 1,
                     "verdict": verdict,
                     "output": raw["stdout"],
-                    "expected": tc["expected"].strip(),
+                    "expected": tc["output"].strip(),
                     "stderr": raw["stderr"],
                     "runtimeMs": raw["elapsed_ms"],
                     "memoryMB": raw["memory_mb"],
