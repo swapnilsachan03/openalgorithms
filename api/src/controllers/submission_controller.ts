@@ -54,6 +54,12 @@ export const createSubmission = async (
     },
   });
 
+  const testCases = await prisma.testcase.findMany({
+    where: {
+      problemId,
+    },
+  });
+
   await submissionsQueue.add(
     "execute",
     {
@@ -61,6 +67,9 @@ export const createSubmission = async (
       language,
       code,
       problemId,
+      testCases,
+      timeLimitSeconds: problem.timeLimitInSeconds,
+      memoryLimitMB: problem.memoryLimitInMB,
     },
     {
       attempts: 2,
