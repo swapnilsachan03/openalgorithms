@@ -55,6 +55,11 @@ input GetAllProblemsFilterInput {
   take: Int!
 }
 
+input SubmissionsFiltersInput {
+  problemId: ID
+  userId: ID!
+}
+
 input TestcaseInput {
   input: String!
   output: String!

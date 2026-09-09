@@ -2,11 +2,6 @@ import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from '
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -15,7 +10,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
+  DateTime: { input: unknown; output: unknown; }
 };
 
 export type CreateProblemInput = {
@@ -230,6 +225,8 @@ export type Query = {
   problem?: Maybe<Problem>;
   problems?: Maybe<GetAllProblemsResponse>;
   profile?: Maybe<User>;
+  submission?: Maybe<Submission>;
+  submissions?: Maybe<Array<Maybe<Submission>>>;
   topics?: Maybe<Array<Maybe<Topic>>>;
   user?: Maybe<User>;
   userSolution?: Maybe<UserSolution>;
@@ -245,6 +242,16 @@ export type QueryProblemArgs = {
 
 export type QueryProblemsArgs = {
   filters?: InputMaybe<GetAllProblemsFilterInput>;
+};
+
+
+export type QuerySubmissionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerySubmissionsArgs = {
+  filters?: InputMaybe<SubmissionsFiltersInput>;
 };
 
 
@@ -291,7 +298,9 @@ export type Submission = {
   code?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
-  language?: Maybe<Scalars['String']['output']>;
+  language?: Maybe<SubmissionLanguage>;
+  maxMemoryMb?: Maybe<Scalars['Float']['output']>;
+  maxRuntimeMs?: Maybe<Scalars['Int']['output']>;
   problemId?: Maybe<Scalars['ID']['output']>;
   status?: Maybe<SubmissionStatus>;
   user?: Maybe<User>;
@@ -317,6 +326,11 @@ export enum SubmissionStatus {
   TimeLimitExceeded = 'TIME_LIMIT_EXCEEDED',
   WrongAnswer = 'WRONG_ANSWER'
 }
+
+export type SubmissionsFiltersInput = {
+  problemId?: InputMaybe<Scalars['ID']['input']>;
+  userId: Scalars['ID']['input'];
+};
 
 export type Testcase = {
   __typename?: 'Testcase';
@@ -489,6 +503,7 @@ export type ResolversTypes = {
   EditorialInput: EditorialInput;
   Example: ResolverTypeWrapper<Example>;
   ExampleInput: ExampleInput;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
   GetAllProblemsResponse: ResolverTypeWrapper<GetAllProblemsResponse>;
@@ -509,6 +524,7 @@ export type ResolversTypes = {
   Submission: ResolverTypeWrapper<Submission>;
   SubmissionLanguage: SubmissionLanguage;
   SubmissionStatus: SubmissionStatus;
+  SubmissionsFiltersInput: SubmissionsFiltersInput;
   Testcase: ResolverTypeWrapper<Testcase>;
   TestcaseInput: TestcaseInput;
   Topic: ResolverTypeWrapper<Topic>;
@@ -533,6 +549,7 @@ export type ResolversParentTypes = {
   EditorialInput: EditorialInput;
   Example: Example;
   ExampleInput: ExampleInput;
+  Float: Scalars['Float']['output'];
   GenericResponse: GenericResponse;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
   GetAllProblemsResponse: GetAllProblemsResponse;
@@ -549,6 +566,7 @@ export type ResolversParentTypes = {
   SolutionInput: SolutionInput;
   String: Scalars['String']['output'];
   Submission: Submission;
+  SubmissionsFiltersInput: SubmissionsFiltersInput;
   Testcase: Testcase;
   TestcaseInput: TestcaseInput;
   Topic: Topic;
@@ -665,6 +683,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<QueryProblemArgs>>;
   problems?: Resolver<Maybe<ResolversTypes['GetAllProblemsResponse']>, ParentType, ContextType, Partial<QueryProblemsArgs>>;
   profile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  submission?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<QuerySubmissionArgs, 'id'>>;
+  submissions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Submission']>>>, ParentType, ContextType, Partial<QuerySubmissionsArgs>>;
   topics?: Resolver<Maybe<Array<Maybe<ResolversTypes['Topic']>>>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   userSolution?: Resolver<Maybe<ResolversTypes['UserSolution']>, ParentType, ContextType, RequireFields<QueryUserSolutionArgs, 'id'>>;
@@ -691,7 +711,9 @@ export type SubmissionResolvers<ContextType = any, ParentType extends ResolversP
   code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  language?: Resolver<Maybe<ResolversTypes['SubmissionLanguage']>, ParentType, ContextType>;
+  maxMemoryMb?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  maxRuntimeMs?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['SubmissionStatus']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;

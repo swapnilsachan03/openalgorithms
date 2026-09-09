@@ -6,6 +6,7 @@
 # import Topic from "../types/topic.graphql"
 
 # import GetAllProblemsFilterInput from "../inputs/problem_inputs.graphql"
+# import SubmissionsFiltersInput from "../inputs/problem_inputs.graphql"
 
 type Query {
   user(id: ID!): User
@@ -13,6 +14,7 @@ type Query {
   users: [User]
   problem(id: ID, slug: String): Problem
   submission(id: ID!): Submission
+  submissions(filters: SubmissionsFiltersInput): [Submission]
   problems(filters: GetAllProblemsFilterInput): GetAllProblemsResponse
   userSolution(id: ID!): UserSolution
   topics: [Topic]

@@ -1,5 +1,9 @@
 import _ from "lodash";
-import { CreateSubmissionInput, SubmissionStatus } from "@generated/graphql";
+import {
+  CreateSubmissionInput,
+  SubmissionsFiltersInput,
+  SubmissionStatus,
+} from "@generated/graphql";
 import { GraphQLError } from "graphql";
 import { Queue } from "bullmq";
 
@@ -96,4 +100,41 @@ export const getSubmission = async (parent: unknown, args: { id: string }) => {
   }
 
   return submission;
+};
+
+export const getSubmissions = async (
+  parent: unknown,
+  args: { filters: SubmissionsFiltersInput }
+) => {
+  const { userId, problemId } = args.filters;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true },
+  });
+
+  if (!user) {
+    throw new GraphQLError("User does not exist", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  if (problemId) {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+      select: { id: true },
+    });
+
+    if (!problem) {
+      throw new GraphQLError("Problem does not exist", {
+        extensions: { code: "BAD_USER_INPUT" },
+      });
+    }
+  }
+
+  const submissions = await prisma.submission.findMany({
+    where: { userId, ...(problemId ? { problemId } : {}) },
+  });
+
+  return submissions;
 };
