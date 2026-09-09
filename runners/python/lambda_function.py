@@ -43,7 +43,9 @@ def execute(
     io: dict = {"stdout": b"", "stderr": b""}
 
     def communicate():
-        io["stdout"], io["stderr"] = proc.communicate(input=input_data.encode("utf-8"))
+        io["stdout"], io["stderr"] = proc.communicate(
+            input=input_data.encode("utf-8")
+        )
 
     thread = threading.Thread(target=communicate, daemon=True)
     thread.start()
@@ -150,6 +152,8 @@ def lambda_handler(event, context):
         # ── Step 3: Run test cases ────────────────────────────────────────────
         results = []
         final_status = "ACCEPTED"
+        max_memory_mb = 0.0
+        max_runtime_ms = 0.0
 
         for i, tc in enumerate(test_cases):
             raw = execute(code_file, tc["input"], time_limit_s, memory_limit_mb)
@@ -162,6 +166,9 @@ def lambda_handler(event, context):
                 verdict = "ACCEPTED"
             else:
                 verdict = "WRONG_ANSWER"
+
+            max_memory_mb = max(max_memory_mb, raw["memory_mb"])
+            max_runtime_ms = max(max_runtime_ms, raw["elapsed_ms"])
 
             results.append(
                 {
@@ -186,6 +193,8 @@ def lambda_handler(event, context):
             "submissionId": submission_id,
             "verdict": final_status,
             "results": results,
+            "maxMemoryMb": round(max_memory_mb, 2),
+            "maxRuntimeMs": max_runtime_ms,
         }
 
     except Exception:

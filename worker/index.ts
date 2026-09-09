@@ -88,10 +88,17 @@ const worker = new Worker(
         : null;
 
       const status = result?.verdict || "INTERNAL_ERROR";
+      const maxMemoryMb = result?.maxMemoryMb || 0.0;
+      const maxRuntimeMs = result?.maxRuntimeMs || 0;
 
       await prisma.submission.update({
         where: { id: submissionId },
-        data: { status, verdict: status === "ACCEPTED" ? true : false },
+        data: {
+          status,
+          maxMemoryMb,
+          maxRuntimeMs,
+          verdict: status === "ACCEPTED" ? true : false,
+        },
       });
     } catch (error) {
       console.error(`[${submissionId}] Failed to run Lambda task: `, error);

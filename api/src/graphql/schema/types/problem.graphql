@@ -68,6 +68,8 @@ type Submission {
   language: SubmissionLanguage
   status: SubmissionStatus
   verdict: Boolean
+  maxMemoryMb: Float
+  maxRuntimeMs: Int
   createdAt: DateTime
   user: User
 }

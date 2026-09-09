@@ -185,14 +185,16 @@ model Solution {
 }
 
 model Submission {
-  id        String             @id @default(cuid())
-  userId    String
-  problemId String
-  code      String
-  language  SubmissionLanguage
-  status    SubmissionStatus   @default(PENDING)
-  verdict   Boolean?
-  createdAt DateTime           @default(now())
+  id           String             @id @default(cuid())
+  userId       String
+  problemId    String
+  code         String
+  language     SubmissionLanguage
+  status       SubmissionStatus   @default(PENDING)
+  verdict      Boolean?
+  createdAt    DateTime           @default(now())
+  maxMemoryMb  Float              @default(0.0)
+  maxRuntimeMs Int                @default(0)
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
