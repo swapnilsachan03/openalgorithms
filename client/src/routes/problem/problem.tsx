@@ -134,7 +134,7 @@ const ProblemPage = (props: ProblemProps) => {
       </div>
 
       <div className="editor_pane" style={{ minWidth: editorWidth }}>
-        <EditorPane loading={loading} />
+        <EditorPane problemId={problem.id} loading={loading} />
         <div
           className={`resize_handle ${isDragging === 2 ? "dragging" : ""}`}
           onMouseDown={() => handleMouseDown(2)}

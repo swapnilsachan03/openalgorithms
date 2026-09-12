@@ -8,6 +8,7 @@ import Code from "./components/code/code";
 import Submissions from "./components/submissions/submissions";
 
 type Props = {
+  problemId: string;
   loading: boolean;
 };
 
@@ -24,7 +25,7 @@ const getPaneTabs = (setSelectedTab: (tab: string) => void) => [
   },
 ];
 
-const EditorPane = ({ loading }: Props) => {
+const EditorPane = ({ problemId, loading }: Props) => {
   const [selectedTab, setSelectedTab] = useState("code");
   const [currentCode, setCurrentCode] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState("python");
@@ -37,6 +38,8 @@ const EditorPane = ({ loading }: Props) => {
     setSelectedTab("code");
   };
 
+  const goToSubmissions = () => setSelectedTab("submissions");
+
   const renderPaneContent = () => {
     switch (selectedTab) {
       case "code":
@@ -45,11 +48,17 @@ const EditorPane = ({ loading }: Props) => {
             loading={loading}
             defaultCode={currentCode}
             defaultLanguage={currentLanguage}
+            problemId={problemId}
+            goToSubmissions={goToSubmissions}
           />
         );
       case "submissions":
         return (
-          <Submissions loading={loading} onCopyToEditor={handleCopyToEditor} />
+          <Submissions
+            loading={loading}
+            problemId={problemId}
+            onCopyToEditor={handleCopyToEditor}
+          />
         );
       default:
         return null;

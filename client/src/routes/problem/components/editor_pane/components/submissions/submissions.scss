@@ -9,6 +9,14 @@
     gap: 8px;
     padding: 12px;
   }
+
+  &_center_content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .submission_card {
@@ -103,17 +111,15 @@
     font-size: 14px;
   }
 
-  &_accepted {
+  &_green {
     color: #22c55e;
   }
 
-  &_wrong_answer,
-  &_runtime_error {
+  &_red {
     color: #ef4444;
   }
 
-  &_time_limit_exceeded,
-  &_memory_limit_exceeded {
+  &_yellow {
     color: #f59e0b;
   }
 }

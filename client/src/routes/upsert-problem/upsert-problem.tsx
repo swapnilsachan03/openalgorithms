@@ -62,7 +62,7 @@ const UpsertProblem = () => {
 
   if (!isAdmin) {
     return null;
-  } else if (isProblemDetailsLoading) {
+  } else if (slug && isProblemDetailsLoading) {
     return <div>Loading...</div>;
   } else if (problemDetailsError) {
     Toast.error("Failed to load problem details");

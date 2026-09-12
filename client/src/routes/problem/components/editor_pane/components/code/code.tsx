@@ -1,29 +1,34 @@
+/**-- external --*/
+
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { Button, Select } from "antd";
 import Editor, { type Monaco } from "@monaco-editor/react";
+import { useMutation } from "@apollo/client/react";
+
+/**-- relative --*/
+
+import { createSubmissionMutation } from "../../modules/mutations";
+import { handleCreateSubmission } from "../../modules/services";
+import { initialCode, languageOptions } from "../../modules/utils";
 
 import "./code.scss";
 
 type Props = {
+  problemId: string;
   loading: boolean;
   defaultCode?: string;
   defaultLanguage?: string;
+  goToSubmissions: () => void;
 };
 
-const languageOptions = [
-  { value: "python", label: "Python" },
-  { value: "javascript", label: "JavaScript" },
-  { value: "typescript", label: "TypeScript" },
-  { value: "java", label: "Java" },
-  { value: "cpp", label: "C++" },
-];
-
-const initialCode = `def twoSum(nums: List[int], target: int) -> List[int]:
-    # Write your solution here
-    pass`;
-
-const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
+const Code = ({
+  problemId,
+  loading,
+  defaultCode,
+  defaultLanguage,
+  goToSubmissions,
+}: Props) => {
   const [language, setLanguage] = useState(defaultLanguage || "python");
   const [code, setCode] = useState(defaultCode || initialCode);
 
@@ -40,19 +45,22 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  useEffect(() => {
-    if (defaultCode && defaultLanguage) {
-      // setCode(defaultCode);
-      // setLanguage(defaultLanguage);
-    }
-  }, [defaultCode, defaultLanguage]);
+  const [createSubmission, { loading: isSubmitting }] = useMutation(
+    createSubmissionMutation
+  );
 
   const handleCodeChange = (value: string | undefined) => {
     if (value) setCode(value);
   };
 
-  const handleSubmit = () => {
-    // console.log("Submitting code:", { language, code });
+  const handleSubmit = async () => {
+    await handleCreateSubmission(
+      code,
+      language,
+      problemId,
+      createSubmission,
+      goToSubmissions
+    );
   };
 
   if (loading) {
@@ -115,6 +123,7 @@ const Code = ({ loading, defaultCode, defaultLanguage }: Props) => {
           color="green"
           icon={<Check size={14} />}
           onClick={handleSubmit}
+          disabled={isSubmitting}
         >
           Submit
         </Button>
