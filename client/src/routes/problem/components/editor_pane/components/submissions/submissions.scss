@@ -31,6 +31,10 @@
     background-color: rgba($color: #000, $alpha: 0.02);
   }
 
+  &_polling {
+    animation: pulsingAnimation 2s ease-in-out infinite;
+  }
+
   &_main {
     display: flex;
     flex-direction: column;
@@ -48,36 +52,6 @@
     display: flex;
     gap: 8px;
     font-size: 13px;
-  }
-}
-
-.submission_detail {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-
-  &_header {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  &_meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 13px;
-
-    .language {
-      text-transform: capitalize;
-    }
-  }
-
-  &_stats {
-    display: flex;
-    gap: 8px;
   }
 }
 
@@ -121,5 +95,15 @@
 
   &_yellow {
     color: #f59e0b;
+  }
+}
+
+@keyframes pulsingAnimation {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
   }
 }

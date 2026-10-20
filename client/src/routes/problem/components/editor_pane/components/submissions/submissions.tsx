@@ -1,18 +1,18 @@
 /**-- external --*/
 
 import _ from "lodash";
-import { useState } from "react";
-import { ArrowLeft, Clock, Copy, Timer, ChartBar, Code } from "lucide-react";
-import { Button, Tag } from "antd";
+import { useEffect, useState } from "react";
+import { Timer, ChartBar, Code } from "lucide-react";
+import { Tag } from "antd";
 import { useQuery } from "@apollo/client/react";
 import dayjs from "dayjs";
+import classNames from "classnames";
 
 /**-- internal --*/
 
 import { tagStyle } from "@/lib/styles";
 import { useIsLoggedIn, useUserId } from "@/stores/userStore";
 import { Submission } from "@/generated/graphql";
-import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 /**-- relative --*/
 
@@ -20,7 +20,9 @@ import { getUserSubmissionsQuery } from "../../modules/queries";
 import {
   getStatusText,
   getSubmissionStatusClassName,
+  pendingStatusStates,
 } from "../../modules/utils";
+import SelectedSubmission from "../selected_submission/selected_submission";
 
 import "./submissions.scss";
 
@@ -34,36 +36,62 @@ const Submissions = ({ loading, problemId, onCopyToEditor }: Props) => {
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
 
-  const { loading: isLoadingSubmissions, data } = useQuery(
-    getUserSubmissionsQuery,
-    {
-      variables: {
-        filters: {
-          userId,
-          problemId,
-        },
+  const {
+    loading: isLoadingSubmissions,
+    data,
+    startPolling,
+    stopPolling,
+  } = useQuery(getUserSubmissionsQuery, {
+    variables: {
+      filters: {
+        userId,
+        problemId,
       },
-      skip: !isLoggedIn || !userId || !problemId,
-    }
-  );
+    },
+    fetchPolicy: "cache-and-network",
+    skip: !isLoggedIn || !userId || !problemId,
+  });
 
   const submissions = _.get(data, "submissions", []) as Submission[];
 
-  const [selectedSubmission, setSelectedSubmission] =
-    useState<Submission | null>(null);
+  const isSomeSubmissionPending = _.some(submissions, submission =>
+    _.includes(pendingStatusStates, submission.status)
+  );
+
+  useEffect(() => {
+    if (isSomeSubmissionPending) {
+      startPolling(1000);
+    } else {
+      stopPolling();
+    }
+
+    return () => stopPolling();
+  }, [isSomeSubmissionPending, startPolling, stopPolling]);
+
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    string | null
+  >(null);
+
+  const selectedSubmission = selectedSubmissionId
+    ? _.find(submissions, { id: selectedSubmissionId })
+    : null;
 
   const handleSubmissionClick = (submission: Submission) => {
-    setSelectedSubmission(submission);
+    setSelectedSubmissionId(submission.id);
   };
 
   const handleBack = () => {
-    setSelectedSubmission(null);
+    setSelectedSubmissionId(null);
   };
 
   const handleCopyToEditor = () => {
     if (selectedSubmission?.code && selectedSubmission?.language) {
-      onCopyToEditor(selectedSubmission.code, selectedSubmission.language);
-      setSelectedSubmission(null);
+      onCopyToEditor(
+        selectedSubmission.code,
+        _.toLower(selectedSubmission.language)
+      );
+
+      setSelectedSubmissionId(null);
     }
   };
 
@@ -77,7 +105,7 @@ const Submissions = ({ loading, problemId, onCopyToEditor }: Props) => {
     );
   }
 
-  if (loading || isLoadingSubmissions) {
+  if ((loading || isLoadingSubmissions) && _.isEmpty(submissions)) {
     return (
       <div className="submissions">
         <span className="submissions_center_content">Loading...</span>
@@ -86,57 +114,12 @@ const Submissions = ({ loading, problemId, onCopyToEditor }: Props) => {
   }
 
   if (selectedSubmission) {
-    const submissionContent = `\`\`\`${_.toLower(selectedSubmission.language!)}\n${selectedSubmission.code}\n\`\`\``;
-
-    const statusColor = getSubmissionStatusClassName(
-      selectedSubmission.status!
-    );
-
-    const statusText = getStatusText(selectedSubmission.status!);
-
     return (
-      <div className="submission_detail">
-        <div className="submission_detail_header">
-          <Button
-            variant="outlined"
-            onClick={handleBack}
-            icon={<ArrowLeft size={14} />}
-          />
-
-          <div className="submission_detail_meta">
-            <span className={`status ${statusColor}`}>{statusText}</span>
-
-            <div className="submission_detail_stats">
-              <Tag style={tagStyle} icon={<Timer size={13} />}>
-                {selectedSubmission.maxRuntimeMs}
-              </Tag>
-
-              <Tag style={tagStyle} icon={<ChartBar size={13} />}>
-                {selectedSubmission.maxMemoryMb}
-              </Tag>
-
-              <Tag style={tagStyle} icon={<Clock size={13} />}>
-                {dayjs(selectedSubmission.createdAt!).format(
-                  "MMM DD, YYYY HH:mm"
-                )}
-              </Tag>
-            </div>
-          </div>
-        </div>
-
-        <MarkdownRenderer content={submissionContent} />
-
-        <div className="copy_to_editor">
-          <Button
-            variant="solid"
-            color="blue"
-            onClick={handleCopyToEditor}
-            icon={<Copy size={14} />}
-          >
-            Copy to editor
-          </Button>
-        </div>
-      </div>
+      <SelectedSubmission
+        selectedSubmission={selectedSubmission}
+        handleBack={handleBack}
+        handleCopyToEditor={handleCopyToEditor}
+      />
     );
   }
 
@@ -157,10 +140,17 @@ const Submissions = ({ loading, problemId, onCopyToEditor }: Props) => {
           const statusColor = getSubmissionStatusClassName(submission.status!);
           const statusText = getStatusText(submission.status!);
 
+          const submissionCardClasses = classNames("submission_card", {
+            submission_card_polling: _.includes(
+              pendingStatusStates,
+              submission.status
+            ),
+          });
+
           return (
             <div
               key={submission.id}
-              className="submission_card"
+              className={submissionCardClasses}
               onClick={() => handleSubmissionClick(submission)}
             >
               <div className="submission_card_main">

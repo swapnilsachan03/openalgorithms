@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ConfigProvider, theme } from "antd";
 import { ApolloProvider } from "@apollo/client/react";
 
@@ -41,7 +41,7 @@ function App() {
   };
 
   const token = useUserToken();
-  const client = getApolloClient(token);
+  const client = useMemo(() => getApolloClient(token), [token]);
 
   return (
     <ApolloProvider client={client}>

@@ -9,6 +9,11 @@ export const languageOptions = [
   { value: "cpp", label: "C++" },
 ];
 
+export const pendingStatusStates = [
+  SubmissionStatus.Judging,
+  SubmissionStatus.Pending,
+];
+
 export const getSubmissionStatusClassName = (status: string) => {
   switch (status) {
     case SubmissionStatus.Accepted:
