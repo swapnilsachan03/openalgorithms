@@ -1,6 +1,7 @@
 import _ from "lodash";
 import {
   CreateSubmissionInput,
+  ExecuteCodeInput,
   SubmissionsFiltersInput,
   SubmissionStatus,
 } from "@generated/graphql";
@@ -13,6 +14,15 @@ import { validateSessionToken } from "@utils/auth_utils";
 import { prisma } from "@lib/prisma";
 
 const submissionsQueue = new Queue("submissions", {
+  connection: {
+    url: process.env.REDIS_URL as string,
+    maxRetriesPerRequest: null,
+    enableOfflineQueue: false,
+    enableReadyCheck: false,
+  },
+});
+
+const codeRunsQueue = new Queue("code_runs", {
   connection: {
     url: process.env.REDIS_URL as string,
     maxRetriesPerRequest: null,
@@ -134,7 +144,91 @@ export const getSubmissions = async (
 
   const submissions = await prisma.submission.findMany({
     where: { userId, ...(problemId ? { problemId } : {}) },
+    orderBy: { createdAt: "desc" },
   });
 
   return submissions;
+};
+
+export const executeCode = async (
+  parent: unknown,
+  args: { input: ExecuteCodeInput },
+  contextValue: AuthContext
+) => {
+  const { token } = contextValue;
+
+  const sessionRes = token ? await validateSessionToken(token) : null;
+
+  if (_.isNil(token) || !sessionRes?.user) {
+    throw new GraphQLError("You must be logged in to run code", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
+  }
+
+  const { problemId, code, language, input } = args.input;
+
+  const problem = await prisma.problem.findUnique({
+    where: { id: problemId },
+    include: { solutions: true },
+  });
+
+  if (_.isNull(problem?.id)) {
+    throw new GraphQLError("Trying to run code for an invalid problem", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  const code_run = await prisma.codeRun.create({
+    data: {
+      userId: sessionRes?.user.id,
+      problemId,
+      code,
+      input,
+      language,
+      status: SubmissionStatus.Pending,
+    },
+  });
+
+  const solution = _.find(
+    problem?.solutions,
+    sln => sln.language === language
+  )?.code;
+
+  await codeRunsQueue.add(
+    "execute",
+    {
+      runId: code_run.id,
+      language,
+      code,
+      solution,
+      problemId,
+      input,
+      timeLimitSeconds: problem.timeLimitInSeconds,
+      memoryLimitMB: problem.memoryLimitInMB,
+    },
+    {
+      attempts: 2,
+      backoff: { type: "exponential", delay: 1000 },
+      removeOnComplete: true,
+      removeOnFail: false,
+    }
+  );
+
+  return code_run;
+};
+
+export const getCodeRun = async (parent: unknown, args: { id: string }) => {
+  const { id } = args;
+
+  const code_run = await prisma.codeRun.findUnique({
+    where: { id },
+  });
+
+  if (code_run === null) {
+    throw new GraphQLError("Submission not found", {
+      extensions: { code: "RESOURCE_NOT_FOUND" },
+    });
+  }
+
+  return code_run;
 };

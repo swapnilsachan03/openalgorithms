@@ -15,7 +15,10 @@ import {
   updateTopic,
 } from "@controllers/topic_controller";
 
-import { createSubmission } from "@controllers/submission_controller";
+import {
+  createSubmission,
+  executeCode,
+} from "@controllers/submission_controller";
 
 export const mutationResolvers = {
   Mutation: {
@@ -28,5 +31,6 @@ export const mutationResolvers = {
     deleteTopic,
     likeDislikeProblem,
     createSubmission,
+    executeCode,
   },
 };

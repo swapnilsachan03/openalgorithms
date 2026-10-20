@@ -82,3 +82,10 @@ input CreateSubmissionInput {
   language: SubmissionLanguage!
   code: String!
 }
+
+input ExecuteCodeInput {
+  problemId: ID!
+  language: SubmissionLanguage!
+  input: String!
+  code: String!
+}
