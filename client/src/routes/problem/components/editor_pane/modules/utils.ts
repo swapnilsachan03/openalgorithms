@@ -36,7 +36,3 @@ export const getSubmissionStatusClassName = (status: string) => {
 export const getStatusText = (status: string): string => {
   return _.capitalize(_.join(_.split(status, "_"), " "));
 };
-
-export const initialCode = `def twoSum(nums: List[int], target: int) -> List[int]:
-    # Write your solution here
-    pass`;

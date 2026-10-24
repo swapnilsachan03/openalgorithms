@@ -120,7 +120,7 @@ const Description = ({ problem, loading }: Props) => {
 
                 <pre>
                   <strong>Output: </strong>
-                  {example?.input}
+                  {example?.output}
                 </pre>
 
                 {example?.explanation ? (

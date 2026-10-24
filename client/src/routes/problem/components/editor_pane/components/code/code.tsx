@@ -10,7 +10,7 @@ import { useMutation } from "@apollo/client/react";
 
 import { createSubmissionMutation } from "../../modules/mutations";
 import { handleCreateSubmission } from "../../modules/services";
-import { initialCode, languageOptions } from "../../modules/utils";
+import { languageOptions } from "../../modules/utils";
 
 import "./code.scss";
 
@@ -30,7 +30,7 @@ const Code = ({
   goToSubmissions,
 }: Props) => {
   const [language, setLanguage] = useState(defaultLanguage || "python");
-  const [code, setCode] = useState(defaultCode || initialCode);
+  const [code, setCode] = useState(defaultCode || "");
 
   const [prefersDarkTheme, setPrefersDarkTheme] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
