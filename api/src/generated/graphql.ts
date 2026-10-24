@@ -88,6 +88,13 @@ export type ExampleInput = {
   output: Scalars['String']['input'];
 };
 
+export type ExecuteCodeInput = {
+  code: Scalars['String']['input'];
+  input: Scalars['String']['input'];
+  language: SubmissionLanguage;
+  problemId: Scalars['ID']['input'];
+};
+
 export type GenericResponse = {
   __typename?: 'GenericResponse';
   isSuccess: Scalars['Boolean']['output'];
@@ -127,6 +134,7 @@ export type Mutation = {
   createTopic?: Maybe<Topic>;
   deleteProblem?: Maybe<GenericResponse>;
   deleteTopic?: Maybe<GenericResponse>;
+  executeCode?: Maybe<Submission>;
   likeDislikeProblem?: Maybe<GenericResponse>;
   updateProblem?: Maybe<Problem>;
   updateProfile?: Maybe<User>;
@@ -156,6 +164,11 @@ export type MutationDeleteProblemArgs = {
 
 export type MutationDeleteTopicArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationExecuteCodeArgs = {
+  input?: InputMaybe<ExecuteCodeInput>;
 };
 
 
@@ -222,6 +235,7 @@ export enum ProblemDifficulty {
 
 export type Query = {
   __typename?: 'Query';
+  codeRun?: Maybe<Submission>;
   problem?: Maybe<Problem>;
   problems?: Maybe<GetAllProblemsResponse>;
   profile?: Maybe<User>;
@@ -231,6 +245,11 @@ export type Query = {
   user?: Maybe<User>;
   userSolution?: Maybe<UserSolution>;
   users?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type QueryCodeRunArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -503,6 +522,7 @@ export type ResolversTypes = {
   EditorialInput: EditorialInput;
   Example: ResolverTypeWrapper<Example>;
   ExampleInput: ExampleInput;
+  ExecuteCodeInput: ExecuteCodeInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
@@ -549,6 +569,7 @@ export type ResolversParentTypes = {
   EditorialInput: EditorialInput;
   Example: Example;
   ExampleInput: ExampleInput;
+  ExecuteCodeInput: ExecuteCodeInput;
   Float: Scalars['Float']['output'];
   GenericResponse: GenericResponse;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
@@ -639,6 +660,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createTopic?: Resolver<Maybe<ResolversTypes['Topic']>, ParentType, ContextType, RequireFields<MutationCreateTopicArgs, 'input'>>;
   deleteProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProblemArgs, 'id'>>;
   deleteTopic?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteTopicArgs, 'id'>>;
+  executeCode?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, Partial<MutationExecuteCodeArgs>>;
   likeDislikeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationLikeDislikeProblemArgs>>;
   updateProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationUpdateProblemArgs>>;
   updateProfile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateProfileArgs>>;
@@ -680,6 +702,7 @@ export type ProblemResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  codeRun?: Resolver<Maybe<ResolversTypes['Submission']>, ParentType, ContextType, RequireFields<QueryCodeRunArgs, 'id'>>;
   problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<QueryProblemArgs>>;
   problems?: Resolver<Maybe<ResolversTypes['GetAllProblemsResponse']>, ParentType, ContextType, Partial<QueryProblemsArgs>>;
   profile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;

@@ -19,6 +19,7 @@ model User {
   role                    Role                      @default(USER)
   accounts                Account[]
   bookmarkedProblems      BookmarkedProblem[]
+  CodeRun                 CodeRun[]
   dailySubmissionCounts   DailySubmissionCount[]
   discussions             Discussion[]
   editorialInteraction    EditorialInteraction[]
@@ -74,6 +75,7 @@ model Problem {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   bookmarkedProblems  BookmarkedProblem[]
+  CodeRun             CodeRun[]
   discussions         Discussion[]
   editorial           Editorial?
   examples            Example[]
@@ -164,9 +166,9 @@ model Submission {
   createdAt    DateTime           @default(now())
   status       SubmissionStatus   @default(PENDING)
   verdict      Boolean?
-  language     SubmissionLanguage
   maxMemoryMb  Float              @default(0.0)
   maxRuntimeMs Int                @default(0)
+  language     SubmissionLanguage
   problem      Problem            @relation(fields: [problemId], references: [id], onDelete: Cascade)
   user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -253,6 +255,22 @@ model UserSolutionInteraction {
   @@id([userId, userSolutionId])
 }
 
+model CodeRun {
+  id           String             @id
+  userId       String
+  problemId    String
+  code         String
+  input        String
+  language     SubmissionLanguage
+  status       SubmissionStatus   @default(PENDING)
+  verdict      Boolean?
+  createdAt    DateTime           @default(now())
+  maxMemoryMb  Float              @default(0.0)
+  maxRuntimeMs Int                @default(0)
+  Problem      Problem            @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  User         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 enum Role {
   USER
   MODERATOR
@@ -275,6 +293,7 @@ enum SubmissionStatus {
   MEMORY_LIMIT_EXCEEDED
   COMPILATION_ERROR
   INTERNAL_ERROR
+  BAD_USER_INPUT
 }
 
 enum SubmissionLanguage {

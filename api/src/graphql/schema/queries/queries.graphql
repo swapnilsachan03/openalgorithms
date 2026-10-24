@@ -18,4 +18,5 @@ type Query {
   problems(filters: GetAllProblemsFilterInput): GetAllProblemsResponse
   userSolution(id: ID!): UserSolution
   topics: [Topic]
+  codeRun(id: ID!): Submission
 }

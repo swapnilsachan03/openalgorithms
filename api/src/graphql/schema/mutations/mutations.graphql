@@ -15,6 +15,7 @@
 # import CreateTopicInput from "../inputs/topic_inputs.graphql"
 # import UpdateTopicInput from "../inputs/topic_inputs.graphql"
 # import LikeDislikeInput from "../inputs/common.graphql"
+# import ExecuteCodeInput from "../inputs/problem_inputs.graphql"
 
 type Mutation {
   updateProfile(input: UpdateProfileInput): User
@@ -26,6 +27,7 @@ type Mutation {
   deleteTopic(id: ID!): GenericResponse
   likeDislikeProblem(input: LikeDislikeInput): GenericResponse
   createSubmission(input: CreateSubmissionInput): Submission
+  executeCode(input: ExecuteCodeInput): Submission
 
   # To-Dos
 

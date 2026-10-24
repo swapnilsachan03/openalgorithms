@@ -112,10 +112,10 @@ def execute(
     }
 
 
-# ── Lambda entrypoint ──────────────────────────────────────────────────────────
+# ── Submission execution ──────────────────────────────────────────────────────
 
 
-def lambda_handler(event, context):
+def handle_submission(event):
     submission_id = event["submissionId"]
     code = event["code"]
     test_cases = event["testCases"]
@@ -141,7 +141,6 @@ def lambda_handler(event, context):
                     }
                 ],
             }
-            return
 
         # ── Step 2: Write code to temp file ──────────────────────────────────
         # each invocation that doesn't reuse a warm container gets a clean one
@@ -214,3 +213,109 @@ def lambda_handler(event, context):
                 }
             ],
         }
+
+
+# ── Code run execution ────────────────────────────────────────────────────────
+
+
+MAX_OUTPUT_CHARS = 64 * 1024
+
+
+def outputs_match(actual: str, expected: str) -> bool:
+    # Ignore trailing whitespace on each line and trailing blank lines
+    def norm(s: str) -> str:
+        return "\n".join(
+            line.rstrip() for line in s.replace("\r\n", "\n").split("\n")
+        ).rstrip()
+
+    return norm(actual) == norm(expected)
+
+
+def run_result(run_id, verdict, **extra) -> dict:
+    return {
+        "runId": run_id,
+        "verdict": verdict,
+        "maxMemoryMb": extra.pop("maxMemoryMb", 0.0),
+        "maxRuntimeMs": extra.pop("maxRuntimeMs", 0),
+        **extra,
+    }
+
+
+def handle_run(event: dict) -> dict:
+    run_id = event["runId"]
+
+    try:
+        code = event["code"]
+        solution = event["solution"]
+        input_data = event["input"]
+        time_limit_s = event["timeLimitSeconds"]
+        memory_limit_mb = event["memoryLimitMB"]
+
+        # 1. User's code must parse (cheap, so check before running anything)
+        error = check_syntax(code)
+        if error:
+            return run_result(run_id, "COMPILATION_ERROR", error=error)
+
+        # 2. Our reference solution must parse; if not, that's our bug
+        sol_error = check_syntax(solution)
+        if sol_error:
+            return run_result(
+                run_id,
+                "INTERNAL_ERROR",
+                error=f"Reference solution: {sol_error}",
+            )
+
+        user_file = "/tmp/user.py"
+        solution_file = "/tmp/solution.py"
+        with open(user_file, "w") as f:
+            f.write(code)
+        with open(solution_file, "w") as f:
+            f.write(solution)
+
+        # 3. Run the reference solution on the input: this doubles as validation.
+        #    If it crashes / times out / blows memory, the input is bad.
+        expected = execute(
+            solution_file, input_data, time_limit_s, memory_limit_mb
+        )
+        if expected["verdict"] is not None:
+            return run_result(
+                run_id,
+                "BAD_USER_INPUT",
+                error=expected["stderr"] or expected["verdict"],
+            )
+
+        # 4. Run the user's code on the same input
+        actual = execute(user_file, input_data, time_limit_s, memory_limit_mb)
+
+        if actual["verdict"] is not None:
+            verdict = actual["verdict"]  # TLE / MLE / RUNTIME_ERROR
+        elif outputs_match(actual["stdout"], expected["stdout"]):
+            verdict = "ACCEPTED"
+        else:
+            verdict = "WRONG_ANSWER"
+
+        print(f"[run:{run_id}] {verdict}")
+        return run_result(
+            run_id,
+            verdict,
+            maxMemoryMb=actual["memory_mb"],
+            maxRuntimeMs=actual["elapsed_ms"],
+            output=actual["stdout"][:MAX_OUTPUT_CHARS],
+            expected=expected["stdout"][:MAX_OUTPUT_CHARS],
+            stderr=actual["stderr"],
+        )
+
+    except Exception:
+        tb = traceback.format_exc()
+        print(f"[run:{run_id}] INTERNAL_ERROR\n{tb}")
+        return run_result(run_id, "INTERNAL_ERROR", error=tb)
+
+
+# ── Lambda entrypoint ─────────────────────────────────────────────────────────
+
+
+def lambda_handler(event, context):
+    if event.get("mode") == "run":
+        return handle_run(event)
+
+    return handle_submission(event)
