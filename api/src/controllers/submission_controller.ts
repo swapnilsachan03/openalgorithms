@@ -169,11 +169,22 @@ export const executeCode = async (
 
   const problem = await prisma.problem.findUnique({
     where: { id: problemId },
-    include: { solutions: true },
+    select: { id: true, timeLimitInSeconds: true, memoryLimitInMB: true },
+  });
+
+  const solution = await prisma.solution.findFirst({
+    where: { problemId, language },
+    select: { id: true, code: true },
   });
 
   if (_.isNull(problem?.id)) {
-    throw new GraphQLError("Trying to run code for an invalid problem", {
+    throw new GraphQLError("Problem does not exist", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  if (_.isNull(solution)) {
+    throw new GraphQLError("Solution for submitted problem does not exist", {
       extensions: { code: "BAD_USER_INPUT" },
     });
   }
@@ -189,18 +200,13 @@ export const executeCode = async (
     },
   });
 
-  const solution = _.find(
-    problem?.solutions,
-    sln => sln.language === language
-  )?.code;
-
   await codeRunsQueue.add(
     "execute",
     {
       runId: code_run.id,
       language,
       code,
-      solution,
+      solution: solution.code,
       problemId,
       input,
       timeLimitSeconds: problem.timeLimitInSeconds,

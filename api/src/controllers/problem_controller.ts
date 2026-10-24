@@ -151,7 +151,8 @@ export const updateProblem = async (
       ...(solutions
         ? {
             solutions: {
-              create: solutions,
+              deleteMany: {},
+              createMany: { data: solutions },
             },
           }
         : {}),
